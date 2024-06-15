@@ -1,22 +1,15 @@
 const Review = require('../models/review');
-const Product = require('../models/product');
 
 const writeReview = async (req, res) => {
-  const { product, user, date, text } = req.body;
+  const { product, user, date, text, rating } = req.body;
   const review = new Review({
     product,
     user,
     date,
-    text
+    text,
+    rating
   });
   await review.save();
-  const reviews = await Review.find({product: product});
-  let stats;
-  reviews.forEach(rev => {
-    stats += rev.rate;
-  });
-  stats = stats/stats.length;
-  const _product = await Product.findOneAndDelete({product: product}, {stats: stats});
   res.json(review);
 }
 
@@ -27,12 +20,11 @@ const getReviews = async (req, res) => {
 }
 
 const editReview = async (req, res) => {
-  const { _id } = req.body;
-  const review = Review.findByIdAndUpdate({_id}, {
-    product,
-    user,
+  const { _id, date, text, rating } = req.body;
+  const review = Review.findByIdAndUpdate(_id, {
     date,
-    text
+    text,
+    rating
   });
   if (!review) {
     return res.status(404).json({ errors: ['Review not found'] });
@@ -46,13 +38,6 @@ const deleteReview = async (req, res) => {
   if (!review) {
     return res.status(404).json({ errors: ['Review not found'] });
   }
-  const reviews = await Review.find({product: product});
-  let stats;
-  reviews.forEach(rev => {
-    stats += rev.rate;
-  });
-  stats = stats/stats.length;
-  const _product = await Product.findOneAndDelete({product: product}, {stats: stats});
   res.send();
 }
 

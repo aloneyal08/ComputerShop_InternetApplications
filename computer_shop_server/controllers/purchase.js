@@ -14,8 +14,8 @@ const makePurchase = async (req, res) => {
     await purchase.save();
     const p_id = await Purchase.find({_id}).product;
     const stock = await Product.find({p_id}).stock;
-    const _product = await Product.findByIdAndUpdate({p_id}, {stock: stock - 1});
-    res.json(product);
+    const _product = await Product.findByIdAndUpdate(p_id, {stock: stock - 1});
+    res.json(_product);
 };
 
 const getPurchases = async (req, res) => {
@@ -29,10 +29,10 @@ const deletePurchase = async (req, res) => {
     const { _id} = req.body;
     const p_id = await Purchase.find({_id}).product;
     const stock = await Product.find({p_id}).stock;
-    const product = await Product.findByIdAndUpdate({p_id}, {stock: stock + 1});
+    const product = await Product.findByIdAndUpdate(p_id, {stock: stock + 1});
     const _purchase = await Purchase.findOneAndDelete({_id});
     if (!_product) {
-      return res.status(404).json({ errors: ['Review not found'] });
+      return res.status(404).json({ errors: ['Product not found'] });
     }
 };
 
