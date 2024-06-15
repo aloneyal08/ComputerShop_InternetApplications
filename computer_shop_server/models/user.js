@@ -2,6 +2,10 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const User = new Schema({
+  fullName: {
+    type: String,
+    required: true
+  },
   username : {
     type: String,
     required: true
@@ -15,7 +19,7 @@ const User = new Schema({
     required: true
   },
   level: {
-    type: Number,
+    type: Number, // 0: user, 1: supplier, 2: admin
     required: true
   },
   profilePhoto: {

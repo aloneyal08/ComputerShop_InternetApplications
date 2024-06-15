@@ -3,7 +3,7 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const mongoose = require('mongoose');
 
-mongoose.connect('mongodb://0.0.0.0:27017/local',
+mongoose.connect('mongodb://0.0.0.0:27017/computerShop',
     { useNewUrlParser: true, useUnifiedTopology: true });
 
 var app = express();

@@ -3,7 +3,7 @@ const { encrypt } = require('../utils');
 //TODO: make sure no @ in username
 
 const register = async (req, res) => {
-  const { username, password, email, level, profilePhoto, phone } = req.body;
+  const { username, password, email, phone, fullName } = req.body;
   const u = await User.findOne({email});
   if (u) {
     return res.status(400).json({ errors: ['Email already exists'] });
@@ -13,9 +13,10 @@ const register = async (req, res) => {
     username,
     password: encrypt(password),
     email,
-    level,
-    profilePhoto,
-    phone
+    level: 0,
+    profilePhoto: '',
+    phone,
+    fullName
   });
   await user.save();
   res.status(201).json(user);
@@ -39,7 +40,7 @@ const login = async (req, res) => {
 }
 
 const updateUser = async (req, res) => {
-  const { username, password, oldPassword, email, level, profilePhoto, phone } = req.body;
+  const { username, password, oldPassword, email, level, profilePhoto, phone, fullName } = req.body;
   user = await User.findOne({email});
   if (!user) {
     return res.status(404).json({ errors: ['User not found'] });
@@ -53,7 +54,8 @@ const updateUser = async (req, res) => {
     email, // TODO: check if ok to change email
     level,
     profilePhoto,
-    phone
+    phone,
+    fullName
   });
   res.json(user);
 }
