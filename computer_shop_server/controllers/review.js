@@ -1,4 +1,5 @@
 const Review = require('../models/review');
+const Product = require('../models/product');
 
 const writeReview = async (req, res) => {
   const { product, user, date, text } = req.body;
@@ -9,6 +10,13 @@ const writeReview = async (req, res) => {
     text
   });
   await review.save();
+  const reviews = await Review.find({product: product});
+  let stats;
+  reviews.forEach(rev => {
+    stats += rev.rate;
+  });
+  stats = stats/stats.length;
+  const _product = await Product.findOneAndDelete({product: product}, {stats: stats});
   res.json(review);
 }
 
@@ -38,11 +46,19 @@ const deleteReview = async (req, res) => {
   if (!review) {
     return res.status(404).json({ errors: ['Review not found'] });
   }
+  const reviews = await Review.find({product: product});
+  let stats;
+  reviews.forEach(rev => {
+    stats += rev.rate;
+  });
+  stats = stats/stats.length;
+  const _product = await Product.findOneAndDelete({product: product}, {stats: stats});
   res.send();
 }
 
 module.exports = {
   writeReview,
   getReviews,
+  editReview,
   deleteReview
 };
