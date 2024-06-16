@@ -20,6 +20,26 @@ const Register = () => {
       alert('Passwords do not match');
       return;
     }
+
+    fetch('http://localhost:88/register', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        username,
+        password,
+        email,
+        fullName,
+        phone
+      })
+    }).then((res) => res.json()).then((res) => {
+      if(res.error) {
+        alert(res.error);
+      } else {
+        alert('Successfully registered');
+      }
+    })
     
   }
 
@@ -58,7 +78,7 @@ const Register = () => {
       </div>
       <div class="input1">
         <label>
-          <input type='text' required onChange={onRepeatPasswordChange}/>
+          <input type='password' required onChange={onRepeatPasswordChange}/>
           <span>Repeat Password</span>
         </label>
       </div>
