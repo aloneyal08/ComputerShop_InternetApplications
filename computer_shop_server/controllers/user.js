@@ -6,7 +6,7 @@ const register = async (req, res) => {
   const { username, password, email, phone, fullName } = req.body;
   const u = await User.findOne({email});
   if (u) {
-    return res.status(400).json({ errors: ['Email already exists'] });
+    return res.status(400).json({ error: 'Email already exists' });
   }
 
   const user = new User({
@@ -35,7 +35,7 @@ const login = async (req, res) => {
     ...obj
   });
     if (!user) {
-      return res.status(404).json({ errors: ['User not found'] });
+      return res.status(404).json({ error: 'Invalid Login' });
   }
 }
 
@@ -43,10 +43,10 @@ const updateUser = async (req, res) => {
   const { username, password, oldPassword, email, level, profilePhoto, phone, fullName } = req.body;
   user = await User.findOne({email});
   if (!user) {
-    return res.status(404).json({ errors: ['User not found'] });
+    return res.status(404).json({ error: 'User not found' });
   }
   if(user.password !== encrypt(oldPassword)){
-    return res.status(400).json({ errors: ['Wrong password'] });
+    return res.status(400).json({ error: 'Wrong password' });
   }
   const user = await User.findOneAndUpdate({email}, {
     username,
@@ -64,7 +64,7 @@ const deleteUser = async (req, res) => {
   const { email } = req.body;
   const user = await User.findOneAndDelete({email});
   if (!user) {
-    return res.status(404).json({ errors: ['User not found'] });
+    return res.status(404).json({ error: 'User not found' });
   }
   res.send();
 }

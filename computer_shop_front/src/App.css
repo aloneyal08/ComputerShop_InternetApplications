@@ -129,3 +129,10 @@
 .input1 > label > input:disabled ~ svg {
 	fill: var(--input1-ink-low-contrast);
 }
+
+.invalidBox {
+  border-color: red !important;
+}
+.invalidText {
+  color: red !important;
+}

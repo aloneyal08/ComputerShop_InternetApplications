@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { validateEmail, validatePhone } from '../../utils';
 
 const Register = () => {
   const [username, setUsername] = useState('');
@@ -7,21 +8,45 @@ const Register = () => {
   const [repeatPassword, setRepeatPassword] = useState('');
   const [fullName, setFullName] = useState('');
   const [phone, setPhone] = useState('');
+  const [emailValid, setEmailValid] = useState(true);
+  const [phoneValid, setPhoneValid] = useState(true);
+
+  const checkEmailValid = () => setEmailValid(validateEmail(email));
+  const checkPhoneValid = () => setPhoneValid(validatePhone(phone));
 
   const onUsernameChange = (e) => setUsername(e.target.value);
   const onPasswordChange = (e) => setPassword(e.target.value);
-  const onEmailChange = (e) => setEmail(e.target.value);
   const onFullNameChange = (e) => setFullName(e.target.value);
-  const onPhoneChange = (e) => setPhone(e.target.value);
   const onRepeatPasswordChange = (e) => setRepeatPassword(e.target.value);
+  const onEmailChange = (e) => {
+    setEmail(e.target.value);
+    if(validateEmail(e.target.value)) {
+      setEmailValid(true);
+    }
+  }
+  const onPhoneChange = (e) => {
+    setPhone(e.target.value);
+    if(validatePhone(e.target.value)) {
+      setPhoneValid(true);
+    }
+  }
 
   const onSubmit = () => {
+    checkEmailValid(email);
+    if(!emailValid) {
+      alert('Invalid email');
+      return;
+    }
     if(password !== repeatPassword) {
       alert('Passwords do not match');
       return;
     }
+    if(!username || !password || !email || !fullName || !phone) {
+      alert('Please fill all fields');
+      return;
+    }
 
-    fetch('http://localhost:88/register', {
+    fetch('http://localhost:88/user/register', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -49,37 +74,37 @@ const Register = () => {
       <div class="input1">
         <label>
           <input type='text' required onChange={onFullNameChange}/>
-          <span>Full Name</span>
+          <span>Full Name*</span>
         </label>
       </div>
       <div class="input1">
         <label>
-          <input type='text' required onChange={onEmailChange}/>
-          <span>Email</span>
+          <input type='text' required onChange={onEmailChange} onBlur={checkEmailValid} className={emailValid ? '' : 'invalidBox'}/>
+          <span className={emailValid ? '' : 'invalidText'}>{emailValid ? 'Email*' : 'INVALID EMAIL*'}</span>
         </label>
       </div>
       <div class="input1">
         <label>
-          <input type='text' required onChange={onPhoneChange}/>
-          <span>Phone</span>
+          <input type='text' required onBlur={checkPhoneValid} onChange={onPhoneChange} className={phoneValid ? '' : 'invalidBox'}/>
+          <span className={phoneValid ? '' : 'invalidText'}>{phoneValid ? 'Phone* (10 digits)' : 'INVALID PHONE* (10 digits)'}</span>
         </label>
       </div>
       <div class="input1">
         <label>
           <input type='text' required onChange={onUsernameChange}/>
-          <span>Username</span>
+          <span>Username*</span>
         </label>
       </div>
       <div class="input1">
         <label>
           <input type='password' required onChange={onPasswordChange}/>
-          <span>Password</span>
+          <span>Password*</span>
         </label>
       </div>
       <div class="input1">
         <label>
           <input type='password' required onChange={onRepeatPasswordChange}/>
-          <span>Repeat Password</span>
+          <span>Repeat Password*</span>
         </label>
       </div>
       <button onClick={onSubmit} className='loginSubmit button1'>Register</button>

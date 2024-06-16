@@ -6,8 +6,11 @@ import Register from './pages/register/register';
 import NewProduct from './pages/newProduct/newProduct';
 import UserSettings from './pages/userSettings/userSettings';
 import Cart from './pages/cart/cart';
+import { useState } from 'react';
 
 const App = () => {
+  const [user, setUser] = useState({});
+
   return (
     <BrowserRouter>
       <div className="App">

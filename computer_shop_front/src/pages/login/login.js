@@ -14,7 +14,22 @@ const Login = () => {
   }
 
   const onSubmit = () => {
-    console.log(username, password);
+    fetch('http://localhost:88/user/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        username,
+        password
+      })
+    }).then(res => res.json()).then(data => {
+      if(data.error) {
+        alert(data.error);
+      } else {
+        alert('Logged in successfully');
+      }
+    })
   }
 
   return <div>
