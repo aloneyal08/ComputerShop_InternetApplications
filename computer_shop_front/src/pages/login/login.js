@@ -1,10 +1,13 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import './login.css'
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { UserContext } from '../../UserContext';
 
 const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const {setUser} = useContext(UserContext);
+  const navigate = useNavigate();
 
   const onUsernameChange = (e) => {
     setUsername(e.target.value);
@@ -24,10 +27,14 @@ const Login = () => {
         password
       })
     }).then(res => res.json()).then(data => {
+      console.log(data);
       if(data.error) {
         alert(data.error);
       } else {
-        alert('Logged in successfully');
+        setUser(data);
+        navigate('/');
+        localStorage.setItem("username", data.username);
+        localStorage.setItem("password", data.password)
       }
     })
   }

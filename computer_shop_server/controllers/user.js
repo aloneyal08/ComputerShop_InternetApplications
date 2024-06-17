@@ -1,6 +1,5 @@
 const User = require('../models/user');
-const { encrypt } = require('../utils');
-//TODO: make sure no @ in username
+const { encrypt, decrypt } = require('../utils');
 
 const register = async (req, res) => {
   const { username, password, email, phone, fullName } = req.body;
@@ -29,14 +28,13 @@ const login = async (req, res) => {
     obj.email = username;
   else
     obj.username = username;
-  
   const user = await User.findOne({
-    password,
     ...obj
   });
-    if (!user) {
-      return res.status(404).json({ error: 'Invalid Login' });
-  }
+  if(user && ((req.body.encrypted && user.password === password) || (decrypt(user.password) === password)))
+    res.json(user);
+  else
+    res.status(404).json({ error: 'Invalid login' });
 }
 
 const updateUser = async (req, res) => {

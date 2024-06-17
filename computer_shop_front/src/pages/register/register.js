@@ -1,5 +1,7 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { validateEmail, validatePhone } from '../../utils';
+import { UserContext } from '../../UserContext';
+import { useNavigate } from 'react-router-dom';
 
 const Register = () => {
   const [username, setUsername] = useState('');
@@ -10,6 +12,9 @@ const Register = () => {
   const [phone, setPhone] = useState('');
   const [emailValid, setEmailValid] = useState(true);
   const [phoneValid, setPhoneValid] = useState(true);
+
+  const {setUser} = useContext(UserContext);
+  const navigate = useNavigate();
 
   const checkEmailValid = () => setEmailValid(validateEmail(email));
   const checkPhoneValid = () => setPhoneValid(validatePhone(phone));
@@ -45,6 +50,10 @@ const Register = () => {
       alert('Please fill all fields');
       return;
     }
+    if(username.includes('@')) {
+      alert('Username cannot contain @');
+      return;
+    }
 
     fetch('http://localhost:88/user/register', {
       method: 'POST',
@@ -62,7 +71,10 @@ const Register = () => {
       if(res.error) {
         alert(res.error);
       } else {
-        alert('Successfully registered');
+        setUser(res);
+        navigate('/');
+        localStorage.setItem("username", res.username);
+        localStorage.setItem("password", res.password)
       }
     })
     
