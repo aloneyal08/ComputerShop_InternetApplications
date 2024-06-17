@@ -21,3 +21,13 @@
 .loginOr {
   margin: 10px;
 }
+
+.googleIcon {
+  width: 30px;
+  margin-right: 10px;
+}
+
+.googleButton {
+  display: flex;
+  flex-direction: row;
+}

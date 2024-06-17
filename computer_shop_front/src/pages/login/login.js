@@ -1,11 +1,15 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import './login.css'
 import { Link, useNavigate } from "react-router-dom";
 import { UserContext } from '../../UserContext';
+import { useGoogleLogin } from '@react-oauth/google';
+import { googleRegister } from '../register/register';
 
 const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [googleUser, setGoogleUser] = useState(null);
+
   const {setUser} = useContext(UserContext);
   const navigate = useNavigate();
 
@@ -16,6 +20,13 @@ const Login = () => {
     setPassword(e.target.value);
   }
 
+  const logout = () => {
+    setUser(null);
+    localStorage.removeItem("username");
+    localStorage.removeItem("password");
+    window.open("/", "_self")
+  }
+
   const onSubmit = () => {
     fetch('http://localhost:88/user/login', {
       method: 'POST',
@@ -24,10 +35,9 @@ const Login = () => {
       },
       body: JSON.stringify({
         username,
-        password
+        password,
       })
     }).then(res => res.json()).then(data => {
-      console.log(data);
       if(data.error) {
         alert(data.error);
       } else {
@@ -39,16 +49,56 @@ const Login = () => {
     })
   }
 
+  const googleLogin = useGoogleLogin({
+    onSuccess: (codeResponse) => setGoogleUser(codeResponse),
+    onError: (error) => console.log('Login Failed:', error)
+  });
+
+  useEffect(() => {
+    async function fetchData() {
+      if (googleUser) {
+        const response = await fetch(
+          "https://www.googleapis.com/userinfo/v2/me",
+          {
+            headers: { Authorization: `Bearer ${googleUser.access_token}` },
+          }
+        );
+        const user = await response.json();
+        fetch('http://localhost:88/user/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            username: user.email.split('@')[0],
+            password: user.id,
+            encrypted: true
+          })
+        }).then(res => res.json()).then(data => {
+          if(data.error) {
+            googleRegister(user, setUser, navigate);
+          } else {
+            setUser(data);
+            navigate('/');
+            localStorage.setItem("username", data.username);
+            localStorage.setItem("password", data.password)
+          }
+        })
+      }
+    }
+    fetchData();
+  }, [googleUser, navigate, setUser]);
+
   return <div>
     <div className='loginForm'>
       <h1>Login</h1>
-      <div class="input1">
+      <div className="input1">
         <label>
           <input type='text' required onChange={onUsernameChange}/>
           <span>Username / Email</span>
         </label>
       </div>
-      <div class="input1">
+      <div className="input1">
         <label>
           <input type='password' required onChange={onPasswordChange}/>
           <span>Password</span>
@@ -56,9 +106,14 @@ const Login = () => {
       </div>
       <button onClick={onSubmit} className='loginSubmit button1'>Login</button>
       <span className='loginOr'>--------- or -----------</span>
-      <button className="button1">Continue with Google</button>
+      <button className='button1 googleButton' onClick={googleLogin} >
+        <img src={require('../../images/googleIcon.png')} alt='_' className='googleIcon'/>
+        Continue with Google
+      </button>
       <p>Don't have an account? <Link to="/register">Register</Link></p>
     </div>
+
+    <button onClick={logout}>Logout</button>
   </div>
 }
 
