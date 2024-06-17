@@ -1,21 +1,25 @@
 const User = require('../models/user');
-const { encrypt } = require('../utils');
-//TODO: make sure no @ in username
+const { encrypt, decrypt } = require('../utils');
 
 const register = async (req, res) => {
-  const { username, password, email, level, profilePhoto, phone } = req.body;
+  const { username, password, email, phone, fullName, profilePhoto } = req.body;
   const u = await User.findOne({email});
   if (u) {
-    return res.status(400).json({ errors: ['Email already exists'] });
+    return res.status(400).json({ error: 'Email already exists' });
   }
-
+  const obj = {};
+  if(profilePhoto)
+    obj.profilePhoto = profilePhoto;
+  if(phone)
+    obj.phone = phone;
   const user = new User({
     username,
     password: encrypt(password),
     email,
-    level,
+    level: 0,
+    fullName,
     profilePhoto,
-    phone
+    ...obj
   });
   await user.save();
   res.status(201).json(user);
@@ -28,24 +32,23 @@ const login = async (req, res) => {
     obj.email = username;
   else
     obj.username = username;
-  
   const user = await User.findOne({
-    password,
     ...obj
   });
-    if (!user) {
-      return res.status(404).json({ errors: ['User not found'] });
-  }
+  if(user && ((req.body.encrypted && user.password === password) || (decrypt(user.password) === password)))
+    res.json(user);
+  else
+    res.status(404).json({ error: 'Invalid login' });
 }
 
 const updateUser = async (req, res) => {
-  const { username, password, oldPassword, email, level, profilePhoto, phone } = req.body;
+  const { username, password, oldPassword, email, level, profilePhoto, phone, fullName } = req.body;
   user = await User.findOne({email});
   if (!user) {
-    return res.status(404).json({ errors: ['User not found'] });
+    return res.status(404).json({ error: 'User not found' });
   }
   if(user.password !== encrypt(oldPassword)){
-    return res.status(400).json({ errors: ['Wrong password'] });
+    return res.status(400).json({ error: 'Wrong password' });
   }
   const user = await User.findOneAndUpdate({email}, {
     username,
@@ -53,7 +56,8 @@ const updateUser = async (req, res) => {
     email, // TODO: check if ok to change email
     level,
     profilePhoto,
-    phone
+    phone,
+    fullName
   });
   res.json(user);
 }
@@ -62,7 +66,7 @@ const deleteUser = async (req, res) => {
   const { email } = req.body;
   const user = await User.findOneAndDelete({email});
   if (!user) {
-    return res.status(404).json({ errors: ['User not found'] });
+    return res.status(404).json({ error: 'User not found' });
   }
   res.send();
 }

@@ -1,3 +1,138 @@
 .App {
   text-align: center;
 }
+
+.button1 {
+  align-items: center;
+  background-color: initial;
+  background-image: linear-gradient(#464d55, #25292e);
+  border-radius: 8px;
+  border-width: 0;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, .1),0 3px 6px rgba(0, 0, 0, .05);
+  box-sizing: border-box;
+  color: #fff;
+  cursor: pointer;
+  display: inline-flex;
+  flex-direction: column;
+  font-family: expo-brand-demi,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
+  font-size: 18px;
+  height: 42px;
+  justify-content: center;
+  line-height: 1;
+  margin: 0;
+  outline: none;
+  overflow: hidden;
+  padding: 0 32px;
+  text-align: center;
+  text-decoration: none;
+  transform: translate3d(0, 0, 0);
+  transition: all 150ms;
+  vertical-align: baseline;
+  white-space: nowrap;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+
+.button1:hover {
+  box-shadow: rgba(0, 1, 0, .2) 0 2px 8px;
+  opacity: .85;
+}
+
+.button1:active {
+  outline: 0;
+}
+
+@media (max-width: 420px) {
+  .button1 {
+    height: 48px;
+  }
+}
+
+:root {
+	--input1-ink-lowest-contrast: rgba(47, 60, 85, 0.18);
+	--input1-ink-low-contrast: rgba(60, 60, 67, 0.3);
+	--input1-ink-medium-contrast: rgba(19, 19, 21, 0.6);
+	--input1-interaction: #4e4e4e;
+	--input1-interaction-minus-two: rgba(73, 133, 224, 0.12);
+	--input1-bg-low-contrast: #eff1f2;
+	--input1-ink-high-contrast: #121212;
+	--input1-bg-high-contrast: #ffffff;
+	
+}
+.input1 {
+  margin-bottom: 1.5rem;
+  position: relative;
+}
+.input1 > label {
+  display: block;
+  width: 100%;
+}
+
+.input1 > label > input {
+	border: none;
+	border-bottom: 0.125rem solid var(--input1-ink-medium-contrast);
+	width: 100%;
+	height: 2rem;
+	font-size: 1.0625rem;
+	line-height: 147.6%;
+  padding: 0px;
+	padding-top: 0.825rem;
+	padding-bottom: 0.5rem;
+}
+
+.input1 > label > input:focus {
+	outline: none;
+}
+
+.input1 > label > span {
+	position: absolute;
+	top: 0.9375rem;
+	left: 0.875rem;
+	line-height: 147.6%;
+	color: var(--input1-ink-medium-contrast);
+	transition: top .2s;
+}
+
+
+
+.input1 > label > input:focus + span,
+.input1 > label > input:valid + span {
+	top: 0;
+	font-size: 0.9375rem;
+	margin-bottom: 32px;;
+}
+
+.input1 > label > input:focus + span {
+	color: var(--input1-interaction);
+}
+
+.input1 > label > input:focus {
+	border-color: var(--input1-interaction);
+}
+
+.input1 > label > input:focus ~ svg {
+	fill: var(--input1-ink-high-contrast);
+}
+
+/** DISABLED **/
+
+.input1 > label > input:disabled {
+	background: var(--input1-bg-low-contrast);
+	cursor: not-allowed;
+}
+
+.input1 > label > input:disabled + span {
+	color: var(--input1-ink-low-contrast);
+}
+
+.input1 > label > input:disabled ~ svg {
+	fill: var(--input1-ink-low-contrast);
+}
+
+.invalidBox {
+  border-color: red !important;
+}
+.invalidText {
+  color: red !important;
+}

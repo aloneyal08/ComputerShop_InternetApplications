@@ -5,6 +5,8 @@
 /computer_shop_server/node_modules
 /.pnp
 .pnp.js
+/cmdFiles
+start.cmd
 
 # misc
 *.DS_Store
