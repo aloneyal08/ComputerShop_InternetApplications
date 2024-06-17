@@ -32,9 +32,9 @@ const NewProduct = () => {
             <div id='priceContainer' className='numContainer'>
               <label id='priceLa' htmlFor='priceIn'>Price</label>
               <div className='numFuncContainer' id='priceFuncContainer'>
-                <button id='priceMinus' onClick={() => {priceIn.current.value = priceIn.current.value?(priceIn.current.value > 10? priceIn.current.value - 10:0):100}}>-</button>
+                <button id='priceMinus' onClick={() => {priceIn.current.value = priceIn.current.value?(priceIn.current.value > 10? Math.round((priceIn.current.value - 100)*100)/10:0.01):100}}>-</button>
                 <input id='priceIn' required={true} type='number' ref={priceIn} step={0.01} min={0.01} placeholder='100'></input>
-                <button id='pricePlus' onClick={() => {priceIn.current.value = priceIn.current.value?Number(priceIn.current.value) + 10:100}}>+</button>
+                <button id='pricePlus' onClick={() => {priceIn.current.value = priceIn.current.value?Math.round((Number(priceIn.current.value) + 10)*100)/100:100}}>+</button>
               </div>
             </div>
           </div>
