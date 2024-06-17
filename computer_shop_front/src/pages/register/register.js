@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { validateEmail, validatePhone } from '../../utils';
+import { validateEmail, validatePhone, validateUsername } from '../../utils';
 import { UserContext } from '../../UserContext';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useGoogleLogin } from '@react-oauth/google';
 
 export const googleRegister = (user, setUser, navigate) => {
@@ -40,17 +40,19 @@ const Register = () => {
   const [emailValid, setEmailValid] = useState(true);
   const [phoneValid, setPhoneValid] = useState(true);
   const [googleUser, setGoogleUser] = useState(null);
+  const [usernameValid, setUsernameValid] = useState(true);
+
 
   const {setUser} = useContext(UserContext);
   const navigate = useNavigate();
 
   const checkEmailValid = () => setEmailValid(validateEmail(email))
+  const checkUsernameValid = () => setUsernameValid(validateUsername(username))
   const checkPhoneValid = () => setPhoneValid(validatePhone(phone) || phone === '');
 
-  const onUsernameChange = (e) => setUsername(e.target.value);
-  const onPasswordChange = (e) => setPassword(e.target.value);
   const onFullNameChange = (e) => setFullName(e.target.value);
   const onRepeatPasswordChange = (e) => setRepeatPassword(e.target.value);
+  const onPasswordChange = (e) => setPassword(e.target.value);
   const onEmailChange = (e) => {
     setEmail(e.target.value);
     if(validateEmail(e.target.value) || e.target.value === '') {
@@ -63,11 +65,26 @@ const Register = () => {
       setPhoneValid(true);
     }
   }
+  const onUsernameChange = (e) => {
+    setUsername(e.target.value);
+    if(validateUsername(e.target.value)) {
+      setUsernameValid(true);
+    }
+  }
 
   const onSubmit = () => {
-    checkEmailValid(email);
+    checkEmailValid();
+    checkUsernameValid()
     if(!emailValid) {
       alert('Invalid email');
+      return;
+    }
+    if(!phoneValid) {
+      alert('Invalid phone');
+      return;
+    }
+    if(!usernameValid) {
+      alert('Invalid username');
       return;
     }
     if(password !== repeatPassword) {
@@ -103,7 +120,7 @@ const Register = () => {
         setUser(res);
         navigate('/');
         localStorage.setItem("username", res.username);
-        localStorage.setItem("password", res.password)
+        localStorage.setItem("password", res.password);
       }
     })
   }
@@ -152,8 +169,8 @@ const Register = () => {
       </div>
       <div className="input1">
         <label>
-          <input type='text' required onChange={onUsernameChange}/>
-          <span>Username*</span>
+          <input type='text' required onChange={onUsernameChange} onBlur={checkUsernameValid} className={usernameValid ? '' : 'invalidBox'}/>
+          <span className={usernameValid ? '' : 'invalidText'}>{usernameValid ? 'Username*' : 'INVALID USERNAME'}</span>
         </label>
       </div>
       <div className="input1">
@@ -174,6 +191,7 @@ const Register = () => {
         <img src={require('../../images/googleIcon.png')} alt='_' className='googleIcon'/>
         Continue with Google
       </button>
+      <p>Already have an account? <Link to="/login">Login</Link></p>
     </div>
   </div>
 }

@@ -18,7 +18,6 @@ const register = async (req, res) => {
     email,
     level: 0,
     fullName,
-    profilePhoto,
     ...obj
   });
   await user.save();
