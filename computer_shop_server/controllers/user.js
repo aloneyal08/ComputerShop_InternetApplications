@@ -7,16 +7,19 @@ const register = async (req, res) => {
   if (u) {
     return res.status(400).json({ error: 'Email already exists' });
   }
-
+  const obj = {};
+  if(profilePhoto)
+    obj.profilePhoto = profilePhoto;
+  if(phone)
+    obj.phone = phone;
   const user = new User({
     username,
     password: encrypt(password),
     email,
     level: 0,
-    profilePhoto: '',
-    phone,
     fullName,
-    profilePhoto
+    profilePhoto,
+    ...obj
   });
   await user.save();
   res.status(201).json(user);

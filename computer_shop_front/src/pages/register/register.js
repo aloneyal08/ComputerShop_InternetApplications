@@ -15,7 +15,7 @@ export const googleRegister = (user, setUser, navigate) => {
       password: user.id,
       email: user.email,
       fullName: user.name,
-      phone: '0000000000',
+      phone: null,
       profilePhoto: user.picture
     })
   }).then((res) => res.json()).then((res) => {
@@ -45,7 +45,7 @@ const Register = () => {
   const navigate = useNavigate();
 
   const checkEmailValid = () => setEmailValid(validateEmail(email))
-  const checkPhoneValid = () => setPhoneValid(validatePhone(phone));
+  const checkPhoneValid = () => setPhoneValid(validatePhone(phone) || phone === '');
 
   const onUsernameChange = (e) => setUsername(e.target.value);
   const onPasswordChange = (e) => setPassword(e.target.value);
@@ -53,7 +53,7 @@ const Register = () => {
   const onRepeatPasswordChange = (e) => setRepeatPassword(e.target.value);
   const onEmailChange = (e) => {
     setEmail(e.target.value);
-    if(validateEmail(e.target.value)) {
+    if(validateEmail(e.target.value) || e.target.value === '') {
       setEmailValid(true);
     }
   }
@@ -74,15 +74,16 @@ const Register = () => {
       alert('Passwords do not match');
       return;
     }
-    if(!username || !password || !email || !fullName || !phone) {
-      alert('Please fill all fields');
+    if(!username || !password || !email || !fullName) {
+      alert('Please fill all required fields');
       return;
     }
     if(username.includes('@')) {
       alert('Username cannot contain @');
       return;
     }
-  
+    
+    
     fetch('http://localhost:88/user/register', {
       method: 'POST',
       headers: {
@@ -93,8 +94,7 @@ const Register = () => {
         password,
         email,
         fullName,
-        phone,
-        profilePhoto: ''
+        phone: phone === '' ? null : phone,
       })
     }).then((res) => res.json()).then((res) => {
       if(res.error) {
@@ -147,7 +147,7 @@ const Register = () => {
       <div className="input1">
         <label>
           <input type='text' required onBlur={checkPhoneValid} onChange={onPhoneChange} className={phoneValid ? '' : 'invalidBox'}/>
-          <span className={phoneValid ? '' : 'invalidText'}>{phoneValid ? 'Phone* (10 digits)' : 'INVALID PHONE* (10 digits)'}</span>
+          <span className={phoneValid ? '' : 'invalidText'}>{phoneValid ? 'Phone (10 digits)' : 'INVALID PHONE (10 digits)'}</span>
         </label>
       </div>
       <div className="input1">
