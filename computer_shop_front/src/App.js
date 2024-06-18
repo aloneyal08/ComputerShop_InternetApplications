@@ -10,7 +10,7 @@ import { useEffect, useState } from 'react';
 import { UserContext } from './UserContext';
 
 const App = () => {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState({});
 
   const login = () => {
     const username = localStorage.getItem("username");

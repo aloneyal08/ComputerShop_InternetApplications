@@ -70,7 +70,7 @@ const Login = () => {
             'Content-Type': 'application/json'
           },
           body: JSON.stringify({
-            username: user.email.split('@')[0],
+            username: user.email,
             password: user.id,
             encrypted: true
           })
@@ -104,7 +104,7 @@ const Login = () => {
           <span>Password</span>
         </label>
       </div>
-      <button onClick={onSubmit} className='loginSubmit button1'>Login</button>
+      <button onClick={onSubmit} className='button1'>Login</button>
       <span className='loginOr'>--------- or -----------</span>
       <button className='button1 googleButton' onClick={googleLogin} >
         <img src={require('../../images/googleIcon.png')} alt='_' className='googleIcon'/>
