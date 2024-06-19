@@ -43,7 +43,7 @@ const Login = () => {
       } else {
         setUser(data);
         navigate('/');
-        localStorage.setItem("username", data.username);
+        localStorage.setItem("email", data.email);
         localStorage.setItem("password", data.password)
       }
     })
@@ -80,7 +80,7 @@ const Login = () => {
           } else {
             setUser(data);
             navigate('/');
-            localStorage.setItem("username", data.username);
+            localStorage.setItem("email", data.email);
             localStorage.setItem("password", data.password)
           }
         })

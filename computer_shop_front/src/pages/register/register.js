@@ -25,7 +25,7 @@ export const googleRegister = (user, setUser, navigate) => {
     } else {
       setUser(res);
       navigate('/');
-      localStorage.setItem("username", res.username);
+      localStorage.setItem("email", res.email);
       localStorage.setItem("password", res.password)
     }
   })
@@ -120,7 +120,7 @@ const Register = () => {
       } else {
         setUser(res);
         navigate('/');
-        localStorage.setItem("username", res.username);
+        localStorage.setItem("email", res.email);
         localStorage.setItem("password", res.password);
       }
     })
@@ -171,7 +171,7 @@ const Register = () => {
       <div className="input1">
         <label>
           <input type='text' required onChange={onUsernameChange} onBlur={checkUsernameValid} className={usernameValid ? '' : 'invalidBox'}/>
-          <span className={usernameValid ? '' : 'invalidText'}>{usernameValid ? 'Username*' : 'INVALID USERNAME'}</span>
+          <span className={usernameValid ? '' : 'invalidText'}>{usernameValid ? 'Username*' : 'INVALID USERNAME*'}</span>
         </label>
       </div>
       <div className="input1">
