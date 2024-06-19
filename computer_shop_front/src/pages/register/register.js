@@ -16,7 +16,8 @@ export const googleRegister = (user, setUser, navigate) => {
       email: user.email,
       fullName: user.name,
       phone: null,
-      profilePhoto: user.picture
+      profilePhoto: user.picture,
+      google: true
     })
   }).then((res) => res.json()).then((res) => {
     if(res.error) {
@@ -24,7 +25,7 @@ export const googleRegister = (user, setUser, navigate) => {
     } else {
       setUser(res);
       navigate('/');
-      localStorage.setItem("username", res.username);
+      localStorage.setItem("email", res.email);
       localStorage.setItem("password", res.password)
     }
   })
@@ -119,7 +120,7 @@ const Register = () => {
       } else {
         setUser(res);
         navigate('/');
-        localStorage.setItem("username", res.username);
+        localStorage.setItem("email", res.email);
         localStorage.setItem("password", res.password);
       }
     })
@@ -170,7 +171,7 @@ const Register = () => {
       <div className="input1">
         <label>
           <input type='text' required onChange={onUsernameChange} onBlur={checkUsernameValid} className={usernameValid ? '' : 'invalidBox'}/>
-          <span className={usernameValid ? '' : 'invalidText'}>{usernameValid ? 'Username*' : 'INVALID USERNAME'}</span>
+          <span className={usernameValid ? '' : 'invalidText'}>{usernameValid ? 'Username*' : 'INVALID USERNAME*'}</span>
         </label>
       </div>
       <div className="input1">
@@ -185,7 +186,7 @@ const Register = () => {
           <span>Repeat Password*</span>
         </label>
       </div>
-      <button onClick={onSubmit} className='loginSubmit button1'>Register</button>
+      <button onClick={onSubmit} className='button1'>Register</button>
       <span className='loginOr'>--------- or -----------</span>
       <button className='button1 googleButton' onClick={googleLogin} >
         <img src={require('../../images/googleIcon.png')} alt='_' className='googleIcon'/>

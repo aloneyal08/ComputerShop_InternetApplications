@@ -12,5 +12,5 @@ const decrypt = (str) => {
 
 module.exports = {
   encrypt,
-  decrypt
+  decrypt,
 }
