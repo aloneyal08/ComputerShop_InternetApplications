@@ -10,12 +10,12 @@ import { useEffect, useState } from 'react';
 import { UserContext } from './UserContext';
 
 const App = () => {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState({});
 
   const login = () => {
-    const username = localStorage.getItem("username");
+    const email = localStorage.getItem("email");
     const password = localStorage.getItem("password");
-    if(!username || !password) return;
+    if(!email || !password) return;
 
     fetch('http://localhost:88/user/login', {
       method: 'POST',
@@ -23,7 +23,7 @@ const App = () => {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        username,
+        username: email,
         password,
         encrypted: true
       })
