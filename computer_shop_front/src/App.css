@@ -1,6 +1,10 @@
 .App {
   text-align: center;
 }
+.mainApp {
+  overflow-y: scroll;
+  
+}
 
 .button1 {
   align-items: center;

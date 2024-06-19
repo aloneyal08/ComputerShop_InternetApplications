@@ -8,6 +8,7 @@ import UserSettings from './pages/userSettings/userSettings';
 import Cart from './pages/cart/cart';
 import { useEffect, useState } from 'react';
 import { UserContext } from './UserContext';
+import { NavBar } from './components/NavBar/NavBar';
 
 const App = () => {
   const [user, setUser] = useState({});
@@ -43,6 +44,7 @@ const App = () => {
     <BrowserRouter>
       <UserContext.Provider value={{user, setUser}}>
         <div className="App">
+          <NavBar/>
           <Routes>
             <Route path="/" element={<Storefront />} />
             <Route path="/login" element={<Login />} />
