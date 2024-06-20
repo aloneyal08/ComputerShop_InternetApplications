@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react'
 import './userSettings.css'
 import { validatePhone, validateUsername } from '../../utils';
-import { UserContext } from '../../UserContext';
+import { UserContext } from '../../Contexts';
 
 const UserSettings = () => {
   var {user} = useContext(UserContext);

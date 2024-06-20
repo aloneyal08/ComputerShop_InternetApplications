@@ -20,6 +20,11 @@
 .logo h1 {
   margin: 0;
 }
+.logo {
+  width: 150px;
+  display: flex;
+  justify-content: flex-start;
+}
 
 .searchBox {
   height: 30px;
@@ -38,12 +43,15 @@
 }
 
 .navBarOthers {
-  width: 100px;
   height: 50px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   flex-direction: row-reverse;
+}
+
+.navBarOthers > * {
+  margin-left: 20px !important;
 }
 
 .navBarPhoto, .nbImageContainer {
@@ -76,7 +84,7 @@
   margin-left: 4px;
 }
 
-.accountPopup {
+.navBarPopup {
   background-color: rgb(230, 230, 230);
   border: 1px #ddd solid;
   border-radius: 30px;
@@ -97,18 +105,26 @@
 .scale1 {
   transform: scale(1,1);
 }
-
-.accountPopup h1, .accountPopup h3 {
-  margin: 0px;
+.currPopup {
+  transform-origin: 90px -5%;
+  width: 150px;
+  right: 70px;
+  overflow-y: scroll;
+  height: 330px;
+  scrollbar-width: none;
 }
 
-.accountPopup h3 {
+.navBarPopup h1, .navBarPopup h3 {
+  transform-origin: 90% -5%;
+}
+
+.navBarPopup h3 {
   font-weight: 300;
   font-size: 15px;
   margin-bottom: 0px;
 }
 
-.accountPopup h1 {
+.navBarPopup h1 {
   height: 40px;
   font-size: 20px;
 }
@@ -125,8 +141,23 @@
   top: 0;
   right: 25px;
 }
+.arrowDown {
+  width: 0; 
+  height: 0; 
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  
+  border-top: 5px solid white;
+  scale: 3;
+  position: relative;
+  right: 10px;
+  transition: 0.3s;
+}
+.rotated {
+  transform: rotate(180deg);
+}
 
-.accountPopupButtons {
+.navBarPopupButtons {
   margin-top: 10px;
 }
 
@@ -140,4 +171,45 @@
 
 .logo, .navBarOthers {
   cursor: pointer;
+}
+
+.currOptionNavBar {
+  display: flex;
+  flex-direction: revert;
+  justify-content: center;
+  align-items: center;
+  width: 30px;
+}
+.currOption {
+  display: flex;
+  flex-direction: row;
+  border: none;
+  border-bottom: 1px solid rgb(185, 185, 185);
+  padding-top: 10px;
+  padding-bottom: 10px;
+  cursor: pointer;
+}
+
+.currOption:hover {
+  font-weight: 700;
+}
+
+.currOption div {
+  width: 30px;
+  text-align: left;
+}
+
+.currOption span {
+  width: 100%;
+  text-align: center;
+  font-size: 13px;
+}
+
+.allScreen {
+  position: fixed;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
 }
