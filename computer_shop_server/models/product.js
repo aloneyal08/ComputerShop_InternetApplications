@@ -23,7 +23,7 @@ const Product = new Schema({
     required: false
   },
   parentProduct: {
-    type: mongoose.Mongoose.Types.ObjectId,
+    type: mongoose.Types.ObjectId,
     required: false
   },
   stock: {
@@ -31,7 +31,7 @@ const Product = new Schema({
     required: true
   },
   supplier: {
-    type: mongoose.Mongoose.Types.ObjectId,
+    type: mongoose.Types.ObjectId,
     required: true
   }
 });
