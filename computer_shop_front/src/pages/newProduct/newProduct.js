@@ -76,7 +76,7 @@ const NewProduct = () => {
       },
       body: JSON.stringify({
         name,
-        description: description.toString() == ''?null:description.toString(),
+        description: JSON.stringify(description),
         stock,
         price,
         photo: photo == ''?null:photo,
@@ -91,11 +91,8 @@ const NewProduct = () => {
       }
     })
   };
-  if(user == {}){
-    return
-  }
   return <div>
-    {user.level==1?
+    {!user || user.level==1?
       <div id='newProductContainer'>
         <h1 id='title'>Add New Product</h1>
         <div id='inputContainer'>

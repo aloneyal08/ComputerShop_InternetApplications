@@ -7,9 +7,6 @@ const addProduct = async (req, res) => {
 	if(photo){
 		obj.photo = photo;
 	}
-	if(description){
-		obj.description = description;
-	}
 	if(stats){
 		obj.stats = stats;
 	}
@@ -21,6 +18,7 @@ const addProduct = async (req, res) => {
 		price,
 		stock,
 		supplier,
+		description,
 		...obj
 	});
 	await product.save();
