@@ -39,7 +39,7 @@ export const NavBar = () => {
     setCurrencyPopupOpen(false);
   }
 
-  return <div className='navBar'>
+  return <header className='navBar'>
     <div className='mainBar'>
       <div className='logo' onClick={()=>navigate("/")}>
         <h1>SHOP</h1>
@@ -107,5 +107,5 @@ export const NavBar = () => {
         )
       }
     </div>
-  </div>
+  </header>
 }
