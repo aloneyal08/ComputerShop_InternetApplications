@@ -42,7 +42,7 @@
   height: 50px;
   display: flex;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: space-between;
   flex-direction: row-reverse;
 }
 
@@ -50,6 +50,14 @@
   height: 40px;
   width: 40px;
   margin-left: 0;
+  position: relative;
+}
+.navBarAccountPhoto {
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%);
+  margin-left: 0;
+  border-radius: 50%;
 }
 
 .cart {
@@ -64,6 +72,72 @@
   background-color: rgba(44, 44, 44, 0.6);
   border-radius: 30px;
   padding: 3px;
-  margin-bottom: 20px;
-  margin-left: 5px;
+  margin-bottom: 18px;
+  margin-left: 4px;
+}
+
+.accountPopup {
+  background-color: rgb(230, 230, 230);
+  border: 1px #ddd solid;
+  border-radius: 30px;
+  -webkit-box-shadow: 21px 21px 63px -10px rgba(0,0,0,0.41);
+  -moz-box-shadow: 21px 21px 63px -10px rgba(0,0,0,0.41);
+  box-shadow: 21px 21px 63px -10px rgba(0,0,0,0.41);
+  position: absolute;
+  top: 55px;
+  right: 10px;
+  width: 300px;
+  color: black;
+  padding: 15px;
+  padding-bottom: 30px;
+  transform-origin: 90% -5%;
+  transition: 0.07s;
+  transform: scale(0,0);
+}
+.scale1 {
+  transform: scale(1,1);
+}
+
+.accountPopup h1, .accountPopup h3 {
+  margin: 0px;
+}
+
+.accountPopup h3 {
+  font-weight: 300;
+  font-size: 15px;
+  margin-bottom: 0px;
+}
+
+.accountPopup h1 {
+  height: 40px;
+  font-size: 20px;
+}
+
+.arrowUp {
+  width: 0; 
+  height: 0; 
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  
+  border-bottom: 5px solid rgb(230, 230, 230);
+  scale: 5;
+  position: absolute;
+  top: 0;
+  right: 25px;
+}
+
+.accountPopupButtons {
+  margin-top: 10px;
+}
+
+.accountButton {
+  width: 80%;
+  height: 30px;
+  margin: 3px;
+  border-radius: 30px;
+  border: 0.5px solid gray;
+}
+
+.logo, .navBarOthers {
+  cursor: pointer;
 }

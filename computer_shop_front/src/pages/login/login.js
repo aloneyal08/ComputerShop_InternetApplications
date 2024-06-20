@@ -20,13 +20,6 @@ const Login = () => {
     setPassword(e.target.value);
   }
 
-  const logout = () => {
-    setUser(null);
-    localStorage.removeItem("username");
-    localStorage.removeItem("password");
-    window.open("/", "_self")
-  }
-
   const onSubmit = () => {
     fetch('http://localhost:88/user/login', {
       method: 'POST',
@@ -112,8 +105,6 @@ const Login = () => {
       </button>
       <p>Don't have an account? <Link to="/register">Register</Link></p>
     </div>
-
-    <button onClick={logout}>Logout</button>
   </div>
 }
 
