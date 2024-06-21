@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { validateEmail, validatePhone, validateUsername } from '../../utils';
-import { UserContext } from '../../UserContext';
+import { UserContext } from '../../Contexts';
 import { Link, useNavigate } from 'react-router-dom';
 import { useGoogleLogin } from '@react-oauth/google';
 
@@ -44,8 +44,13 @@ const Register = () => {
   const [usernameValid, setUsernameValid] = useState(true);
 
 
-  const {setUser} = useContext(UserContext);
+  const {setUser, user} = useContext(UserContext);
   const navigate = useNavigate();
+
+  useEffect(()=>{
+    if(Object.keys(user).length !== 0 && !user.loggedOut)
+      navigate("/")
+  }, [navigate, user])
 
   const checkEmailValid = () => setEmailValid(validateEmail(email))
   const checkUsernameValid = () => setUsernameValid(validateUsername(username))
@@ -146,6 +151,9 @@ const Register = () => {
     }
     fetchData();
   }, [googleUser, navigate, setUser]);
+
+  if(Object.keys(user).length === 0)
+    return null;
 
   return <div>
     <div className='loginForm'>

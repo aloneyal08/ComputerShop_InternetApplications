@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react'
 import './login.css'
 import { Link, useNavigate } from "react-router-dom";
-import { UserContext } from '../../UserContext';
+import { UserContext } from '../../Contexts';
 import { useGoogleLogin } from '@react-oauth/google';
 import { googleRegister } from '../register/register';
 
@@ -10,7 +10,7 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [googleUser, setGoogleUser] = useState(null);
 
-  const {setUser} = useContext(UserContext);
+  const {setUser, user} = useContext(UserContext);
   const navigate = useNavigate();
 
   const onUsernameChange = (e) => {
@@ -19,13 +19,10 @@ const Login = () => {
   const onPasswordChange = (e) => {
     setPassword(e.target.value);
   }
-
-  const logout = () => {
-    setUser(null);
-    localStorage.removeItem("username");
-    localStorage.removeItem("password");
-    window.open("/", "_self")
-  }
+  useEffect(()=>{
+    if(Object.keys(user).length !== 0 && !user.loggedOut)
+      navigate("/")
+  }, [navigate, user])
 
   const onSubmit = () => {
     fetch('http://localhost:88/user/login', {
@@ -89,6 +86,9 @@ const Login = () => {
     fetchData();
   }, [googleUser, navigate, setUser]);
 
+  if(Object.keys(user).length === 0)
+    return null;
+
   return <div>
     <div className='loginForm'>
       <h1>Login</h1>
@@ -112,8 +112,6 @@ const Login = () => {
       </button>
       <p>Don't have an account? <Link to="/register">Register</Link></p>
     </div>
-
-    <button onClick={logout}>Logout</button>
   </div>
 }
 

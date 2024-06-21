@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react'
 import './userSettings.css'
 import { validatePhone, validateUsername } from '../../utils';
-import { UserContext } from '../../UserContext';
+import { UserContext } from '../../Contexts';
 
 const UserSettings = () => {
   var {user} = useContext(UserContext);
@@ -16,11 +16,15 @@ const UserSettings = () => {
   const [phoneValid, setPhoneValid] = useState(true);
   const [usernameValid, setUsernameValid] = useState(true);
 
+  const [viewedImage, setViewedImage] = useState('');
+
+
   useEffect(()=>{
     setUsername(user.username||'');
     setFullName(user.fullName||'');
     setPhone(user.phone||'');
     setPhoto(user.profilePhoto||'');
+    setViewedImage(user.profilePhoto||'');
   }, [user])
 
 
@@ -28,7 +32,7 @@ const UserSettings = () => {
   const checkPhoneValid = () => setPhoneValid(validatePhone(phone) || phone === '');
 
   const onFullNameChange = (e) => setFullName(e.target.value);
-  const onPhotoChange = (e) => setPhoto(e.target.value);
+  const onPhotoChange = (e) => {setPhoto(e.target.value);setViewedImage(e.target.value);}
   const onRepeatPasswordChange = (e) => setRepeatPassword(e.target.value);
   const onPasswordChange = (e) => setPassword(e.target.value);
   const onOldPasswordChange = (e) => setOldPassword(e.target.value);
@@ -67,6 +71,7 @@ const UserSettings = () => {
       if(res.error) {
         alert(res.error);
       } else {
+        localStorage.setItem("password", res.password);
         window.location.reload();
       }
     })
@@ -148,7 +153,11 @@ const UserSettings = () => {
           <input type='text' required onChange={onPhotoChange} value={photo}/>
           <span>Photo URL</span>
         </label>
-        <img src={photo} alt='    ' className='photoPreview'/>
+        <div>
+          <img src={viewedImage} alt='    ' className='photoPreview' />
+          <img src='https://www.sunsetlearning.com/wp-content/uploads/2019/09/User-Icon-Grey-300x300.png' alt='    ' className='photoPreview' style={{zIndex: -1}}/>
+        </div>
+        
       </div>
       { ((fullName !== user.fullName) || (phone !== (user.phone||'')) || (photo !== (user.profilePhoto||'')))
        && <button className='button1' onClick={onProfileSubmit}>Save</button>}
