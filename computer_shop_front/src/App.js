@@ -15,7 +15,10 @@ const App = () => {
   const login = () => {
     const email = localStorage.getItem("email");
     const password = localStorage.getItem("password");
-    if(!email || !password) return;
+    if(!email || !password){
+      setUser({loggedOut: 1});
+      return;
+    }
 
     fetch('http://localhost:88/user/login', {
       method: 'POST',
@@ -31,6 +34,8 @@ const App = () => {
       //console.log(data);
       if(!data.error) {
         setUser(data);
+      } else {
+        setUser({loggedOut: 1});
       }
     })
   }
