@@ -6,6 +6,8 @@ import Register from './pages/register/register';
 import NewProduct from './pages/newProduct/newProduct';
 import UserSettings from './pages/userSettings/userSettings';
 import Cart from './pages/cart/cart';
+import History from './pages/history/history';
+import SearchScreen from  './pages/searchScreen/searchScreen';
 import { useEffect, useState } from 'react';
 import { MoneyContext, UserContext } from './Contexts';
 import { NavBar } from './components/NavBar/NavBar';
@@ -56,15 +58,19 @@ const App = () => {
         <MoneyContext.Provider value={{currency, setCurrency, exchangeRates}}>
           <div className="App">
             {location.pathname!=="/login"&&location.pathname!=="/register"&&<NavBar/>}
-            <Routes>
-              <Route path="/" element={<Storefront />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
-              <Route path="/product/new" element={<NewProduct />} />
-              <Route path="/settings" element={<UserSettings />} />
-              <Route path="/cart" element={<Cart />} />
-              <Route path="*" element={<h1>Not Found</h1>} />
-            </Routes>
+            <div className='mainWindow'>
+              <Routes>
+                <Route path="/" element={<Storefront />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
+                <Route path="/product/new" element={<NewProduct />} />
+                <Route path="/settings" element={<UserSettings />} />
+                <Route path="/cart" element={<Cart />} />
+                <Route path="/history" element={<History />} />
+                <Route path="/search" element={<SearchScreen />} />
+                <Route path="*" element={<h1>Not Found</h1>} />
+              </Routes>
+            </div>
           </div>
         </MoneyContext.Provider>
       </UserContext.Provider>

@@ -2,8 +2,11 @@
   text-align: center;
 }
 .mainApp {
-  overflow-y: scroll;
-  
+  overflow-y: scroll; 
+}
+
+.mainWindow {
+  padding-top: 90px;
 }
 
 .button1 {
