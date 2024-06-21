@@ -5,7 +5,7 @@
   align-items: center;
   height: 2rem;
   margin-top: 20px;
-  margin-bottom: 50px;
+  margin-bottom: 30px;
 }
 
 .settingsHeader h1 {
@@ -47,4 +47,5 @@
   height: 80px;
   margin-left: 1rem;
   border-radius: 50%;
+  position: absolute;
 }
