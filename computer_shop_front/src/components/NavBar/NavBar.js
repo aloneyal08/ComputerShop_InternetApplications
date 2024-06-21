@@ -1,7 +1,7 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import './NavBar.css'
 import { MoneyContext, UserContext } from '../../Contexts';
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 const currencies = require('../../currencies.json')
 
 const searchOptions = [
@@ -29,6 +29,8 @@ export const NavBar = () => {
   const {currency, setCurrency} = useContext(MoneyContext);
   const navigate = useNavigate();
   const [search, setSearch] = useState('');
+  const location = useLocation();
+  const arrowRef = useRef(null);
 
   const [isAccountPopupOpen, setAccountPopupOpen] = useState(false);
   const [isCurrencyPopupOpen, setCurrencyPopupOpen] = useState(false);
@@ -48,6 +50,22 @@ export const NavBar = () => {
     }, 100);
   }
   useEffect(()=>setCurrencyPopupOpen(false), [isAccountPopupOpen])
+  useEffect(()=>{
+    var canvas = arrowRef.current;
+    if (canvas.getContext) {
+      var ctx = canvas.getContext('2d');
+
+      var sWidth = canvas.width;
+      var sHeight = canvas.height;
+      ctx.fillStyle = "white";
+      var path=new Path2D();
+      path.moveTo(sWidth, 0);
+      path.lineTo((sWidth/2),sHeight);
+      path.lineTo(0,0);
+      ctx.fill(path);
+      
+  }
+  }, [])
 
   const open = (path) => {
     navigate(path);
@@ -61,7 +79,7 @@ export const NavBar = () => {
 
   const tagOptions = tags.map(t=>({text: t, searchKey: `::tags:${t}`}))
 
-  return <header className='navBar'>
+  return <header className='navBar' style={location.pathname !== "/" ? {height: "50px"} : {}}>
     <div className='mainBar'>
       <div className='logo' onClick={()=>navigate("/")}>
         <h1>SHOP</h1>
@@ -81,12 +99,12 @@ export const NavBar = () => {
           <img src={require("../../images/cart.png")} className='navBarPhoto' alt='  '/>
         </div>
         <div className='currOptionNavBar' onClick={()=>setCurrencyPopupOpen(!isCurrencyPopupOpen)}>
-          <div className={'arrowDown ' + (isCurrencyPopupOpen ? 'rotated' : '')}/>
+          <canvas className={'arrowCanvas ' + (isCurrencyPopupOpen ? 'rotated' : '')} ref={arrowRef}/>
           <h3>{currencies[currency].symbol}<br/><div style={{fontSize: "12.5px"}}>{currency}</div></h3>
         </div>
       </div>
     </div>
-    <div className='specialSearch'>
+    {location.pathname === "/" && <div className='specialSearch'>
       {
         searchOptions.concat(tagOptions).map(option=>(
           <button className={'searchOption ' + (option.special ? 'optionSpecial' : '')} onClick={()=>navigate(`/search?key=${option.searchKey}`)}>
@@ -94,7 +112,7 @@ export const NavBar = () => {
           </button>
         ))
       }
-    </div>
+    </div>}
     <div 
       className={'navBarPopup ' + (isAccountPopupOpen ? 'scale1' : '')}
       onMouseEnter={()=>clearTimeout(timeoutId)} onMouseLeave={()=>setAccountPopupOpen(false)}

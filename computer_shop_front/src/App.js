@@ -58,7 +58,7 @@ const App = () => {
         <MoneyContext.Provider value={{currency, setCurrency, exchangeRates}}>
           <div className="App">
             {location.pathname!=="/login"&&location.pathname!=="/register"&&<NavBar/>}
-            <div className='mainWindow'>
+            <div className='mainWindow' style={location.pathname!=="/" ? {paddingTop: "50px"} : {}}>
               <Routes>
                 <Route path="/" element={<Storefront />} />
                 <Route path="/login" element={<Login />} />

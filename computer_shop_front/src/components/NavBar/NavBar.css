@@ -142,18 +142,6 @@
   top: 0;
   right: 25px;
 }
-.arrowDown {
-  width: 0; 
-  height: 0; 
-  border-left: 4px solid transparent;
-  border-right: 4px solid transparent;
-  
-  border-top: 5px solid white;
-  scale: 3;
-  position: relative;
-  right: 10px;
-  transition: 0.3s;
-}
 .rotated {
   transform: rotate(180deg);
 }
@@ -253,4 +241,12 @@
 .searchOption:hover {
   background-color: rgb(54, 54, 54);
   border: 1.5px solid white;
+}
+
+.arrowCanvas {
+  width: 20px; 
+  height: 10px; 
+  border: none;
+  background-color: transparent;
+  transition: 0.3s;
 }
