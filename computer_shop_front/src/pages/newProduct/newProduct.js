@@ -12,29 +12,18 @@ import './newProduct.css';
 
 const NewProduct = () => {
   const {user} = useContext(UserContext);
-  const stockIn = useRef(null);
-  const priceIn = useRef(null);
   const productImg = useRef(null);
-  const productImgTxt = useRef(null);
+  const productName = useRef(null);
+  const productStock = useRef(null);
+  const productPrice = useRef(null);
   const navigate = useNavigate();
-  const imageTypes = ['jpeg', 'png', 'jpg', 'gif'];
-  let tagOptions = [];
-  console.log(tagOptions)
-  fetch('http://localhost:88/tag/get').then((res) => res.json()).then((res) =>{
-    res.forEach((tag, index) =>{
-      if(tag.text){
-        let obj = {name: tag.text, value: index};
-        tagOptions.push(obj);
-      }
-    });
-  });
-
 
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [stock, setStock] = useState(null);
   const [price, setPrice] = useState(null);
   const [photo, setPhoto] = useState('');
+  const [tagOptions, setTagOptions] = useState([]);
   
   useEffect(() => {
     const blocksFromHtml = htmlToDraft("");
@@ -42,32 +31,32 @@ const NewProduct = () => {
     const contentState = ContentState.createFromBlockArray(contentBlocks, entityMap);
     const editorState = EditorState.createWithContent(contentState);
     setDescription(editorState);
+    fetch('http://localhost:88/tag/get').then((res) => res.json()).then((res) =>{
+      setTagOptions(res.map((e, index) => {return {name: e.text, value: index}}));
+    });
   }, []);
   
 
   const onTextChange = (state) => {
-    var val = draftToHtmlPuri(
+    draftToHtmlPuri(
       convertToRaw(state.getCurrentContent())
     );
     setDescription(state);
 
   };
 
-  const changeImageFunc = async (e) => {
+  const changeImageFunc = (e) => {
     let val = e?e.currentTarget.value:'';
-    if(!imageTypes.includes(val.substring(val.lastIndexOf('.') + 1))){
-      val = '';
-    }
-    if(val == ''){
-      productImg.current.style.display = 'none';
-      productImgTxt.current.style.display = 'flex';
-    }else {
-      productImg.current.style.display = 'flex';
-      productImgTxt.current.style.display = 'none';
-    }
-      productImg.current.src = val;
-      setPhoto(val);
+    productImg.current.src = val;
+    setPhoto(val);
   };
+
+  const priceChange = (e) =>{
+    e.target.value = e.target.value == ''? '' : Math.floor(e.target.value*100)/100;
+    setPrice(e.target.value);
+    productPrice.current.innerHTML = e.target.value==''?"Product's Price":e.target.value;
+  }
+
   const addTags = (e) => {
 
   };
@@ -114,12 +103,12 @@ const NewProduct = () => {
       <div id='newProductContainer'>
         <h1 id='title'>Add New Product</h1>
         <div id='divider'>
-          <div id='inputs'>
+          <section id='inputs'>
             <h3 className='inputTitle'>Base Information</h3>
-            <div className='inputContainer' id='baseInfoContainer'>
+            <section className='inputContainer' id='baseInfoContainer'>
               <div className="input1">
                 <label>
-                <input type='text' required onChange={(e) => {setName(e.target.value)}}/>
+                <input type='text' required onChange={(e) => {setName(e.target.value); productName.current.innerHTML = e.target.value==''?"Product's Name":e.target.value}}/>
                 <span>Product Name*</span>
                 </label>
                 <hr className='separator' />
@@ -138,50 +127,68 @@ const NewProduct = () => {
                   placeholder='Product Description'
                 />
               </div>
-            </div>
+            </section>
             <hr className='separator' />
             <h3 className='inputTitle'>Picture</h3>
-            <div className='inputContainer' id='pictureContainer'>
+            <section className='inputContainer' id='pictureContainer'>
               <div className="input1">
                 <label>
                   <input required type='text' onChange={changeImageFunc}/>
                   <span>Product Photo</span>
                 </label>
               </div>
-            </div>
+            </section>
             <hr className='separator' />
             <h3 className='inputTitle'>Details</h3>
-            <div className='inputContainer' id='detailContainer'>
+            <section className='inputContainer' id='detailContainer'>
               <div className="input1">
                 <label>
-                  <input required type='number' ref={stockIn} step={1} min={1} onChange={(e) => {setStock(e.target.value)}}/>
+                  <input required type='number' step={1} min={1} onChange={(e) => {setStock(e.target.value); productStock.current.innerHTML = e.target.value==''?"Amount in Stock":'Current Stock: ' + e.target.value}}/>
                   <span>Starting Stock*</span>
                 </label>
               </div>
               <hr className='separator' />
               <div className="input1 num">
                 <label>
-                  <input required type='number' ref={priceIn} step={0.01} min={0.01} onChange={(e) => {e.target.value = Math.floor(e.target.value*100)/100;setPrice(e.target.value)}}/>
+                  <input required type='number' step={0.01} min={0.01} onChange={priceChange}/>
                   <span>Product Price*</span>
                 </label>
               </div>
-            </div>
+            </section>
             <hr className='separator' />
             <h3 className='inputTitle'>Tags</h3>
-            <div className='inputContainer' id='tagsContainer'>
+            <section className='inputContainer' id='tagsContainer'>
               <div></div>
-              <SelectSearch search={true} options={tagOptions} value={0} name="language" placeholder="Choose your language" renderValue={(valueProps) =>
+              <SelectSearch search={true} options={tagOptions} name="tag" placeholder="Choose your language" renderValue={(valueProps) =>
                 <div className='input1'>
                   <label>
                   <input type='text' {...valueProps} placeholder=''/>
                   <span>{valueProps.placeholder}</span>
                   </label>
-                </div>} />
+                </div>} renderOption={(optionsProps, optionsData) => {
+                    return <button className='select-search-option' onClick={(e) =>{console.log(optionsData.value)}}>{optionsData.name}</button>
+                }} />
+            </section>
+          </section>
+          <section id='preview'>
+            <div className='productCard'>
+              <img className='productImg' src={require('../../images/defaultProduct.jpg')} onError={(e) =>{e.currentTarget.src = require('../../images/defaultProduct.jpg')}} ref={productImg} />
+              <div className='productText'>
+                <section className='productTextLeft'>
+                  <h3 className='productName' ref={productName}>Product's Name</h3>
+                  <aside><h6 className='productSupplier' >{user.fullName}</h6></aside>
+                  <aside className='productHover'>
+                    <div className='productTags'></div>
+                    <p className='productDesc'>Product's Description</p>
+                  </aside>
+                  <h4 className='productStock' ref={productStock}>Amount in Stock</h4>
+                </section>
+                <section className='productTextRight'>
+                  <h3 className='productPrice' ref={productPrice}>Product's Price</h3>
+                </section>
+              </div>
             </div>
-          </div>
-          <div id='preview'>
-
-          </div>
+          </section>
         </div>
       </div>
       :
@@ -196,64 +203,3 @@ const NewProduct = () => {
 }
 
 export default NewProduct;
-{/*
-        <div id='inputContainer'>
-          <div id='photoInContainer'>
-            <div id='imageDiv'>
-              <img src='' id='productImg' ref={productImg}></img>
-              <h4 id='imageText' ref={productImgTxt}>Couldn't find a product image to load</h4>
-            </div>
-            <div className="input1">
-              <label>
-                <input  required type='text' onChange={changeImageFunc}/>
-                <span>Product Photo</span>
-              </label>
-            </div>
-          </div>
-          <div id='textInContainer'>
-            <div className="input1">
-              <label>
-              <input type='text' required onChange={(e) => {setName(e.target.value)}}/>
-              <span>Product Name*</span>
-              </label>
-            </div>
-            <label id='descLa' htmlFor='descIn'>Product Description</label>
-            <Editor 
-              editorState={description}
-              toolbarClassName="toolbarClassName"
-              wrapperClassName="wrapperClassName"
-              editorClassName="editorClassName"
-              spellCheck={true}
-              editorStyle={{minHeight: '15vh', border: '1px solid gainsboro', fontSize: '14px', lineHeight: '6px'}}
-              toolbar={{
-                options: ['inline', 'fontSize', 'list', 'textAlign'],
-                list: {inDropdown: true}
-              }}
-              onEditorStateChange={onTextChange}
-              placeholder='Product Description'
-            />
-            <div id='numbersContainer'>
-              <div id='stockContainer' className='numContainer'>
-                <div className='numFuncContainer' id='stockFuncContainer'>
-                  <button className='button1 num' id='stockMinus' onClick={() => {stockIn.current.value = stockIn.current.value > 1?stockIn.current.value - 1:1;setStock(stockIn.current.value)}}>-</button>
-                  <div className="input1 num">
-                    <label className='num'>
-                      <input className='num' id='stockIn' required type='number' ref={stockIn} step={1} min={1} onChange={(e) => {setStock(e.target.value)}}/>
-                      <span>Starting Stock*</span>
-                    </label>
-                  </div>
-                  <button className='button1 num' id='stockPlus' onClick={() => {stockIn.current.value = stockIn.current.value?Number(stockIn.current.value) + 1:1;setStock(stockIn.current.value)}}>+</button>
-                </div>
-              </div>
-              <div id='priceContainer' className='numContainer'>
-                <div className='numFuncContainer' id='priceFuncContainer'>
-                  <button className='button1 num' id='priceMinus' onClick={() => {priceIn.current.value = priceIn.current.value?(priceIn.current.value > 10? Math.floor((priceIn.current.value - 10)*100)/100:0.01):100;setPrice(priceIn.current.value)}}>-</button>
-                  
-                  <button className='button1 num' id='pricePlus' onClick={() => {priceIn.current.value = priceIn.current.value?Math.round((Number(priceIn.current.value) + 10)*100)/100:100;setPrice(priceIn.current.value)}}>+</button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <button id='addProductBtn' onClick={addProduct} className='button1'>Add New Product</button>
-      </div> */}

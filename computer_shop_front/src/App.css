@@ -136,3 +136,37 @@
 .invalidText {
   color: red !important;
 }
+.productCard{
+  display: flex;
+  flex-direction: column;
+  width: 18vw;
+  height: 35vh;
+  border: 3px solid gainsboro;
+  border-radius: 15px;
+}
+.productImg{
+  display: flex;
+  width: 18vw;
+  height: 25vh;
+  border-bottom: 2px solid #4d4d4d;
+  border-top-left-radius: 15px;
+  border-top-right-radius: 15px;
+}
+.productText{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+.productTextLeft{
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  line-height: 15px;
+}
+.productName, .productSupplier, .productStock, .productPrice, .productDesc{
+  margin: 0;
+}
+.productStock{
+  margin-top: 1vh;
+}
