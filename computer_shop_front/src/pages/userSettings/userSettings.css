@@ -1,3 +1,7 @@
+.settings {
+  padding-bottom: 30px;
+}
+
 .settingsHeader {
   display: flex;
   flex-direction: row;
@@ -48,4 +52,18 @@
   margin-left: 1rem;
   border-radius: 50%;
   position: absolute;
+}
+
+.deleteAccHeader {
+  color: red;
+  text-shadow: 2px 2px 1px #CE5937;
+  font-weight: bold;
+}
+
+.deleteAccButton {
+  background-image: linear-gradient(#ce4a4a, #850202);
+}
+.deleteAccButton:disabled {
+  background-image: linear-gradient(#a39797, #6b6161);
+  cursor: not-allowed;
 }

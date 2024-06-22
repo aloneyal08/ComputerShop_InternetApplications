@@ -24,6 +24,8 @@ const register = async (req, res) => {
     obj.profilePhoto = profilePhoto;
   if(phone)
     obj.phone = phone;
+  if(google)
+    obj.google = true;
   const user = new User({
     username: newUsername,
     password: encrypt(password),
@@ -105,7 +107,10 @@ const deleteUser = async (req, res) => {
   if (!user) {
     return res.status(404).json({ error: 'User not found' });
   }
-  res.send();
+
+  //TODO: delete all user's orders, reviews, etc.
+
+  res.json({});
 }
 
 module.exports = {

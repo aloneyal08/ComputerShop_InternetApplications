@@ -2,9 +2,11 @@ import React, { useContext, useEffect, useState } from 'react'
 import './userSettings.css'
 import { validatePhone, validateUsername } from '../../utils';
 import { UserContext } from '../../Contexts';
+import { useNavigate } from 'react-router-dom';
 
 const UserSettings = () => {
   var {user} = useContext(UserContext);
+  const navigate = useNavigate()
 
   const [username, setUsername] = useState('');
   const [oldPassword, setOldPassword] = useState('');
@@ -16,21 +18,28 @@ const UserSettings = () => {
   const [phoneValid, setPhoneValid] = useState(true);
   const [usernameValid, setUsernameValid] = useState(true);
 
+  const [email, setEmail] = useState('');
+
   const [viewedImage, setViewedImage] = useState('');
 
 
   useEffect(()=>{
+    if(user.loggedOut) {
+      navigate("/")
+    }
+
     setUsername(user.username||'');
     setFullName(user.fullName||'');
     setPhone(user.phone||'');
     setPhoto(user.profilePhoto||'');
     setViewedImage(user.profilePhoto||'');
-  }, [user])
+  }, [user, navigate])
 
 
   const checkUsernameValid = () => setUsernameValid(validateUsername(username))
   const checkPhoneValid = () => setPhoneValid(validatePhone(phone) || phone === '');
 
+  const onEmailChange = (e) => setEmail(e.target.value);
   const onFullNameChange = (e) => setFullName(e.target.value);
   const onPhotoChange = (e) => {setPhoto(e.target.value);setViewedImage(e.target.value);}
   const onRepeatPasswordChange = (e) => setRepeatPassword(e.target.value);
@@ -129,12 +138,33 @@ const UserSettings = () => {
     })
   }
 
-  return <div>
+  const deleteUser = () => {
+    fetch('http://localhost:88/user/delete', {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        email: user.email
+      })
+    }).then((res) => res.json()).then((res) => {
+      if(res.error) {
+        alert(res.error);
+      } else {
+        localStorage.clear();
+        window.open('/', '_self');
+      }
+    })
+  }
+
+  if(Object.keys(user).length === 0 || user.loggedOut) return null;
+
+  return <div className='settings'>
     <div className='settingsHeader'>
       <img src={require("../../images/settings.png")} alt='_'/>
       <h1>Settings</h1>
     </div>
-    <div className='settingsPart'>
+    <section className='settingsPart'>
       <h2>Profile</h2>
       <div className="input1">
         <label>
@@ -161,8 +191,8 @@ const UserSettings = () => {
       </div>
       { ((fullName !== user.fullName) || (phone !== (user.phone||'')) || (photo !== (user.profilePhoto||'')))
        && <button className='button1' onClick={onProfileSubmit}>Save</button>}
-    </div>
-    <div className='settingsPart'>
+    </section>
+    <section className='settingsPart'>
       <h2>Username</h2>
       <div className="input1">
         <label>
@@ -172,32 +202,45 @@ const UserSettings = () => {
       </div>
       {username !== user.username 
         && <button className='button1' style={{marginRight: "30px"}} onClick={onUsernameSubmit}>Save</button>}
-    </div>
-    <div className='settingsPart'>
-      <h2>Change Password</h2>
-      <div>
-        <div className="input1">
-          <label>
-            <input type='password' required onChange={onOldPasswordChange}/>
-            <span>Old Password</span>
-          </label>
+    </section>
+    {!user.google &&
+      <section className='settingsPart'>
+        <h2>Change Password</h2>
+        <div>
+          <div className="input1">
+            <label>
+              <input type='password' required onChange={onOldPasswordChange}/>
+              <span>Old Password</span>
+            </label>
+          </div>
+          <div className="input1">
+            <label>
+              <input type='password' required onChange={onPasswordChange}/>
+              <span>New Password</span>
+            </label>
+          </div>
+          <div className="input1">
+            <label>
+              <input type='password' required onChange={onRepeatPasswordChange}/>
+              <span>Repeat New Password</span>
+            </label>
+          </div>
+          { (oldPassword !== '' || password !== '' || repeatPassword !== '')
+            && <button className='button1' style={{marginRight: "30px"}} onClick={onPasswordSubmit}>Save</button>}
         </div>
-        <div className="input1">
-          <label>
-            <input type='password' required onChange={onPasswordChange}/>
-            <span>New Password</span>
-          </label>
-        </div>
-        <div className="input1">
-          <label>
-            <input type='password' required onChange={onRepeatPasswordChange}/>
-            <span>Repeat New Password</span>
-          </label>
-        </div>
-        { (oldPassword !== '' || password !== '' || repeatPassword !== '')
-          && <button className='button1' style={{marginRight: "30px"}} onClick={onPasswordSubmit}>Save</button>}
+      </section>
+    }
+    <section className='settingsPart'>
+      <h2 className='deleteAccHeader'>DELETE USER</h2>
+      <p><b style={{color: "red"}}>WARNING: </b> This action cannot be reversed. all information will be deleted, and cannot be restored. please be sure about deleting your account.</p>
+      <div className="input1">
+        <label>
+          <input type='text' required onChange={onEmailChange}/>
+          <span>Type your email to confirm</span>
+        </label>
       </div>
-    </div>
+      <button disabled={email !== user.email} className='button1 deleteAccButton' onClick={deleteUser}>Delete my account</button>
+    </section>
   </div>
 }
 
