@@ -147,14 +147,14 @@
   display: flex;
   flex-direction: column;
   width: 18vw;
-  height: 35vh;
+  height: auto;
   border: 3px solid gainsboro;
   border-radius: 15px;
 }
 .productImg{
   display: flex;
   width: 18vw;
-  height: 25vh;
+  height: 30vh;
   border-bottom: 2px solid #4d4d4d;
   border-top-left-radius: 15px;
   border-top-right-radius: 15px;
@@ -175,5 +175,45 @@
   margin: 0;
 }
 .productStock{
-  margin-top: 1vh;
+  margin-top: 3vh;
+  margin-left: 5px;
+}
+.productTags{
+  box-sizing: content-box;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  max-width: 220px;
+  overflow-wrap: break-word;
+}
+.productTag{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  border: 2px solid gainsboro;
+  border-radius: 15px;
+  padding: 5px;
+  cursor: pointer;
+  margin: 0 0px;
+}
+.productTagName{
+  margin: 0;
+  font-size: 14px;
+}
+.productHover{
+  transition: all 0.3s linear;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  width: auto;
+  opacity: 0;
+  height: 0;
+  max-height: 0;
+}
+.productCard:hover .productHover{
+  opacity: 1;
+  height: 100%;
+  max-height: none;
 }

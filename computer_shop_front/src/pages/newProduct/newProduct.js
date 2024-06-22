@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect, useContext } from 'react'
-import { UserContext } from '../../UserContext';
+import { UserContext, MoneyContext } from '../../Contexts';
 import { useNavigate } from 'react-router-dom';
 import { Editor } from "react-draft-wysiwyg";
 import { convertToRaw, EditorState, ContentState } from "draft-js";
@@ -16,6 +16,7 @@ const NewProduct = () => {
   const productName = useRef(null);
   const productStock = useRef(null);
   const productPrice = useRef(null);
+  const tagSelect = useRef(null);
   const navigate = useNavigate();
 
   const [name, setName] = useState('');
@@ -24,6 +25,8 @@ const NewProduct = () => {
   const [price, setPrice] = useState(null);
   const [photo, setPhoto] = useState('');
   const [tagOptions, setTagOptions] = useState([]);
+  const [tags, setTags] = useState([]);
+  const [hiddenTags, setHiddenTags] = useState([]);
   
   useEffect(() => {
     const blocksFromHtml = htmlToDraft("");
@@ -32,7 +35,7 @@ const NewProduct = () => {
     const editorState = EditorState.createWithContent(contentState);
     setDescription(editorState);
     fetch('http://localhost:88/tag/get').then((res) => res.json()).then((res) =>{
-      setTagOptions(res.map((e, index) => {return {name: e.text, value: index}}));
+      setTagOptions(res.map((e, index) => {return {name: e.text, value: index, disabled: false}}));
     });
   }, []);
   
@@ -56,10 +59,34 @@ const NewProduct = () => {
     setPrice(e.target.value);
     productPrice.current.innerHTML = e.target.value==''?"Product's Price":e.target.value;
   }
-
-  const addTags = (e) => {
-
+  const removeTag = (e) =>{
+    let temp = tagOptions;
+    let i = e.currentTarget.id;
+    temp[i].disabled = false;
+    setTagOptions(temp);
+    temp = tags.slice();
+    temp.splice(temp.indexOf({name: tagOptions[i].name, value: i}), 1);
+    setTags(temp);
+    temp = hiddenTags;
+    temp.push(tagSelect.current.children[1].children[0].children[i]);
+    temp[temp.length-1].style.display = 'block';
+    setHiddenTags(temp);
   };
+
+  const addTag = (i) => {
+    let temp = tagOptions;
+    i = i==null?0:i;
+    temp[i].disabled = true;
+    setTagOptions(temp);
+    temp = tags.slice();
+    temp.push({name: tagOptions[i].name, value: i});
+    setTags(temp);
+    temp = hiddenTags;
+    temp.push(tagSelect.current.children[1].children[0].children[i]);
+    temp[temp.length-1].style.display = 'none';
+    setHiddenTags(temp);
+  };
+
   const addProduct = async (e) => {
     if(name == ''){
       alert('A product name must be entered!');
@@ -158,15 +185,19 @@ const NewProduct = () => {
             <hr className='separator' />
             <h3 className='inputTitle'>Tags</h3>
             <section className='inputContainer' id='tagsContainer'>
-              <div></div>
-              <SelectSearch search={true} options={tagOptions} name="tag" placeholder="Choose your language" renderValue={(valueProps) =>
+              {
+                <div className='productTags'>
+                  {tags.map(tag=>(<div className='productTag'><p className='productTagName'>{tag.name}</p><span id={tag.value} onClick={removeTag}>x</span></div>))}
+                </div>
+              }
+              <SelectSearch ref={tagSelect} onChange={addTag} search={true} getOptions={()=>tagOptions.map((tag)=>{if(tag.disabled == false){return tag}})} name="tag" placeholder="Choose Your Tags" renderValue={(valueProps) =>
                 <div className='input1'>
                   <label>
                   <input type='text' {...valueProps} placeholder=''/>
                   <span>{valueProps.placeholder}</span>
                   </label>
                 </div>} renderOption={(optionsProps, optionsData) => {
-                    return <button className='select-search-option' onClick={(e) =>{console.log(optionsData.value)}}>{optionsData.name}</button>
+                    return <button className='select-search-option' {...optionsProps}>{optionsData.name}</button>
                 }} />
             </section>
           </section>
@@ -178,13 +209,17 @@ const NewProduct = () => {
                   <h3 className='productName' ref={productName}>Product's Name</h3>
                   <aside><h6 className='productSupplier' >{user.fullName}</h6></aside>
                   <aside className='productHover'>
-                    <div className='productTags'></div>
+                    {
+                      <div className='productTags'>
+                        {tags.map(tag=>(<div className='productTag'><p className='productTagName'>{tag.name}</p></div>))}
+                      </div>
+                    }
                     <p className='productDesc'>Product's Description</p>
                   </aside>
                   <h4 className='productStock' ref={productStock}>Amount in Stock</h4>
                 </section>
                 <section className='productTextRight'>
-                  <h3 className='productPrice' ref={productPrice}>Product's Price</h3>
+                  <h4 className='productPrice' ref={productPrice}>Product's Price</h4>
                 </section>
               </div>
             </div>

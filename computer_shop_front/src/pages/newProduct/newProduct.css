@@ -72,3 +72,23 @@ input[type=number] {
 .select-search-is-highlighted, .select-search-option:not(.select-search-is-selected):hover{
     background-color: rgb(193, 193, 193);
 }
+.productTag > span{
+    transition: 0.1s;
+    display: flex;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    margin-left: 5px;
+    border: 1px solid black;
+    border-radius: 15px;
+}
+.productTag > span:hover{
+    transition: 0.1s;
+    background-color:brown;
+    color: white;
+    border: 1px solid red;
+}
+.inputContainer > .productTags {
+    max-width: 300px;
+    margin: 15px;
+}
