@@ -12,11 +12,11 @@ const Product = new Schema({
   },
   photo: {
     type: String,
-    required: false
+    required: true
   },
   description: {
     type: String,
-    required: false
+    required: true
   },
   stats: {
     type: JSON,
@@ -33,6 +33,10 @@ const Product = new Schema({
   supplier: {
     type: mongoose.Types.ObjectId,
     required: true
+  },
+  tags: {
+    type: JSON,
+    required: false
   }
 });
 

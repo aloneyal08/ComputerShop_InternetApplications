@@ -4,7 +4,7 @@
     align-items: center;
     margin: auto;
     width: fit-content;
-    height: fit-content;
+    height: min-content;
     border: 1px solid gainsboro;
 }
 #divider{
@@ -14,6 +14,10 @@
 #inputs{
     border: 2px solid gainsboro;
     padding: 10px 15px;
+}
+#preview{
+    display: flex;
+    flex-direction: column;
 }
 .inputContainer{
     border: 3px solid gainsboro;
@@ -88,7 +92,34 @@ input[type=number] {
     color: white;
     border: 1px solid red;
 }
-.inputContainer > .productTags {
-    max-width: 300px;
-    margin: 15px;
+.productTags{
+  box-sizing: content-box;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  max-width: 300px;
+  margin: 15px;
+  overflow-wrap: break-word;
+}
+.productTag{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  border: 2px solid gainsboro;
+  border-radius: 15px;
+  padding: 5px;
+  cursor: pointer;
+  margin: 0 0px;
+}
+.productTagName{
+  margin: 0;
+  font-size: 14px;
+}
+#addProductBtn{
+    display: flex;
+    width: fit-content;
+    align-self: center;
+    margin-top: 7vh;
 }

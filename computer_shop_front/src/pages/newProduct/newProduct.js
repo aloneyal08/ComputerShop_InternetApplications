@@ -6,24 +6,25 @@ import { convertToRaw, EditorState, ContentState } from "draft-js";
 import htmlToDraft from 'html-to-draftjs';
 import draftToHtmlPuri from "draftjs-to-html";
 import SelectSearch from 'react-select-search';
+import { Rating } from 'react-simple-star-rating'
 import 'react-select-search/style.css'
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import './newProduct.css';
 
+const currencies = require('../../currencies.json');
+
 const NewProduct = () => {
   const {user} = useContext(UserContext);
-  const productImg = useRef(null);
-  const productName = useRef(null);
-  const productStock = useRef(null);
-  const productPrice = useRef(null);
+  const {currency, exchangeRates} = useContext(MoneyContext);
   const tagSelect = useRef(null);
   const navigate = useNavigate();
 
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
-  const [stock, setStock] = useState(null);
-  const [price, setPrice] = useState(null);
+  const [stock, setStock] = useState('');
+  const [price, setPrice] = useState('');
   const [photo, setPhoto] = useState('');
+  const [rating, setRating] = useState(0);
   const [tagOptions, setTagOptions] = useState([]);
   const [tags, setTags] = useState([]);
   const [hiddenTags, setHiddenTags] = useState([]);
@@ -39,25 +40,21 @@ const NewProduct = () => {
     });
   }, []);
   
+  useEffect(() =>{
+  }, [currency])
 
   const onTextChange = (state) => {
-    draftToHtmlPuri(
-      convertToRaw(state.getCurrentContent())
-    );
     setDescription(state);
-
   };
 
   const changeImageFunc = (e) => {
     let val = e?e.currentTarget.value:'';
-    productImg.current.src = val;
     setPhoto(val);
   };
 
   const priceChange = (e) =>{
     e.target.value = e.target.value == ''? '' : Math.floor(e.target.value*100)/100;
     setPrice(e.target.value);
-    productPrice.current.innerHTML = e.target.value==''?"Product's Price":e.target.value;
   }
   const removeTag = (e) =>{
     let temp = tagOptions;
@@ -88,6 +85,9 @@ const NewProduct = () => {
   };
 
   const addProduct = async (e) => {
+    let value = draftToHtmlPuri(
+      convertToRaw(description.getCurrentContent())
+    );
     if(name == ''){
       alert('A product name must be entered!');
       return;
@@ -100,6 +100,12 @@ const NewProduct = () => {
       alert('A product price must be entered!');
       return;
     }
+    if(value == ''){
+      alert('A product description must be entered!');
+    }
+    if(photo == ''){
+      alert('A product picture must be entered!');
+    }
     fetch('http://localhost:88/product/add', {
       method: 'POST',
       headers: {
@@ -107,10 +113,11 @@ const NewProduct = () => {
       },
       body: JSON.stringify({
         name,
-        description: JSON.stringify(description),
+        description: value,
         stock,
-        price,
+        price: price/exchangeRates[currency],
         photo: photo == ''?null:photo,
+        tags: tags==[]?null:tags.map((tag) => {return {text: tag.text};}),
         supplier: user._id
       })
     }).then((res) => res.json()).then((res) => {
@@ -135,7 +142,7 @@ const NewProduct = () => {
             <section className='inputContainer' id='baseInfoContainer'>
               <div className="input1">
                 <label>
-                <input type='text' required onChange={(e) => {setName(e.target.value); productName.current.innerHTML = e.target.value==''?"Product's Name":e.target.value}}/>
+                <input type='text' required onChange={(e) => {setName(e.target.value);}}/>
                 <span>Product Name*</span>
                 </label>
                 <hr className='separator' />
@@ -151,7 +158,7 @@ const NewProduct = () => {
                     list: {inDropdown: true}
                   }}
                   onEditorStateChange={onTextChange}
-                  placeholder='Product Description'
+                  placeholder='Product Description*'
                 />
               </div>
             </section>
@@ -161,7 +168,7 @@ const NewProduct = () => {
               <div className="input1">
                 <label>
                   <input required type='text' onChange={changeImageFunc}/>
-                  <span>Product Photo</span>
+                  <span>Product Photo*</span>
                 </label>
               </div>
             </section>
@@ -170,7 +177,7 @@ const NewProduct = () => {
             <section className='inputContainer' id='detailContainer'>
               <div className="input1">
                 <label>
-                  <input required type='number' step={1} min={1} onChange={(e) => {setStock(e.target.value); productStock.current.innerHTML = e.target.value==''?"Amount in Stock":'Current Stock: ' + e.target.value}}/>
+                  <input required type='number' step={1} min={1} onChange={(e) => {setStock(e.target.value);}}/>
                   <span>Starting Stock*</span>
                 </label>
               </div>
@@ -203,26 +210,27 @@ const NewProduct = () => {
           </section>
           <section id='preview'>
             <div className='productCard'>
-              <img className='productImg' src={require('../../images/defaultProduct.jpg')} onError={(e) =>{e.currentTarget.src = require('../../images/defaultProduct.jpg')}} ref={productImg} />
+              <img className='productImg' src={photo} onError={(e) =>{e.currentTarget.src = require('../../images/defaultProduct.jpg')}}/>
               <div className='productText'>
                 <section className='productTextLeft'>
-                  <h3 className='productName' ref={productName}>Product's Name</h3>
+                  <h3 className='productName'>{name==''?"Product's Name":name}</h3>
                   <aside><h6 className='productSupplier' >{user.fullName}</h6></aside>
-                  <aside className='productHover'>
-                    {
-                      <div className='productTags'>
-                        {tags.map(tag=>(<div className='productTag'><p className='productTagName'>{tag.name}</p></div>))}
-                      </div>
-                    }
-                    <p className='productDesc'>Product's Description</p>
-                  </aside>
-                  <h4 className='productStock' ref={productStock}>Amount in Stock</h4>
+                  <h4 className='productStock'>{stock>=1?"":'Currently None in Stock*' }</h4>
+                  <Rating 
+                    onClick={(rate)=>{setRating(rate)}}
+                    readonly={true}
+                    initialValue={2.5}
+                    allowFraction={true}
+                    size={35}
+                    id='productRating'
+                  />
                 </section>
                 <section className='productTextRight'>
-                  <h4 className='productPrice' ref={productPrice}>Product's Price</h4>
+                  <h4 className='productPrice'>{price==''?"Product's Price":currencies[currency].symbol + price}</h4>
                 </section>
               </div>
             </div>
+            <button id='addProductBtn' onClick={addProduct} className='button1'>Add New Product</button>
           </section>
         </div>
       </div>

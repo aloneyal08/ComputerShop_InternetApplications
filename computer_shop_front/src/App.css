@@ -164,6 +164,7 @@
   flex-direction: row;
   justify-content: space-between;
   margin-top: 10px;
+  padding: 5px;
 }
 .productTextLeft{
   display: flex;
@@ -171,49 +172,14 @@
   align-items: start;
   line-height: 15px;
 }
-.productName, .productSupplier, .productStock, .productPrice, .productDesc{
+.productName, .productSupplier, .productStock, .productPrice, .productDesc, .productRating{
   margin: 0;
+}
+.productName{
+  overflow:hidden;
 }
 .productStock{
-  margin-top: 3vh;
-  margin-left: 5px;
-}
-.productTags{
-  box-sizing: content-box;
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  justify-content: flex-start;
-  max-width: 220px;
-  overflow-wrap: break-word;
-}
-.productTag{
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  border: 2px solid gainsboro;
-  border-radius: 15px;
-  padding: 5px;
-  cursor: pointer;
-  margin: 0 0px;
-}
-.productTagName{
-  margin: 0;
-  font-size: 14px;
-}
-.productHover{
-  transition: all 0.3s linear;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  width: auto;
-  opacity: 0;
-  height: 0;
-  max-height: 0;
-}
-.productCard:hover .productHover{
-  opacity: 1;
-  height: 100%;
-  max-height: none;
+  margin-bottom: -3px;
+  font-size: 10px;
+  color: red;
 }
