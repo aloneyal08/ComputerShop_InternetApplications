@@ -250,3 +250,17 @@
   background-color: transparent;
   transition: 0.3s;
 }
+
+.addProduct {
+  background-image: url(../../images/plus.png);
+  height: 37px;
+  width: 40px;
+  background-color: transparent;
+  background-size: 100% 100%;
+  border: none;
+  outline: none;
+}
+
+.addProduct:hover {
+  filter: opacity(0.6);
+}

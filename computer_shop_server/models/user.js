@@ -29,7 +29,7 @@ const User = new Schema({
   phone: {
     type: String,
     required: false
-  }
-});
+  },
+}, {strict: false});
 
 module.exports = mongoose.model('User', User);

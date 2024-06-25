@@ -79,7 +79,7 @@ export const NavBar = () => {
 
   const tagOptions = tags.map(t=>({text: t, searchKey: `::tags:${t}`}))
 
-  return <header className='navBar' style={location.pathname !== "/" ? {height: "50px"} : {}}>
+  return <header className='navBar' style={location.pathname !== "/" || user.level !== 0 ? {height: "50px"} : {}}>
     <div className='mainBar'>
       <div className='logo' onClick={()=>navigate("/")}>
         <h1>SHOP</h1>
@@ -94,17 +94,20 @@ export const NavBar = () => {
             style={{zIndex: 1}}
           />
         </div>
-        <div className='cart' onClick={()=>navigate("/cart")}>
+        {user.level === 1
+          ? <button className='addProduct' onClick={()=>navigate("/product/new")}/>
+          : <div className='cart' onClick={()=>navigate("/cart")}>
           <div className='shopCartNumber'>0</div>
           <img src={require("../../images/cart.png")} className='navBarPhoto' alt='  '/>
         </div>
+        }
         <div className='currOptionNavBar' onClick={()=>setCurrencyPopupOpen(!isCurrencyPopupOpen)}>
           <canvas className={'arrowCanvas ' + (isCurrencyPopupOpen ? 'rotated' : '')} ref={arrowRef}/>
           <h3>{currencies[currency].symbol}<br/><div style={{fontSize: "12.5px"}}>{currency}</div></h3>
         </div>
       </div>
     </div>
-    {location.pathname === "/" && <div className='specialSearch'>
+    {location.pathname === "/" && user.level === 0 && <div className='specialSearch'>
       {
         searchOptions.concat(tagOptions).map(option=>(
           <button className={'searchOption ' + (option.special ? 'optionSpecial' : '')} onClick={()=>navigate(`/search?key=${option.searchKey}`)}>
@@ -137,8 +140,16 @@ export const NavBar = () => {
           </>
           :<>
             <button className='accountButton' onClick={()=>open("/settings")}>Settings</button>
-            <button className='accountButton' onClick={()=>open("/cart")}>Cart</button>
-            <button className='accountButton' onClick={()=>open("/history")}>History</button>
+            {user.level === 1
+             ?<>
+              <button className='accountButton' onClick={()=>open("/products")}>Products</button>
+              <button className='accountButton' onClick={()=>open("/statistics")}>Statistics</button>
+             </>
+             :<>
+              <button className='accountButton' onClick={()=>open("/cart")}>Cart</button>
+              <button className='accountButton' onClick={()=>open("/history")}>History</button>
+             </> 
+            }
             <button className='accountButton' style={{width: "150px"}} onClick={logOut}>Log out</button>
           </>
         }

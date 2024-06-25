@@ -41,7 +41,7 @@
   touch-action: manipulation;
 }
 
-.button1:hover {
+.button1:hover:enabled {
   box-shadow: rgba(0, 1, 0, .2) 0 2px 8px;
   opacity: .85;
 }
