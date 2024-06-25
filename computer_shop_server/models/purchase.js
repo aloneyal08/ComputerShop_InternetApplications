@@ -3,11 +3,11 @@ const Schema = mongoose.Schema;
 
 const Purchase = new Schema({
   product : {
-    type: mongoose.Mongoose.Types.ObjectId,
+    type: mongoose.Types.ObjectId,
     required: true
   },
   user : {
-    type: mongoose.Mongoose.Types.ObjectId,
+    type: mongoose.Types.ObjectId,
     required: true
   },
   date: {
