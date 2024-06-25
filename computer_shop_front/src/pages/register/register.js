@@ -218,7 +218,7 @@ const Register = () => {
       </div>}
       <div className="checkbox1 supplierCheckbox">
         <input id="supplierCheck" className="substituted" type="checkbox" aria-hidden="true" onChange={()=>setIsSupplier(!isSupplier)}/>
-        <label for="supplierCheck">Request to be a supplier</label>
+        <label htmlFor="supplierCheck">Request to be a supplier</label>
       </div>
       <button onClick={onSubmit} className='button1'>Register</button>
       <span className='loginOr'>--------- or -----------</span>
