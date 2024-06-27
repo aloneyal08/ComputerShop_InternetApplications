@@ -23,6 +23,11 @@ const createRequest = async (req, res) => {
   if(u)
     return res.status(400).json({ error: 'Username already exists' });
 
+  var requests = await SupplierRequest.find({});
+  if (requests.find(r=>r.user.email===email||r.user.username===username)) {
+    return res.status(400).json({ error: 'Already requested' });
+  }
+
   const request = new SupplierRequest({
     user: {
       password: encrypt(password),
@@ -70,7 +75,7 @@ const createRequest = async (req, res) => {
     html: `
         <div style="background-image: url(https://us.123rf.com/450wm/panychev/panychev1603/panychev160300672/54290362-abstract-sfondo-blu-scuro.jpg?ver=6); position: absolute;width: 100%;height: 100%;font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;background-size: cover;">
           <div style="background-color: white;position: absolute;width: 85%;height: 85%;border-radius: 44px;left: 50%;top: 50%;transform: translate(-50%, -50%);">
-            <h1 style="font-size: 40px;text-align: center;">Hello,you sent a request to become a supplier for our shop!</h1>
+            <h1 style="font-size: 40px;text-align: center;">Hello, you sent a request to become a supplier for our shop!</h1>
             <p style="text-align: center;font-size: 20px;font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;margin: 30px;">
               if you did not make the request or wish to cancel it, press the link: <a href='http://localhost:88/supplier/request/cancel?obj=${cancelObj}'>cancel</a>
               <br/>Thank you for using our site!
@@ -110,6 +115,27 @@ const acceptRequest = async (req, res) => {
   const user = new User({...request.user})
   await user.save();
   res.status(201).json({message: 'Request accepted'});
+  mailOptions = {
+    from: 'computer.shop.colman@gmail.com',
+    to: request.user.email,
+    subject: 'Supplier Request Accepted',
+    html: `
+        <div style="background-image: url(https://us.123rf.com/450wm/panychev/panychev1603/panychev160300672/54290362-abstract-sfondo-blu-scuro.jpg?ver=6); position: absolute;width: 100%;height: 100%;font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;background-size: cover;">
+          <div style="background-color: white;position: absolute;width: 85%;height: 85%;border-radius: 44px;left: 50%;top: 50%;transform: translate(-50%, -50%);">
+            <h1 style="font-size: 40px;text-align: center;">Hello, your request to become a supplier for our shop was accepted!</h1>
+            <p style="text-align: center;font-size: 20px;font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;margin: 30px;">
+              <br/>Thank you for using our site!
+            </p>
+          </div>
+      `
+  } 
+  transporter.sendMail(mailOptions, function(error, info){
+    if (error) {
+      console.log(error);
+    } else {
+      console.log('Email sent: ' + info.response);
+    }
+  });
 }
 
 const rejectRequest = async (req, res) => {
@@ -131,6 +157,27 @@ const rejectRequest = async (req, res) => {
   if(!request)
     return res.status(400).json({error: 'Request not found'});
   res.status(201).json({message: 'Request rejected'});
+  mailOptions = {
+    from: 'computer.shop.colman@gmail.com',
+    to: request.user.email,
+    subject: 'Supplier Request Rejected',
+    html: `
+        <div style="background-image: url(https://us.123rf.com/450wm/panychev/panychev1603/panychev160300672/54290362-abstract-sfondo-blu-scuro.jpg?ver=6); position: absolute;width: 100%;height: 100%;font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;background-size: cover;">
+          <div style="background-color: white;position: absolute;width: 85%;height: 85%;border-radius: 44px;left: 50%;top: 50%;transform: translate(-50%, -50%);">
+            <h1 style="font-size: 40px;text-align: center;">Hello, your request to become a supplier for our shop was rejected</h1>
+            <p style="text-align: center;font-size: 20px;font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;margin: 30px;">
+              <br/>Thank you for using our site!
+            </p>
+          </div>
+      `
+  } 
+  transporter.sendMail(mailOptions, function(error, info){
+    if (error) {
+      console.log(error);
+    } else {
+      console.log('Email sent: ' + info.response);
+    }
+  });
 }
 
 const cancelRequest = async (req, res) => {
