@@ -1,0 +1,50 @@
+#showContainer{
+    display: flex;
+    flex-direction: column;
+}
+#title{
+    font-size: 40px;
+    margin: 0;
+}
+.title{
+    display: flex;
+    margin-left: 50px;
+    margin-top: 100px;
+}
+.itemContainer{
+    display: flex;
+    flex-direction: row;
+    max-width: 100%;
+    overflow-x: auto;
+    column-gap: 20px;
+    scroll-behavior: smooth;
+}
+.moveRight, .moveLeft{
+    transition: 0.3s;
+    position: absolute;
+    display: flex;
+    align-self: center;
+    align-items: center;
+    width: 30px;
+    height: 100px;
+    padding: 10px 15px 10px 15px;
+    background-color: black;
+    color: white;
+    cursor: pointer;
+    font-size: 50px;
+    opacity: 0;
+}
+.moveLeft{
+    left: 0;
+}
+.moveRight{
+    right: 0;
+}
+.moveRight:disabled, .moveLeft:disabled{
+    transition: 0.3s;
+    opacity: 0.4;
+}
+.scrollBar1:hover > .moveLeft, .scrollBar1:hover > .moveRight{
+    transition: 0.3s;
+    opacity: 0.85;
+} 

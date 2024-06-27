@@ -33,6 +33,16 @@ const getProducts = async (req, res) => {
 	res.json(products);
 };
 
+const getNewProducts = async (req, res) => {
+	const products = await Product.find().sort({$natural:-1});
+	res.json(products);
+};
+
+const getPopularProducts = async (req, res) => {
+	const products = await Product.find();
+	res.json(products);
+};
+
 const editProduct = async (req, res) => {
 	const { _id, name, price, photo, description, stock } = req.body;
 	const product = Product.findByIdAndUpdate({_id}, {
@@ -64,6 +74,8 @@ const deleteProduct = async (req, res) => {
 module.exports = {
     addProduct,
     getProducts,
+	getNewProducts,
+	getPopularProducts,
     editProduct,
     deleteProduct
 };

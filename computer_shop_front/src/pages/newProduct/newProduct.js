@@ -6,7 +6,7 @@ import { convertToRaw, EditorState, ContentState } from "draft-js";
 import htmlToDraft from 'html-to-draftjs';
 import draftToHtmlPuri from "draftjs-to-html";
 import SelectSearch from 'react-select-search';
-import { Rating } from 'react-simple-star-rating'
+import { Rating } from 'react-simple-star-rating';
 import 'react-select-search/style.css'
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import './newProduct.css';
@@ -24,7 +24,6 @@ const NewProduct = () => {
   const [stock, setStock] = useState('');
   const [price, setPrice] = useState('');
   const [photo, setPhoto] = useState('');
-  const [rating, setRating] = useState(0);
   const [tagOptions, setTagOptions] = useState([]);
   const [tags, setTags] = useState([]);
   const [hiddenTags, setHiddenTags] = useState([]);
@@ -53,8 +52,9 @@ const NewProduct = () => {
   };
 
   const priceChange = (e) =>{
-    e.target.value = e.target.value == ''? '' : Math.floor(e.target.value*100)/100;
-    setPrice(e.target.value);
+    let pr = e.target.value == ''? '' : Math.floor(e.target.value*100)/100
+    e.target.value = pr;
+    setPrice(pr);
   }
   const removeTag = (e) =>{
     let temp = tagOptions;
@@ -217,7 +217,6 @@ const NewProduct = () => {
                   <aside><h6 className='productSupplier' >{user.fullName}</h6></aside>
                   <h4 className='productStock'>{stock>=1?"":'Currently None in Stock*' }</h4>
                   <Rating 
-                    onClick={(rate)=>{setRating(rate)}}
                     readonly={true}
                     initialValue={2.5}
                     allowFraction={true}

@@ -21,6 +21,7 @@ const App = () => {
   const login = () => {
     const email = localStorage.getItem("email");
     const password = localStorage.getItem("password");
+    setCurrency(localStorage.getItem("currency") || 'USD');
     if(!email || !password){
       setUser({loggedOut: 1});
       return;

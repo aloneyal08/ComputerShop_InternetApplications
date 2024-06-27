@@ -1,6 +1,21 @@
 const User = require('../models/user');
 const { encrypt, decrypt } = require('../utils');
 
+
+const getUserById = async (req, res) => {
+  const {id} = req.body;
+  var u = await User.findById(id);
+  if(!u){
+    return res.status(404).json({error: 'User does not exist'});
+  }
+  return res.json(u);
+}
+
+const getSuppliers = async (req, res) => {
+  var s = await User.find({level: 1});
+  return res.json(s);
+}
+
 const register = async (req, res) => {
   const { username, password, email, phone, fullName, profilePhoto, google } = req.body;
   var u = await User.findOne({email});
@@ -114,6 +129,8 @@ const deleteUser = async (req, res) => {
 }
 
 module.exports = {
+  getUserById,
+  getSuppliers,
   register,
   login,
   updateUserProfile,

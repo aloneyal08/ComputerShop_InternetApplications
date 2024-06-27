@@ -74,6 +74,7 @@ export const NavBar = () => {
 
   const pickCurr = (curr) => {
     setCurrency(curr);
+    localStorage.setItem("currency", curr);
     setCurrencyPopupOpen(false);
   }
 
@@ -89,7 +90,7 @@ export const NavBar = () => {
         <div className='nbImageContainer' onMouseEnter={()=>setAccountPopupOpen(true)} onMouseLeave={leaveAccountIcon}>
           <img src={user.profilePhoto} alt='' className='navBarPhoto navBarAccountPhoto' style={{zIndex: 2}}/>
           <img 
-            src='https://www.sunsetlearning.com/wp-content/uploads/2019/09/User-Icon-Grey-300x300.png' 
+            src={require('../../images/userDefault.png')} 
             alt='' className='navBarPhoto navBarAccountPhoto' 
             style={{zIndex: 1}}
           />
@@ -125,7 +126,7 @@ export const NavBar = () => {
       <div style={{marginTop: "15px", height: "80px"}}>
         <img src={user.profilePhoto} alt='' className='photoPreview navBarAccountPhoto' style={{zIndex: 2}}/>
         <img 
-          src='https://www.sunsetlearning.com/wp-content/uploads/2019/09/User-Icon-Grey-300x300.png' 
+          src={require('../../images/userDefault.png')}
           alt='' 
           className='photoPreview navBarAccountPhoto' 
           style={{zIndex: 1}}

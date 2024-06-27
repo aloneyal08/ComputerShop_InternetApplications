@@ -185,7 +185,7 @@ const UserSettings = () => {
         </label>
         <div>
           <img src={viewedImage} alt='    ' className='photoPreview' />
-          <img src='https://www.sunsetlearning.com/wp-content/uploads/2019/09/User-Icon-Grey-300x300.png' alt='    ' className='photoPreview' style={{zIndex: -1}}/>
+          <img src={require('../../images/userDefault.png')} alt='    ' className='photoPreview' style={{zIndex: -1}}/>
         </div>
         
       </div>

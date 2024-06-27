@@ -23,3 +23,30 @@ export const validateUsername = (username) => {
   const valid = !!res;
   return valid;
 }
+
+export const getFullNameById = (id) =>{
+  fetch('http://localhost:88/user/id-get',{
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({id})
+  }).then((res)=>res.json()).then((res)=>{return res.fullName});
+}
+
+
+export const getProductRating = (productId) =>{
+  fetch('http://localhost:88/review/get',{
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({product: productId})
+  }).then((res)=>res.json()).then((res)=>{
+    let rating = 0;
+    res.forEach(review => {
+      rating += review.rating;
+    });
+    return Math.floor((rating / res.length)*2)/2;
+  });
+}
