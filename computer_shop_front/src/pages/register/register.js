@@ -221,11 +221,14 @@ const Register = () => {
         <label htmlFor="supplierCheck">Request to be a supplier</label>
       </div>
       <button onClick={onSubmit} className='button1'>Register</button>
-      <span className='loginOr'>--------- or -----------</span>
-      <button className='button1 googleButton' onClick={googleLogin} >
-        <img src={require('../../images/googleIcon.png')} alt='_' className='googleIcon'/>
-        Continue with Google
-      </button>
+      {!isSupplier && <>
+        <span className='loginOr'>--------- or -----------</span>
+        <button className='button1 googleButton' onClick={googleLogin} >
+          <img src={require('../../images/googleIcon.png')} alt='_' className='googleIcon'/>
+          Continue with Google
+        </button>
+      </>
+      }
       <p>Already have an account? <Link to="/login">Login</Link></p>
     </div>
   </div>
