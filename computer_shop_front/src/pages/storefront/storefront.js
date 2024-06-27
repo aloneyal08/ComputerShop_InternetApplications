@@ -13,8 +13,8 @@ const Storefront = () => {
   const [newProducts, setNewProducts] = useState([]);
   const [recSupplier, setRecSupplier] = useState([]);
 
-  const moveSide = (side) =>{
-
+  const moveSide = (e, side) =>{
+    e.currentTarget.parentElement.scrollBy(1950*side, 0);
   };
 
   useEffect(() => {
@@ -29,7 +29,7 @@ const Storefront = () => {
     <div id='showContainer'>
       <h1 className='title'>Recommended</h1>
       <div className='itemContainer scrollBar1'>
-        <div className='moveLeft' >
+        <div className='moveLeft' disabled={false} onClick={(e) => {moveSide(e, -1)}}>
           {'<'}
         </div>
         {recProducts.map((product)=>
@@ -53,13 +53,15 @@ const Storefront = () => {
             </section>
           </div>
         </div>)}
-        <div className='moveRight' >
+        <div className='moveRight' onClick={(e) => {moveSide(e, 1)}}>
           {'>'}
         </div>
       </div>
       <h1 className='title'>Popular</h1>
       <div className='itemContainer scrollBar1'>
-        
+        <div className='moveLeft' disabled={false} onClick={(e) => {moveSide(e, -1)}}>
+          {'<'}
+        </div>
       {popProducts.map((product)=>
       <div className='productCard'>
         <img className='productImg' src={product.photo} onError={(e) =>{e.currentTarget.src = require('../../images/defaultProduct.jpg')}}/>
@@ -81,10 +83,15 @@ const Storefront = () => {
           </section>
       </div>
      </div>)}
+        <div className='moveRight' onClick={(e) => {moveSide(e, 1)}}>
+          {'>'}
+        </div>
       </div>
       <h1 className='title'>New</h1>
       <div className='itemContainer scrollBar1'>
-        
+        <div className='moveLeft' disabled={false} onClick={(e) => {moveSide(e, -1)}}>
+          {'<'}
+        </div>
       {newProducts.map((product)=>
       <div className='productCard'>
         <img className='productImg' src={product.photo} onError={(e) =>{e.currentTarget.src = require('../../images/defaultProduct.jpg')}}/>
@@ -106,15 +113,23 @@ const Storefront = () => {
           </section>
       </div>
      </div>)}
+        <div className='moveRight' onClick={(e) => {moveSide(e, 1)}}>
+          {'>'}
+        </div>
       </div>
       <h1 className='title'>Recommended</h1>
       <div className='itemContainer scrollBar1' style={{marginLeft: '50px'}}>
-        
+        <div className='moveLeft' disabled={false} onClick={(e) => {moveSide(e, -1)}}>
+          {'<'}
+        </div>
       {recSupplier.map((supplier)=>
       <div className='userCard'>
         <img className='userPhoto' src={supplier.profilePhoto} onError={(e) =>{e.currentTarget.src = require('../../images/userDefault.png')}} />
         <h4>{supplier.fullName}</h4>
       </div>)}
+        <div className='moveRight' onClick={(e) => {moveSide(e, 1)}}>
+          {'>'}
+        </div>
       </div>
     </div>
   </div>

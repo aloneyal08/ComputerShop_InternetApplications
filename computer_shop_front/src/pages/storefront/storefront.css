@@ -25,6 +25,7 @@
     display: flex;
     align-self: center;
     align-items: center;
+    justify-content: center;
     width: 30px;
     height: 100px;
     padding: 10px 15px 10px 15px;
@@ -33,6 +34,7 @@
     cursor: pointer;
     font-size: 50px;
     opacity: 0;
+    border: none;
 }
 .moveLeft{
     left: 0;
@@ -40,11 +42,11 @@
 .moveRight{
     right: 0;
 }
-.moveRight:disabled, .moveLeft:disabled{
-    transition: 0.3s;
-    opacity: 0.4;
-}
 .scrollBar1:hover > .moveLeft, .scrollBar1:hover > .moveRight{
     transition: 0.3s;
     opacity: 0.85;
+} 
+.scrollBar1:hover > .moveLeft:disabled, .scrollBar1:hover > .moveRight:disabled{
+    transition: 0.3s;
+    opacity: 0.4;
 } 
