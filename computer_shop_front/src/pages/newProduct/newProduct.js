@@ -24,7 +24,6 @@ const NewProduct = () => {
   const [stock, setStock] = useState('');
   const [price, setPrice] = useState('');
   const [photo, setPhoto] = useState('');
-  const [rating, setRating] = useState(0);
   const [tagOptions, setTagOptions] = useState([]);
   const [tags, setTags] = useState([]);
   const [hiddenTags, setHiddenTags] = useState([]);
@@ -53,7 +52,7 @@ const NewProduct = () => {
   };
 
   const priceChange = (e) =>{
-    e.target.value = e.target.value == ''? '' : Math.floor(e.target.value*100)/100;
+    e.target.value = e.target.value === ''? '' : Math.floor(e.target.value*100)/100;
     setPrice(e.target.value);
   }
   const removeTag = (e) =>{
@@ -88,22 +87,22 @@ const NewProduct = () => {
     let value = draftToHtmlPuri(
       convertToRaw(description.getCurrentContent())
     );
-    if(name == ''){
+    if(name === ''){
       alert('A product name must be entered!');
       return;
     }
-    if(stock == null){
+    if(stock === null){
       alert('A starting stock must be entered!');
       return;
     }
-    if(price == null){
+    if(price === null){
       alert('A product price must be entered!');
       return;
     }
-    if(value == ''){
+    if(value === ''){
       alert('A product description must be entered!');
     }
-    if(photo == ''){
+    if(photo === ''){
       alert('A product picture must be entered!');
     }
     fetch('http://localhost:88/product/add', {
@@ -116,8 +115,8 @@ const NewProduct = () => {
         description: value,
         stock,
         price: price/exchangeRates[currency],
-        photo: photo == ''?null:photo,
-        tags: tags==[]?null:tags.map((tag) => {return {text: tag.text};}),
+        photo: photo === ''?null:photo,
+        tags: tags.length===0?null:tags.map((tag) => {return {text: tag.text};}),
         supplier: user._id
       })
     }).then((res) => res.json()).then((res) => {
@@ -133,7 +132,7 @@ const NewProduct = () => {
     return;
   }
   return <div>
-    {user.level==1?
+    {user.level === 1?
       <div id='newProductContainer'>
         <h1 id='title'>Add New Product</h1>
         <div id='divider'>
@@ -197,7 +196,7 @@ const NewProduct = () => {
                   {tags.map(tag=>(<div className='productTag'><p className='productTagName'>{tag.name}</p><span id={tag.value} onClick={removeTag}>x</span></div>))}
                 </div>
               }
-              <SelectSearch ref={tagSelect} onChange={addTag} search={true} getOptions={()=>tagOptions.map((tag)=>{if(tag.disabled == false){return tag}})} name="tag" placeholder="Choose Your Tags" renderValue={(valueProps) =>
+              <SelectSearch ref={tagSelect} onChange={addTag} search={true} getOptions={()=>tagOptions.filter((tag)=>tag.disabled === false)} name="tag" placeholder="Choose Your Tags" renderValue={(valueProps) =>
                 <div className='input1'>
                   <label>
                   <input type='text' {...valueProps} placeholder=''/>
@@ -210,14 +209,13 @@ const NewProduct = () => {
           </section>
           <section id='preview'>
             <div className='productCard'>
-              <img className='productImg' src={photo} onError={(e) =>{e.currentTarget.src = require('../../images/defaultProduct.jpg')}}/>
+              <img className='productImg' alt=' ' src={photo} onError={(e) =>{e.currentTarget.src = require('../../images/defaultProduct.jpg')}}/>
               <div className='productText'>
                 <section className='productTextLeft'>
-                  <h3 className='productName'>{name==''?"Product's Name":name}</h3>
+                  <h3 className='productName'>{name===''?"Product's Name":name}</h3>
                   <aside><h6 className='productSupplier' >{user.fullName}</h6></aside>
                   <h4 className='productStock'>{stock>=1?"":'Currently None in Stock*' }</h4>
                   <Rating 
-                    onClick={(rate)=>{setRating(rate)}}
                     readonly={true}
                     initialValue={2.5}
                     allowFraction={true}
@@ -226,7 +224,7 @@ const NewProduct = () => {
                   />
                 </section>
                 <section className='productTextRight'>
-                  <h4 className='productPrice'>{price==''?"Product's Price":currencies[currency].symbol + price}</h4>
+                  <h4 className='productPrice'>{price===''?"Product's Price":currencies[currency].symbol + price}</h4>
                 </section>
               </div>
             </div>
@@ -237,7 +235,7 @@ const NewProduct = () => {
       :
       <div style={{display:'flex',flexDirection:'column'}}>
         <h1>{'You are not permitted to be here >:('}</h1>
-        <img src='https://thumbs.dreamstime.com/z/very-angry-boy-12560031.jpg' />
+        <img src='https://thumbs.dreamstime.com/z/very-angry-boy-12560031.jpg' alt=' '/>
         <button className='button1' onClick={() => {navigate('/')}}>Return back to home page</button>
       </div>
     }

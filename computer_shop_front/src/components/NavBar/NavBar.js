@@ -79,7 +79,7 @@ export const NavBar = () => {
 
   const tagOptions = tags.map(t=>({text: t, searchKey: `::tags:${t}`}))
 
-  return <header className='navBar' style={location.pathname !== "/" || user.level !== 0 ? {height: "50px"} : {}}>
+  return <header className='navBar' style={location.pathname !== "/" || user.level ? {height: "50px"} : {}}>
     <div className='mainBar'>
       <div className='logo' onClick={()=>navigate("/")}>
         <h1>SHOP</h1>
@@ -107,7 +107,7 @@ export const NavBar = () => {
         </div>
       </div>
     </div>
-    {location.pathname === "/" && user.level === 0 && <div className='specialSearch'>
+    {location.pathname === "/" && !user.level && <div className='specialSearch'>
       {
         searchOptions.concat(tagOptions).map(option=>(
           <button className={'searchOption ' + (option.special ? 'optionSpecial' : '')} onClick={()=>navigate(`/search?key=${option.searchKey}`)}>
@@ -161,7 +161,7 @@ export const NavBar = () => {
     >
       {
         Object.keys(currencies).map(curr=>
-          <div className='currOption' onClick={()=>pickCurr(curr)}>
+          <div className='currOption' onClick={()=>pickCurr(curr)} key={curr}>
             <div>{currencies[curr].symbol}</div>
             <span style={currency===curr ? {fontWeight: "bold"} : {}}>{currencies[curr].name}</span>
           </div>
