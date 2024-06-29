@@ -1,0 +1,53 @@
+.dashboard {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  padding: 15px;
+  gap: 20px;
+}
+
+.dashboardContainer {
+  border: 1.5px solid gray;
+  border-radius: 20px;
+  width: 800px;
+  height: 600px;
+}
+
+.dashboardHeader {
+  text-align: left;
+  margin: 15px;
+}
+
+.dashboardList {
+  overflow-y: scroll;
+  display: flex;
+  flex-direction: column;
+  flex-flow: wrap;
+  height: 542px;
+  border-radius: 20px;
+  border-top-left-radius: 0px;
+  border-top-right-radius: 0px;
+}
+
+.dashboardListItem:nth-child(odd) {
+  background-color: #b4b4b4;
+}
+.dashboardListItem:nth-child(even) {
+  background-color: #d6d6d6;
+}
+
+.dashboardListItem {
+  height: 50px;
+  border: 1.5px solid gray;
+  width: 100%;
+  border-left-width: 0px;
+  border-right-width: 0px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.statusText {
+  font-weight: bold;
+}

@@ -23,7 +23,7 @@ const createRequest = async (req, res) => {
   if(u)
     return res.status(400).json({ error: 'Username already exists' });
 
-  var requests = await SupplierRequest.find({});
+  var requests = await SupplierRequest.find({status: 0});
   if (requests.find(r=>r.user.email===email||r.user.username===username)) {
     return res.status(400).json({ error: 'Already requested' });
   }
@@ -37,7 +37,8 @@ const createRequest = async (req, res) => {
       phone,
       level: 1
     },
-    description
+    description,
+    status: 0
   });
   await request.save();
   const admins = await User.find({level: 2});
@@ -107,7 +108,7 @@ const acceptRequest = async (req, res) => {
   if(!admin || admin.level !== 2 || admin.password !== password)
     return res.status(400).json({error: 'Invalid Login'});
 
-  const request = await SupplierRequest.findByIdAndDelete(id);
+  const request = await SupplierRequest.findByIdAndUpdate(id, {status: 1});
   if(!request) {
     return res.status(400).json({error: 'Invalid Request'});
   }
@@ -152,7 +153,7 @@ const rejectRequest = async (req, res) => {
   if(!admin || admin.level !== 2 || admin.password !== password)
     return res.status(400).json({error: 'Invalid Login'});
 
-  const request = await SupplierRequest.findByIdAndDelete(id);
+  const request = await SupplierRequest.findByIdAndUpdate(id, {status: 2});
 
   if(!request)
     return res.status(400).json({error: 'Request not found'});
@@ -193,7 +194,7 @@ const cancelRequest = async (req, res) => {
   if(!request || decrypt(request.user.password) !== password)
     return res.status(400).json({error: 'Invalid Login'});
 
-  await SupplierRequest.findByIdAndDelete(id);
+  await SupplierRequest.findByIdAndUpdate(id, {status: 3});
   res.status(201).json({message: 'Request canceled'});
 }
 
