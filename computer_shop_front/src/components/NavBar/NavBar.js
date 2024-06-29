@@ -78,8 +78,9 @@ export const NavBar = () => {
   }
 
   const tagOptions = tags.map(t=>({text: t, searchKey: `::tags:${t}`}))
+  console.log(location.pathname === "/" && !user.level && user.level !== undefined);
 
-  return <header className='navBar' style={location.pathname !== "/" || user.level ? {height: "50px"} : {}}>
+  return <header className='navBar' style={location.pathname !== "/" || user.level || user.length === undefined ? {height: "50px"} : {}}>
     <div className='mainBar'>
       <div className='logo' onClick={()=>navigate("/")}>
         <h1>SHOP</h1>
@@ -107,7 +108,7 @@ export const NavBar = () => {
         </div>
       </div>
     </div>
-    {location.pathname === "/" && !user.level && <div className='specialSearch'>
+    {location.pathname === "/" && !user.level && user.level !== undefined && <div className='specialSearch'>
       {
         searchOptions.concat(tagOptions).map(option=>(
           <button className={'searchOption ' + (option.special ? 'optionSpecial' : '')} onClick={()=>navigate(`/search?key=${option.searchKey}`)}>
@@ -145,10 +146,12 @@ export const NavBar = () => {
               <button className='accountButton' onClick={()=>open("/products")}>Products</button>
               <button className='accountButton' onClick={()=>open("/statistics")}>Statistics</button>
              </>
-             :<>
-              <button className='accountButton' onClick={()=>open("/cart")}>Cart</button>
-              <button className='accountButton' onClick={()=>open("/history")}>History</button>
-             </> 
+             :user.level === 0
+              ? <>
+                <button className='accountButton' onClick={()=>open("/cart")}>Cart</button>
+                <button className='accountButton' onClick={()=>open("/history")}>History</button>
+              </>
+              : null
             }
             <button className='accountButton' style={{width: "150px"}} onClick={logOut}>Log out</button>
           </>

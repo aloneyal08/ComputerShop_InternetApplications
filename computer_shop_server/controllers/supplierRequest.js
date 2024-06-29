@@ -197,9 +197,15 @@ const cancelRequest = async (req, res) => {
   res.status(201).json({message: 'Request canceled'});
 }
 
+const getRequests = async (req, res) => {
+  const requests = await SupplierRequest.find({});
+  res.status(200).json(requests);
+}
+
 module.exports = {
   createRequest,
   acceptRequest,
   rejectRequest,
-  cancelRequest
+  cancelRequest,
+  getRequests
 };
