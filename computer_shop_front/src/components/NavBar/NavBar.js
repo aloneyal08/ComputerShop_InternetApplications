@@ -78,9 +78,8 @@ export const NavBar = () => {
   }
 
   const tagOptions = tags.map(t=>({text: t, searchKey: `::tags:${t}`}))
-  console.log(location.pathname === "/" && !user.level && user.level !== undefined);
 
-  return <header className='navBar' style={location.pathname !== "/" || user.level || user.length === undefined ? {height: "50px"} : {}}>
+  return <header className='navBar' style={location.pathname !== "/" || user.level || user.level === undefined ? {height: "50px"} : {}}>
     <div className='mainBar'>
       <div className='logo' onClick={()=>navigate("/")}>
         <h1>SHOP</h1>

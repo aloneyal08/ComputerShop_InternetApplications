@@ -57,7 +57,7 @@ const App = () => {
 
   var MainPage = Storefront;
   if(user.level === 1) MainPage = SupplierDashboard;
-  if(user.level === 2) MainPage = AdminConsole
+  if(user.level === 2) MainPage = AdminConsole;
 
   return (
       <UserContext.Provider value={{user, setUser}}>
@@ -67,7 +67,7 @@ const App = () => {
             <div className='mainWindow' style={location.pathname!=="/" ? {paddingTop: "50px"} : {}}>
               <Routes>
                 <Route path="/" element={<MainPage />} />
-                <Route path="/login" element={<Login />} />
+                <Route path="/login" element={<Login/>} />
                 <Route path="/register" element={<Register />} />
                 <Route path="/product/new" element={<NewProduct />} />
                 <Route path="/settings" element={<UserSettings />} />

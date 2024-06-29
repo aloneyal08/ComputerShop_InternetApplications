@@ -101,10 +101,10 @@
   padding-bottom: 30px;
   transform-origin: 90% -5%;
   transition: 0.07s;
-  transform: scale(0,0);
+  scale: 0;
 }
 .scale1 {
-  transform: scale(1,1);
+  scale: 1 !important;
 }
 .currPopup {
   transform-origin: 90px -5%;

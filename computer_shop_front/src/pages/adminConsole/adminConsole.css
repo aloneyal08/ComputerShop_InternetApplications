@@ -44,10 +44,56 @@
   border-left-width: 0px;
   border-right-width: 0px;
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
+  padding-left: 25px;
+  padding-right: 25px;
+  position: relative;
 }
 
 .statusText {
   font-weight: bold;
+}
+
+.requestPopup {
+  background-color: rgb(230, 230, 230);
+  border: 1px #ddd solid;
+  border-radius: 30px;
+  -webkit-box-shadow: 21px 21px 63px -10px rgba(0,0,0,0.41);
+  -moz-box-shadow: 21px 21px 63px -10px rgba(0,0,0,0.41);
+  box-shadow: 21px 21px 63px -10px rgba(0,0,0,0.41);
+  position: absolute;
+  width: 80%;
+  height: 250px;
+  color: black;
+  padding: 15px;
+  top: 45px;
+  left: 0;
+  right: 0;
+  margin: auto;
+  padding-bottom: 30px;
+  transform-origin: center -10px;
+  transition: 0.07s;
+  scale: 0;
+  z-index: 101;
+}
+
+.centerAbsolute {
+  left: 50%;
+}
+
+.requestDescription {
+  height: 150px;
+  overflow-y: auto;
+}
+
+.requestButtons button {
+  margin: 7px;
+}
+
+.acceptButton {
+  background-image: linear-gradient(#3fa549, #128835);
+}
+.rejectButton {
+  background-image: linear-gradient(#c75757, #a03030);
 }
