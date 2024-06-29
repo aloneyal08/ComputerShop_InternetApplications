@@ -95,15 +95,19 @@ const createRequest = async (req, res) => {
   res.status(201).json(request);
 }
 
-const acceptRequest = async (req, res) => {
+const acceptRequestGet = async (req, res) => {
   const { obj } = req.query;
-  var parsed;
   try {
-    parsed = JSON.parse(decrypt(Buffer.from(obj, 'base64').toString('utf8')));
+    req.body = JSON.parse(decrypt(Buffer.from(obj, 'base64').toString('utf8')));
   } catch(error) {
     return res.status(400).json({error: 'Invalid Request'});
   }
-  const { id, username, password } = parsed;
+  return await acceptRequest(req, res);
+}
+
+const acceptRequest = async (req, res) => {
+  const { id, username, password } = req.body;
+  console.log("object");
 
   const admin = await User.findOne({username});
   if(!admin || admin.level !== 2 || admin.password !== password)
@@ -140,15 +144,18 @@ const acceptRequest = async (req, res) => {
   });
 }
 
-const rejectRequest = async (req, res) => {
+const rejectRequestGet = async (req, res) => {
   const { obj } = req.query;
-  var parsed;
   try {
-    parsed = JSON.parse(decrypt(Buffer.from(obj, 'base64').toString('utf8')));
+    req.body = JSON.parse(decrypt(Buffer.from(obj, 'base64').toString('utf8')));
   } catch(error) {
     return res.status(400).json({error: 'Invalid Request'});
   }
-  const { id, username, password } = parsed;
+  return await rejectRequest(req, res);
+}
+
+const rejectRequest = async (req, res) => {
+  const { id, username, password } = req.body;
 
   const admin = await User.findOne({username});
   if(!admin || admin.level !== 2 || admin.password !== password)
@@ -209,5 +216,7 @@ module.exports = {
   acceptRequest,
   rejectRequest,
   cancelRequest,
-  getRequests
+  getRequests,
+  acceptRequestGet,
+  rejectRequestGet,
 };

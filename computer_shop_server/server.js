@@ -8,8 +8,7 @@ const tag = require('./routers/tag');
 const supplierRequest = require('./routers/supplierRequest');
 require('dotenv').config()
 
-mongoose.connect('mongodb://0.0.0.0:27017/computerShop',
-    { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect('mongodb://0.0.0.0:27017/computerShop');
 
 var app = express();
 app.use(cors());

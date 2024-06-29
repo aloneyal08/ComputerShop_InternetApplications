@@ -48,10 +48,13 @@ const login = async (req, res) => {
   const user = await User.findOne({
     ...obj
   });
-  if(user && ((req.body.encrypted && user.password === password) || (decrypt(user.password) === password)))
-    res.json(user);
-  else
-    res.status(400).json({ error: 'Invalid login' });
+  if(user && ((req.body.encrypted && user.password === password) || (decrypt(user.password) === password))){
+    if(user.suspended) {
+      return res.status(400).json({ error: 'Your account is suspended. if you need more details, please contact our admins at: computer.shop.colman@gmail.com' });
+    }
+    return res.json(user);
+  }
+  res.status(400).json({ error: 'Invalid login' });
 }
 
 const updateUserProfile = async (req, res) => {
@@ -113,11 +116,31 @@ const deleteUser = async (req, res) => {
   res.json({});
 }
 
+const getSuppliers = async (req, res) => {
+  const suppliers = await User.find({level: 1});
+  res.json(suppliers);
+}
+
+const suspendAccount = async (req, res) => {
+  const { email } = req.body;
+  const user = await User.findOneAndUpdate({email}, {suspended: 1})
+  res.json(user)
+}
+
+const restoreAccount = async (req, res) => {
+  const { email } = req.body;
+  const user = await User.findOneAndUpdate({email}, {$unset: {suspended: 1}});
+  res.json(user);
+}
+
 module.exports = {
   register,
   login,
   updateUserProfile,
   updateUsername,
   updatePassword,
-  deleteUser
+  deleteUser,
+  getSuppliers,
+  suspendAccount,
+  restoreAccount
 }
