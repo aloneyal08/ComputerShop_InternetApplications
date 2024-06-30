@@ -10,6 +10,7 @@ import { Rating } from 'react-simple-star-rating';
 import 'react-select-search/style.css'
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import './newProduct.css';
+import { ProductCard } from '../../components/productCard/productCard';
 
 const currencies = require('../../currencies.json');
 
@@ -132,6 +133,9 @@ const NewProduct = () => {
   if(Object.keys(user).length === 0){
     return;
   }
+  if(tagOptions.length === 0){
+    return;
+  }
   return <div>
     {user.level==1?
       <div id='newProductContainer'>
@@ -209,26 +213,7 @@ const NewProduct = () => {
             </section>
           </section>
           <section id='preview'>
-            <div className='productCard'>
-              <img className='productImg' src={photo} onError={(e) =>{e.currentTarget.src = require('../../images/defaultProduct.jpg')}}/>
-              <div className='productText'>
-                <section className='productTextLeft'>
-                  <h3 className='productName'>{name==''?"Product's Name":name}</h3>
-                  <aside><h6 className='productSupplier' >{user.fullName}</h6></aside>
-                  <h4 className='productStock'>{stock>=1?"":'Currently None in Stock*' }</h4>
-                  <Rating 
-                    readonly={true}
-                    initialValue={2.5}
-                    allowFraction={true}
-                    size={35}
-                    id='productRating'
-                  />
-                </section>
-                <section className='productTextRight'>
-                  <h4 className='productPrice'>{price==''?"Product's Price":currencies[currency].symbol + price}</h4>
-                </section>
-              </div>
-            </div>
+            <ProductCard getSupplier={false} getRate={false} product={{name: name==''?"Product's Name":name, price: price==''?"Product's Price":price, stock, photo, rating: 2.5, supplier: user.fullName}} />
             <button id='addProductBtn' onClick={addProduct} className='button1'>Add New Product</button>
           </section>
         </div>

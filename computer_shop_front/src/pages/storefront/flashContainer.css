@@ -1,0 +1,35 @@
+
+#flashContainers{
+    --product-card-width: 250px;
+    --product-img-height: 200px
+}
+#flashContainers{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: calc((var(--product-card-width) + 19px)*3);
+    column-gap: 100px;
+    overflow: hidden;
+    margin: auto;
+    scroll-behavior: smooth;
+}
+.flashContainer{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.flashProductContainer{
+    display: flex;
+    flex-direction: row;
+    column-gap: 20px;
+}
+.flashTitle{
+    margin: 0;
+    font-size: 30px;
+}
+.productPrice, .productName{
+
+}
+.productStock{
+    font-size: 7px;
+}

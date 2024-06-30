@@ -5,7 +5,7 @@ const productController = require('./product');
 
 const makePurchase = async (req, res) => {
     const { user, product } = req.body;
-    const date = new Date();
+    const date = new Date().toISOString();
     const purchase = new Purchase({
         user,
         product,
@@ -15,7 +15,7 @@ const makePurchase = async (req, res) => {
     const p_id = await Purchase.find({_id}).product;
     const stock = await Product.find({p_id}).stock;
     const _product = await Product.findByIdAndUpdate(p_id, {stock: stock - 1});
-    res.json(_product);
+    res.json(purchase);
 };
 
 const getPurchases = async (req, res) => {
@@ -32,8 +32,9 @@ const deletePurchase = async (req, res) => {
     const product = await Product.findByIdAndUpdate(p_id, {stock: stock + 1});
     const _purchase = await Purchase.findOneAndDelete({_id});
     if (!_product) {
-      return res.status(404).json({ errors: ['Product not found'] });
+      return res.status(404).json({ errors: ['Purchase not found'] });
     }
+    res.json(_purchase)
 };
 
 module.exports = {
