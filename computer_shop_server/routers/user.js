@@ -12,5 +12,6 @@ router.delete('/delete', UserController.deleteUser);
 router.get('/suppliers', UserController.getSuppliers);
 router.put('/suspend', UserController.suspendAccount);
 router.put('/restore', UserController.restoreAccount);
+router.get('/emails', UserController.getAllEmails);
 
 module.exports = router;

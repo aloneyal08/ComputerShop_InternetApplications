@@ -49,6 +49,7 @@
   width: 100%;
   border-left-width: 0px;
   border-right-width: 0px;
+  position: relative;
 }
 .dashboardListItem th {
   position: sticky;
@@ -62,26 +63,11 @@
 }
 
 .requestPopup {
-  background-color: rgb(230, 230, 230);
-  border: 1px #ddd solid;
-  border-radius: 30px;
-  -webkit-box-shadow: 21px 21px 63px -10px rgba(0,0,0,0.41);
-  -moz-box-shadow: 21px 21px 63px -10px rgba(0,0,0,0.41);
-  box-shadow: 21px 21px 63px -10px rgba(0,0,0,0.41);
-  position: absolute;
-  width: 80%;
-  height: 250px;
-  color: black;
-  padding: 15px;
   top: 45px;
   left: 0;
   right: 0;
   margin: auto;
-  padding-bottom: 30px;
   transform-origin: center -10px;
-  transition: 0.07s;
-  scale: 0;
-  z-index: 101;
 }
 
 .centerAbsolute {
@@ -112,3 +98,34 @@
 .darkRedGradient {
   background-image: linear-gradient(#8d3f3f, #641f1f);
 }
+
+.dashboardHeaderContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding-right: 10px;
+}
+
+.messagePopup {
+  transform-origin: 90% -10px;
+  width: 90%;
+  left: 0;
+  right: 0;
+  margin: auto;
+  margin-top: 10px;
+}
+
+.messagePopup > span {
+  text-align: left;
+  width: 100%;
+  display: block;
+  padding-left: 20px;
+  font-size: 18px;
+  font-weight: 600;
+}
+/* 
+.rdw-option-wrapper, .rdw-dropdown-wrapper {
+  background-color: transparent;
+  border: none;
+} */

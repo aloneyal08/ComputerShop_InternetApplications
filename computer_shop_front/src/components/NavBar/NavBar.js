@@ -117,7 +117,7 @@ export const NavBar = () => {
       }
     </div>}
     <div 
-      className={'navBarPopup ' + (isAccountPopupOpen ? 'scale1' : '')}
+      className={'popup navBarPopup ' + (isAccountPopupOpen ? 'scale1' : '')}
       onMouseEnter={()=>clearTimeout(timeoutId)} onMouseLeave={()=>setAccountPopupOpen(false)}
     >
       <div className='arrowUp'/>
@@ -159,7 +159,7 @@ export const NavBar = () => {
     </div>
     {isCurrencyPopupOpen && <div className='allScreen' onClick={()=>setCurrencyPopupOpen(false)}/>}
     <div 
-      className={'navBarPopup currPopup ' + (isCurrencyPopupOpen ? 'scale1' : '')}
+      className={'popup currPopup ' + (isCurrencyPopupOpen ? 'scale1' : '')}
     >
       {
         Object.keys(currencies).map(curr=>

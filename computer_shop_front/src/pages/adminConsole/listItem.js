@@ -73,7 +73,7 @@ export const RequestListItem = ({request, reload}) => {
     <td style={{color: status.color}} className='statusText'>
       {status.message}
     </td>
-    <td className={'requestPopup ' + (isPopupOpen&&request.status===0 ? 'scale1' : '')}>
+    <div className={'popup requestPopup ' + (isPopupOpen&&request.status===0 ? 'scale1' : '')}>
       <div className='arrowUp centerAbsolute'/>
       <h5 style={{margin: "5px"}}>Email: {request.user.email}</h5>
       <h5 style={{margin: "5px"}}>Request Description:</h5>
@@ -82,7 +82,7 @@ export const RequestListItem = ({request, reload}) => {
         <button className='button1 acceptButton' onClick={acceptRequest}>Accept</button>
         <button className='button1 rejectButton' onClick={rejectRequest}>Reject</button>
       </div>
-    </td>
+    </div>
     
   </tr>
 };
@@ -119,5 +119,19 @@ export const SupplierListItem = ({supplier, reload}) => {
     <button className={'button1 rejectButton ' + (supplier.suspended ? '' : 'darkRedGradient')} onClick={changeUserStatus} style={{fontSize: "15px", width: "200px"}}>
       {supplier.suspended ? "Restore" : "Suspend"} Account
     </button>
+  </tr>
+}
+
+export const MessageListItem = ({message, reload}) => {
+  return <tr className='dashboardListItem'>
+    <td>
+      {message.to}
+    </td>
+    <td>
+      {new Date(message.date).toLocaleDateString()}
+    </td>
+    <td>
+      {message.subject}
+    </td>
   </tr>
 }

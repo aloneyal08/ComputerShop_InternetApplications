@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 const user = require('./routers/user');
 const product = require('./routers/product');
 const tag = require('./routers/tag');
+const message = require('./routers/message');
 const supplierRequest = require('./routers/supplierRequest');
 require('dotenv').config()
 
@@ -19,6 +20,8 @@ app.use('/user', user);
 app.use('/product', product);
 app.use('/tag', tag);
 app.use('/supplier/request', supplierRequest);
+app.use('/message', message);
+
 mongoose.connection.once('open', () => {
   console.log('Server started');
   app.listen(88);

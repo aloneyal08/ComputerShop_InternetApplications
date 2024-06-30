@@ -86,22 +86,11 @@
 }
 
 .navBarPopup {
-  background-color: rgb(230, 230, 230);
-  border: 1px #ddd solid;
-  border-radius: 30px;
-  -webkit-box-shadow: 21px 21px 63px -10px rgba(0,0,0,0.41);
-  -moz-box-shadow: 21px 21px 63px -10px rgba(0,0,0,0.41);
-  box-shadow: 21px 21px 63px -10px rgba(0,0,0,0.41);
-  position: absolute;
   top: 55px;
   right: 10px;
   width: 300px;
-  color: black;
-  padding: 15px;
-  padding-bottom: 30px;
   transform-origin: 90% -5%;
-  transition: 0.07s;
-  scale: 0;
+  z-index: 999;
 }
 .scale1 {
   scale: 1 !important;
@@ -113,11 +102,9 @@
   overflow-y: scroll;
   height: 330px;
   scrollbar-width: none;
+  z-index: 999;
 }
 
-.navBarPopup h1, .navBarPopup h3 {
-  transform-origin: 90% -5%;
-}
 
 .navBarPopup h3 {
   font-weight: 300;

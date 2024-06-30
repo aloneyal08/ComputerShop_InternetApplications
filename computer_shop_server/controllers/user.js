@@ -133,6 +133,11 @@ const restoreAccount = async (req, res) => {
   res.json(user);
 }
 
+const getAllEmails = async (req, res) => {
+  const users = await User.find({}, {email: 1});
+  res.json(users.map(u=>u.email));
+}
+
 module.exports = {
   register,
   login,
@@ -142,5 +147,6 @@ module.exports = {
   deleteUser,
   getSuppliers,
   suspendAccount,
-  restoreAccount
+  restoreAccount,
+  getAllEmails
 }
