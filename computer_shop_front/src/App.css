@@ -290,3 +290,17 @@
   z-index: 500;
 }
 
+.iconButton {
+  border: none;
+  background-color: transparent;
+  background-size: 70% 70%;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  padding: 5px;
+  background-repeat: no-repeat;
+  background-position: center center;
+}
+.iconButton:hover {
+  background-color: rgba(0, 0, 0, .05);
+}

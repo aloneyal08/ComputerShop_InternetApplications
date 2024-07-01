@@ -43,10 +43,10 @@ const sendEmail = async (to, subject, header, content, buttons='') => {
         <div style="background-image: url(https://us.123rf.com/450wm/panychev/panychev1603/panychev160300672/54290362-abstract-sfondo-blu-scuro.jpg?ver=6); position: absolute;width: 100%;height: 100%;font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;background-size: cover;">
           <div style="background-color: white;position: absolute;width: 85%;height: 85%;border-radius: 44px;left: 50%;top: 50%;transform: translate(-50%, -50%);">
             <h1 style="font-size: 40px;text-align: center;">${header}</h1>
-            <p style="text-align: center;font-size: 20px;font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;margin: 30px;">
+            <div style="text-align: center;font-size: 20px;font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;margin: 30px;padding:30px;">
               ${content}
               <br/>Thank you for using our site!
-            </p>
+            </div>
             ${buttons}
           </div>
       `

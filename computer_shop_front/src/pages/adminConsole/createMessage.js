@@ -5,7 +5,7 @@ import htmlToDraft from 'html-to-draftjs';
 import draftToHtmlPuri from "draftjs-to-html";
 import SelectSearch from 'react-select-search';
 
-const CreateMessage = () => {
+const CreateMessage = ({reload}) => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
  
   const [emails, setEmails] = useState([]);
@@ -21,35 +21,63 @@ const CreateMessage = () => {
     const editorState = EditorState.createWithContent(contentState);
     setContent(editorState);
     fetch('http://localhost:88/user/emails').then((res) => res.json()).then((res) =>{
-      setEmails(res);
+      setEmails(['all', 'users', 'suppliers', 'admins'].concat(res));
     });
   }, []);
 
   const onSubjectChange = (e) => setSubject(e.target.value);
   const onHeaderChange = (e) => setHeader(e.target.value);
   const onContentChange = (state) => setContent(state);
-  const onToChange = (i) => setTo(emails[i]);
+  const onToChange = (email) => setTo(email);
 
-  console.log(emails);
+  const onSubmit = () => {
+    let c = draftToHtmlPuri(convertToRaw(content.getCurrentContent()));
+    if(to === '')
+      return alert('Please enter a recipient');
+
+    if(subject === '')
+      return alert('Please enter a subject');
+
+    if(header === '')
+      return alert('Please enter a header');
+
+    if(content === '')
+      return alert('Please enter a message');
+
+    fetch(`http://localhost:88/message/create`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({to, subject, header, content: c}),
+    }).then(res=>res.json()).then(res=>{
+      if(res.error) {
+        alert(res.error);
+      } else {
+        reload();
+        setIsPopupOpen(false);
+      }
+    })
+  }
 
   return <div>
     <button className='button1' onClick={()=>setIsPopupOpen(!isPopupOpen)} style={{width: "200px"}}>
       {isPopupOpen ? '- Close' : '+ Create Message'}
     </button>
+    {isPopupOpen&&<div className='allScreen' onClick={()=>setIsPopupOpen(false)}/>}
     <div className={'popup messagePopup ' + (isPopupOpen ? 'scale1' : '')}>
       <div className='arrowUp'/>
       <h2>New Message</h2>
       <span>Email</span>
-      <SelectSearch onChange={onToChange} search={true} getOptions={()=>emails} name="tag" placeholder="To" renderValue={(valueProps) =>
+        {emails.length>0&&<SelectSearch onChange={onToChange} search={true} value={to} getOptions={()=>emails.map(email=>({value: email, name: email}))} placeholder="To" renderValue={(valueProps) =>
         <div className='input1'>
           <label>
-          <input type='text' {...valueProps} placeholder=''/>
+          <input type='text' required {...valueProps} placeholder=''/>
           <span>{valueProps.placeholder}</span>
           </label>
         </div>} renderOption={(optionsProps, optionsData) => {
-          console.log(optionsData);
-            return <button className='select-search-option' {...optionsProps}>{optionsData.name}</button>
-        }} />
+            return <button className='select-search-option' {...optionsProps}>{optionsData.value}</button>
+        }} />}
       <div className="input1">
         <label>
           <input type='text' required onChange={onSubjectChange}/>
@@ -79,6 +107,8 @@ const CreateMessage = () => {
         onEditorStateChange={onContentChange}
         placeholder='Content'
       />
+      <br/>
+      <button className='button1' onClick={onSubmit}>Send</button>
     </div>
   </div>
 }

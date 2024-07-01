@@ -190,7 +190,7 @@ const NewProduct = () => {
               <SelectSearch ref={tagSelect} onChange={addTag} search={true} getOptions={()=>tagOptions.filter((tag)=>tag.disabled === false)} name="tag" placeholder="Choose Your Tags" renderValue={(valueProps) =>
                 <div className='input1'>
                   <label>
-                  <input type='text' {...valueProps} placeholder=''/>
+                  <input type='text' required {...valueProps} placeholder=''/>
                   <span>{valueProps.placeholder}</span>
                   </label>
                 </div>} renderOption={(optionsProps, optionsData) => {

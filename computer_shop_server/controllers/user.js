@@ -90,12 +90,12 @@ const updateUsername = async (req, res) => {
 }
 
 const updatePassword = async (req, res) => {
-  const { email, password, oldPassword } = req.body;
+  const { email, password, oldPassword, oldPassEnc } = req.body;
   var u = await User.findOne({email});
   if (!u) {
     return res.status(404).json({ error: 'User not found' });
   }
-  if(decrypt(u.password) !== oldPassword)
+  if((oldPassEnc ? u.password : decrypt(u.password)) !== oldPassword)
     return res.status(400).json({ error: 'Invalid old password' });
 
   const user = await User.findOneAndUpdate({email}, {
@@ -121,6 +121,11 @@ const getSuppliers = async (req, res) => {
   res.json(suppliers);
 }
 
+const getAdmins = async (req, res) => {
+  const admins = await User.find({level: 2});
+  res.json(admins);
+}
+
 const suspendAccount = async (req, res) => {
   const { email } = req.body;
   const user = await User.findOneAndUpdate({email}, {suspended: 1})
@@ -134,8 +139,19 @@ const restoreAccount = async (req, res) => {
 }
 
 const getAllEmails = async (req, res) => {
-  const users = await User.find({}, {email: 1});
+  const {onlyUser} = req.query;
+  const users = await User.find(onlyUser ? {level: 0} : {}, {email: 1});
   res.json(users.map(u=>u.email));
+}
+
+const addAdmin = async (req, res) => {
+  const {email, username, password} = req.body;
+  const mainAdmin = await User.findOne({username});
+  if(!mainAdmin || mainAdmin.level !== 2 || mainAdmin.password !== password)
+    return res.status(400).json({error: 'Invalid credentials'});
+
+  const admin = await User.findOneAndUpdate({email}, {level: 2});
+  res.json(admin);
 }
 
 module.exports = {
@@ -146,7 +162,9 @@ module.exports = {
   updatePassword,
   deleteUser,
   getSuppliers,
+  getAdmins,
   suspendAccount,
   restoreAccount,
-  getAllEmails
+  getAllEmails,
+  addAdmin
 }

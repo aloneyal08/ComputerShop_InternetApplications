@@ -10,6 +10,7 @@ const createMessage = async (req, res) => {
     subject,
     header
   });
+  await message.save();
   sendEmail(to, subject, header, content, '');
   res.json(message)
 }

@@ -124,8 +124,35 @@
   font-size: 18px;
   font-weight: 600;
 }
-/* 
+
 .rdw-option-wrapper, .rdw-dropdown-wrapper {
   background-color: transparent;
   border: none;
-} */
+}
+
+.deleteButton {
+  background-image: url(https://static-00.iconduck.com/assets.00/delete-icon-1864x2048-bp2i0gor.png);
+  height: 38px;
+  width: 38px;
+}
+
+.editButton {
+  background-image: url(https://cdn-icons-png.freepik.com/256/1159/1159633.png?semt=ais_hybrid);
+  height: 38px;
+  width: 38px;
+}
+
+.adminPopup {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+.adminEditPopup {
+  transform-origin: 92.75% -10px;
+}
+.adminEditPopup .arrowUp {
+  left: 92.75%;
+}

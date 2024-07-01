@@ -1,13 +1,9 @@
 import React, {useState, useEffect} from 'react'
 import './adminConsole.css'
-import {MessageListItem, RequestListItem, SupplierListItem} from './listItem';
+import {AdminListItem, MessageListItem, RequestListItem, SupplierListItem} from './listItem';
 import CreateMessage from './createMessage';
+import CreateAdmin from './createAdmin';
 
-// JUST FOR DEVELOPMENT! REMOVE ONCE FINISHED!
-const duplicateArr = (arr, times) =>
-  Array(times)
-      .fill([...arr])
-      .reduce((a, b) => a.concat(b));
 
 const AdminConsole = () => {
   const [requests, setRequests] = useState([]);
@@ -16,16 +12,20 @@ const AdminConsole = () => {
 
   const [suppliers, setSuppliers] = useState([]);
   const [messages, setMessages] = useState([]);
+  const [admins, setAdmins] = useState([]);
 
   useEffect(() => {
-    fetch(`http://localhost:88/supplier/request`).then(res=>res.json()).then(rs=>{
-      setRequests(duplicateArr(rs, 100));
+    fetch(`http://localhost:88/supplier/request`).then(res=>res.json()).then(req=>{
+      setRequests(req);
     });
     fetch(`http://localhost:88/user/suppliers`).then(res=>res.json()).then(s=>{
-      setSuppliers(duplicateArr(s, 100));
+      setSuppliers(s);
     });
     fetch(`http://localhost:88/message/`).then(res=>res.json()).then(m=>{
-      setMessages(duplicateArr(m, 100));
+      setMessages(m);
+    });
+    fetch(`http://localhost:88/user/admins`).then(res=>res.json()).then(a=>{
+      setAdmins(a);
     });
   }, [force])
 
@@ -36,15 +36,17 @@ const AdminConsole = () => {
         <h2 className='dashboardHeader'>Supplier Requests</h2>
         <div className='dashboardList'>
           <table>
-            <tr className='dashboardListItem adminTblHeader'>
-              <th>Company Name</th>
-              <th>Phone</th>
-              <th>Date</th>
-              <th>Status</th>
-            </tr>
-            {
-              requests.map((request, i)=><RequestListItem request={request} key={i} reload={reload}/>)
-            }
+            <tbody>
+              <tr className='dashboardListItem adminTblHeader'>
+                <th>Company Name</th>
+                <th>Phone</th>
+                <th>Date</th>
+                <th>Status</th>
+              </tr>
+              {
+                requests.map((request, i)=><RequestListItem request={request} key={i} reload={reload}/>)
+              }
+            </tbody>
           </table>
           {requests.length===0&&<h3>No Requests</h3>}
         </div>
@@ -53,15 +55,17 @@ const AdminConsole = () => {
         <h2 className='dashboardHeader'>Suppliers</h2>
         <div className='dashboardList'>
           <table>
-            <tr className='dashboardListItem adminTblHeader' style={{backgroundColor: "#b59c9c"}}>
-              <th style={{backgroundColor: "#b59c9c"}}>Company Name</th>
-              <th style={{backgroundColor: "#b59c9c"}}>Phone</th>
-              <th style={{backgroundColor: "#b59c9c"}}>Email</th>
-              <th style={{backgroundColor: "#b59c9c"}}>Action</th>
-            </tr>
-            {
-              suppliers.map((supplier, i)=><SupplierListItem supplier={supplier} key={i} reload={reload}/>)
-            }
+            <tbody>
+              <tr className='dashboardListItem adminTblHeader' style={{backgroundColor: "#b59c9c"}}>
+                <th style={{backgroundColor: "#b59c9c"}}>Company Name</th>
+                <th style={{backgroundColor: "#b59c9c"}}>Phone</th>
+                <th style={{backgroundColor: "#b59c9c"}}>Email</th>
+                <th style={{backgroundColor: "#b59c9c"}}>Action</th>
+              </tr>
+              {
+                suppliers.map((supplier, i)=><SupplierListItem supplier={supplier} key={i} reload={reload}/>)
+              }
+            </tbody>
           </table>
           {suppliers.length===0&&<h3>No Suppliers</h3>}
         </div>
@@ -69,21 +73,45 @@ const AdminConsole = () => {
       <div className='dashboardContainer'>
         <div className='dashboardHeaderContainer' style={{position: "relative"}}>
           <h2 className='dashboardHeader'>Messages</h2>
-          <CreateMessage/>
+          <CreateMessage reload={reload}/>
         </div>
 
         <div className='dashboardList'>
           <table>
-            <tr className='dashboardListItem adminTblHeader' style={{backgroundColor: "white"}}>
-              <th style={{backgroundColor: "white"}}>To</th>
-              <th style={{backgroundColor: "white"}}>Subject</th>
-              <th style={{backgroundColor: "white"}}>Date</th>
-            </tr>
-            {
-              messages.map((message, i)=><MessageListItem message={message} key={i} reload={reload}/>)
-            }
+            <tbody>
+              <tr className='dashboardListItem adminTblHeader' style={{backgroundColor: "white"}}>
+                <th style={{backgroundColor: "white"}}>To</th>
+                <th style={{backgroundColor: "white"}}>Subject</th>
+                <th style={{backgroundColor: "white"}}>Date</th>
+              </tr>
+              {
+                messages.map((message, i)=><MessageListItem message={message} key={i} reload={reload}/>)
+              }
+            </tbody>
           </table>
           {messages.length===0&&<h3>No Messages</h3>}
+        </div>
+      </div>
+      <div className='dashboardContainer'>
+        <div className='dashboardHeaderContainer' style={{position: "relative"}}>
+          <h2 className='dashboardHeader'>Admins</h2>
+          <CreateAdmin reload={reload}/>
+        </div>
+
+        <div className='dashboardList'>
+          <table>
+            <tbody>
+              <tr className='dashboardListItem adminTblHeader' style={{backgroundColor: "white"}}>
+                <th style={{backgroundColor: "white"}}>Name</th>
+                <th style={{backgroundColor: "white"}}>Email</th>
+                <th style={{backgroundColor: "white"}}>Phone</th>
+                <th style={{backgroundColor: "white"}}> </th>
+              </tr>
+              {
+                admins.map((admin, i)=><AdminListItem admin={admin} key={i} reload={reload}/>)
+              }
+            </tbody>
+          </table>
         </div>
       </div>
     </div>

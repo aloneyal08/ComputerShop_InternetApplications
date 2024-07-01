@@ -29,7 +29,6 @@ const createRequest = async (req, res) => {
     },
     description,
     status: 0,
-    date: new Date(Date.now()).toISOString()
   });
   await request.save();
   const admins = await User.find({level: 2});
