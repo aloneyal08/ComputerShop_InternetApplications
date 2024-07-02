@@ -6,13 +6,10 @@ import { convertToRaw, EditorState, ContentState } from "draft-js";
 import htmlToDraft from 'html-to-draftjs';
 import draftToHtmlPuri from "draftjs-to-html";
 import SelectSearch from 'react-select-search';
-import { Rating } from 'react-simple-star-rating';
 import 'react-select-search/style.css'
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import './newProduct.css';
 import { ProductCard } from '../../components/productCard/productCard';
-
-const currencies = require('../../currencies.json');
 
 const NewProduct = () => {
   const {user} = useContext(UserContext);
@@ -51,7 +48,7 @@ const NewProduct = () => {
   };
 
   const priceChange = (e) =>{
-    let pr = e.target.value == ''? '' : Math.floor(e.target.value*100)/100
+    let pr = e.target.value === ''? '' : Math.floor(e.target.value*100)/100
     e.target.value = pr;
     setPrice(pr);
   }
@@ -67,7 +64,7 @@ const NewProduct = () => {
 
   const addTag = (i) => {
     let temp = tagOptions;
-    i = i==null?0:i;
+    i = i===null?0:i;
     temp[i].disabled = true;
     setTagOptions(temp);
     temp = chosenTags.slice();
@@ -112,12 +109,11 @@ const NewProduct = () => {
         description: value,
         stock,
         price: price/exchangeRates[currency],
-        photo: photo == ''?null:photo,
-        tags: chosenTags==[]?null:chosenTags.map((tag) => {
+        photo: photo === ''?null:photo,
+        tags: chosenTags.length===0?null:chosenTags.filter((tag) => {
           for(let i = 0; i < tags.length;++i){
             if(tags[i].text === tag.name){return tags[i]._id}
-          }
-        }),
+          }}),
         supplier: user._id
       })
     }).then((res) => res.json()).then((res) => {
@@ -212,7 +208,7 @@ const NewProduct = () => {
             </section>
           </section>
           <section id='preview'>
-            <ProductCard product={{name: name==''?"Product's Name":name, price: price==''?"Product's Price":price, stock, photo, rating: 2.5, supplierName: user.fullName}} />
+            <ProductCard product={{name: name===''?"Product's Name":name, price: price===''?"Product's Price":price, stock, photo, rating: 2.5, supplierName: user.fullName}} />
             <button id='addProductBtn' onClick={addProduct} className='button1'>Add New Product</button>
           </section>
         </div>
