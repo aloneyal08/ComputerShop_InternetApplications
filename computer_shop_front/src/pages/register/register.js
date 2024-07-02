@@ -3,6 +3,7 @@ import { validateEmail, validatePhone, validateUsername } from '../../utils';
 import { UserContext } from '../../Contexts';
 import { Link, useNavigate } from 'react-router-dom';
 import { useGoogleLogin } from '@react-oauth/google';
+import './register.css';
 
 export const googleRegister = (user, setUser, navigate) => {
   fetch('http://localhost:88/user/register', {
@@ -43,6 +44,9 @@ const Register = () => {
   const [googleUser, setGoogleUser] = useState(null);
   const [usernameValid, setUsernameValid] = useState(true);
 
+  const [isSupplier, setIsSupplier] = useState(false);
+  const [description, setDescription] = useState('');
+
 
   const {setUser, user} = useContext(UserContext);
   const navigate = useNavigate();
@@ -54,9 +58,10 @@ const Register = () => {
 
   const checkEmailValid = () => setEmailValid(validateEmail(email))
   const checkUsernameValid = () => setUsernameValid(validateUsername(username))
-  const checkPhoneValid = () => setPhoneValid(validatePhone(phone) || phone === '');
+  const checkPhoneValid = () => setPhoneValid(validatePhone(phone) || phone === '')
 
   const onFullNameChange = (e) => setFullName(e.target.value);
+  const onDescriptionChange = (e) => setDescription(e.target.value);
   const onRepeatPasswordChange = (e) => setRepeatPassword(e.target.value);
   const onPasswordChange = (e) => setPassword(e.target.value);
   const onEmailChange = (e) => {
@@ -80,13 +85,18 @@ const Register = () => {
 
   const onSubmit = () => {
     checkEmailValid();
-    checkUsernameValid()
+    checkUsernameValid();
+    checkPhoneValid();
     if(!emailValid) {
       alert('Invalid email');
       return;
     }
     if(!phoneValid) {
       alert('Invalid phone');
+      return;
+    }
+    if(phone === '' && isSupplier) {
+      alert('Phone is required for suppliers');
       return;
     }
     if(!usernameValid) {
@@ -107,7 +117,7 @@ const Register = () => {
     }
     
     
-    fetch('http://localhost:88/user/register', {
+    fetch(`http://localhost:88/${isSupplier ? 'supplier/request/create' : 'user/register'}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -117,13 +127,17 @@ const Register = () => {
         password,
         email,
         fullName,
+        description,
         phone: phone === '' ? null : phone,
       })
     }).then((res) => res.json()).then((res) => {
       if(res.error) {
         alert(res.error);
       } else {
-        setUser(res);
+        if(isSupplier)
+          alert('Your request has been sent to our admin. once approved, you will be able to start selling on our site!');
+        else
+          setUser(res);
         navigate('/');
         localStorage.setItem("email", res.email);
         localStorage.setItem("password", res.password);
@@ -161,7 +175,7 @@ const Register = () => {
       <div className="input1">
         <label>
           <input type='text' required onChange={onFullNameChange}/>
-          <span>Full Name*</span>
+          <span>{isSupplier ? 'Company name' : 'Full Name'}*</span>
         </label>
       </div>
       <div className="input1">
@@ -173,7 +187,7 @@ const Register = () => {
       <div className="input1">
         <label>
           <input type='text' required onBlur={checkPhoneValid} onChange={onPhoneChange} className={phoneValid ? '' : 'invalidBox'}/>
-          <span className={phoneValid ? '' : 'invalidText'}>{phoneValid ? 'Phone (10 digits)' : 'INVALID PHONE (10 digits)'}</span>
+          <span className={phoneValid ? '' : 'invalidText'}>{phoneValid ? `Phone ${isSupplier ? '(Contact)' : ''} (10 digits)` : 'INVALID PHONE (10 digits)'}</span>
         </label>
       </div>
       <div className="input1">
@@ -194,12 +208,27 @@ const Register = () => {
           <span>Repeat Password*</span>
         </label>
       </div>
+      {isSupplier && <div>
+        <div className="input1">
+          <label>
+            <textarea required onChange={onDescriptionChange}/>
+            <span>Description (what are you selling? what volume?)</span>
+          </label>
+        </div>
+      </div>}
+      <div className="checkbox1 supplierCheckbox">
+        <input id="supplierCheck" className="substituted" type="checkbox" aria-hidden="true" onChange={()=>setIsSupplier(!isSupplier)}/>
+        <label htmlFor="supplierCheck">Request to be a supplier</label>
+      </div>
       <button onClick={onSubmit} className='button1'>Register</button>
-      <span className='loginOr'>--------- or -----------</span>
-      <button className='button1 googleButton' onClick={googleLogin} >
-        <img src={require('../../images/googleIcon.png')} alt='_' className='googleIcon'/>
-        Continue with Google
-      </button>
+      {!isSupplier && <>
+        <span className='loginOr'>--------- or -----------</span>
+        <button className='button1 googleButton' onClick={googleLogin} >
+          <img src={require('../../images/googleIcon.png')} alt='_' className='googleIcon'/>
+          Continue with Google
+        </button>
+      </>
+      }
       <p>Already have an account? <Link to="/login">Login</Link></p>
     </div>
   </div>

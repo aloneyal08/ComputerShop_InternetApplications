@@ -28,7 +28,6 @@ const NewProduct = () => {
   const [photo, setPhoto] = useState('');
   const [tagOptions, setTagOptions] = useState([]);
   const [chosenTags, setChosenTags] = useState([]);
-  const [hiddenTags, setHiddenTags] = useState([]);
   
   useEffect(() => {
     const blocksFromHtml = htmlToDraft("");
@@ -64,10 +63,6 @@ const NewProduct = () => {
     temp = chosenTags.slice();
     temp.splice(temp.indexOf({name: tagOptions[i].name, value: i}), 1);
     setChosenTags(temp);
-    temp = hiddenTags;
-    temp.push(tagSelect.current.children[1].children[0].children[i]);
-    temp[temp.length-1].style.display = 'block';
-    setHiddenTags(temp);
   };
 
   const addTag = (i) => {
@@ -78,10 +73,6 @@ const NewProduct = () => {
     temp = chosenTags.slice();
     temp.push({name: tagOptions[i].name, value: i});
     setChosenTags(temp);
-    temp = hiddenTags;
-    temp.push(tagSelect.current.children[1].children[0].children[i]);
-    temp[temp.length-1].style.display = 'none';
-    setHiddenTags(temp);
   };
 
   const addProduct = async (e) => {
@@ -93,22 +84,22 @@ const NewProduct = () => {
     let value = draftToHtmlPuri(
       convertToRaw(description.getCurrentContent())
     );
-    if(name == ''){
+    if(name === ''){
       alert('A product name must be entered!');
       return;
     }
-    if(stock == null){
+    if(stock === null){
       alert('A starting stock must be entered!');
       return;
     }
-    if(price == null){
+    if(price === null){
       alert('A product price must be entered!');
       return;
     }
-    if(value == ''){
+    if(value === ''){
       alert('A product description must be entered!');
     }
-    if(photo == ''){
+    if(photo === ''){
       alert('A product picture must be entered!');
     }
     fetch('http://localhost:88/product/add', {
@@ -145,7 +136,7 @@ const NewProduct = () => {
     return;
   }
   return <div>
-    {user.level==1?
+    {user.level === 1?
       <div id='newProductContainer'>
         <h1 id='title'>Add New Product</h1>
         <div id='divider'>
@@ -209,14 +200,14 @@ const NewProduct = () => {
                   {chosenTags.map(tag=>(<div className='productTag'><p className='productTagName'>{tag.name}</p><span id={tag.value} onClick={removeTag}>x</span></div>))}
                 </div>
               }
-              <SelectSearch ref={tagSelect} onChange={addTag} search={true} getOptions={()=>tagOptions.map((tag)=>{if(tag.disabled == false){return tag}})} name="tag" placeholder="Choose Your Tags" renderValue={(valueProps) =>
+              <SelectSearch ref={tagSelect} onChange={addTag} search={true} getOptions={()=>tagOptions.filter((tag)=>tag.disabled === false)} name="tag" placeholder="Choose Your Tags" renderValue={(valueProps) =>
                 <div className='input1'>
                   <label>
-                  <input type='text' {...valueProps} placeholder=''/>
+                  <input type='text' required {...valueProps} placeholder=''/>
                   <span>{valueProps.placeholder}</span>
                   </label>
                 </div>} renderOption={(optionsProps, optionsData) => {
-                    return <button className='select-search-option' {...optionsProps}>{optionsData.name}</button>
+                    return tags.find(t=>t.name===optionsData.name) ? null : <button className='select-search-option' {...optionsProps}>{optionsData.name}</button>
                 }} />
             </section>
           </section>
@@ -229,7 +220,7 @@ const NewProduct = () => {
       :
       <div style={{display:'flex',flexDirection:'column'}}>
         <h1>{'You are not permitted to be here >:('}</h1>
-        <img src='https://thumbs.dreamstime.com/z/very-angry-boy-12560031.jpg' />
+        <img src='https://thumbs.dreamstime.com/z/very-angry-boy-12560031.jpg' alt=' '/>
         <button className='button1' onClick={() => {navigate('/')}}>Return back to home page</button>
       </div>
     }

@@ -63,10 +63,13 @@ const login = async (req, res) => {
   const user = await User.findOne({
     ...obj
   });
-  if(user && ((req.body.encrypted && user.password === password) || (decrypt(user.password) === password)))
-    res.json(user);
-  else
-    res.status(400).json({ error: 'Invalid login' });
+  if(user && ((req.body.encrypted && user.password === password) || (decrypt(user.password) === password))){
+    if(user.suspended) {
+      return res.status(400).json({ error: 'Your account is suspended. if you need more details, please contact our admins at: computer.shop.colman@gmail.com' });
+    }
+    return res.json(user);
+  }
+  res.status(400).json({ error: 'Invalid login' });
 }
 
 const updateUserProfile = async (req, res) => {
@@ -102,12 +105,12 @@ const updateUsername = async (req, res) => {
 }
 
 const updatePassword = async (req, res) => {
-  const { email, password, oldPassword } = req.body;
+  const { email, password, oldPassword, oldPassEnc } = req.body;
   var u = await User.findOne({email});
   if (!u) {
     return res.status(404).json({ error: 'User not found' });
   }
-  if(decrypt(u.password) !== oldPassword)
+  if((oldPassEnc ? u.password : decrypt(u.password)) !== oldPassword)
     return res.status(400).json({ error: 'Invalid old password' });
 
   const user = await User.findOneAndUpdate({email}, {
@@ -128,6 +131,44 @@ const deleteUser = async (req, res) => {
   res.json({});
 }
 
+const getSuppliers = async (req, res) => {
+  const suppliers = await User.find({level: 1});
+  res.json(suppliers);
+}
+
+const getAdmins = async (req, res) => {
+  const admins = await User.find({level: 2});
+  res.json(admins);
+}
+
+const suspendAccount = async (req, res) => {
+  const { email } = req.body;
+  const user = await User.findOneAndUpdate({email}, {suspended: 1})
+  res.json(user)
+}
+
+const restoreAccount = async (req, res) => {
+  const { email } = req.body;
+  const user = await User.findOneAndUpdate({email}, {$unset: {suspended: 1}});
+  res.json(user);
+}
+
+const getAllEmails = async (req, res) => {
+  const {onlyUser} = req.query;
+  const users = await User.find(onlyUser ? {level: 0} : {}, {email: 1});
+  res.json(users.map(u=>u.email));
+}
+
+const addAdmin = async (req, res) => {
+  const {email, username, password} = req.body;
+  const mainAdmin = await User.findOne({username});
+  if(!mainAdmin || mainAdmin.level !== 2 || mainAdmin.password !== password)
+    return res.status(400).json({error: 'Invalid credentials'});
+
+  const admin = await User.findOneAndUpdate({email}, {level: 2});
+  res.json(admin);
+}
+
 module.exports = {
   getUserById,
   getSuppliers,
@@ -136,5 +177,11 @@ module.exports = {
   updateUserProfile,
   updateUsername,
   updatePassword,
-  deleteUser
+  deleteUser,
+  getSuppliers,
+  getAdmins,
+  suspendAccount,
+  restoreAccount,
+  getAllEmails,
+  addAdmin
 }

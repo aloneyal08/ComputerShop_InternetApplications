@@ -78,7 +78,7 @@ export const NavBar = () => {
   }
   const tagOptions = tags.map(t=>({text: t.text, searchKey: `::tags:${t}`}))
 
-  return <header className='navBar' style={location.pathname !== "/" || user.level !== 0 ? {height: "50px"} : {}}>
+  return <header className='navBar' style={location.pathname !== "/" || user.level === 1 || user.level === 2 ? {height: "50px"} : {}}>
     <div className='mainBar'>
       <div className='logo' onClick={()=>navigate("/")}>
         <h1>SHOP</h1>
@@ -106,7 +106,7 @@ export const NavBar = () => {
         </div>
       </div>
     </div>
-    {location.pathname === "/" && user.level === 0 && <div className='specialSearch'>
+    {location.pathname === "/" && user.level !== 1 && user.level !== 2 && <nav className='specialSearch'>
       {
         searchOptions.concat(tagOptions).map(option=>(
           <button className={'searchOption ' + (option.special ? 'optionSpecial' : '')} onClick={()=>navigate(`/search?key=${option.searchKey}`)}>
@@ -114,9 +114,9 @@ export const NavBar = () => {
           </button>
         ))
       }
-    </div>}
+    </nav>}
     <div 
-      className={'navBarPopup ' + (isAccountPopupOpen ? 'scale1' : '')}
+      className={'popup navBarPopup ' + (isAccountPopupOpen ? 'scale1' : '')}
       onMouseEnter={()=>clearTimeout(timeoutId)} onMouseLeave={()=>setAccountPopupOpen(false)}
     >
       <div className='arrowUp'/>
@@ -144,10 +144,12 @@ export const NavBar = () => {
               <button className='accountButton' onClick={()=>open("/products")}>Products</button>
               <button className='accountButton' onClick={()=>open("/statistics")}>Statistics</button>
              </>
-             :<>
-              <button className='accountButton' onClick={()=>open("/cart")}>Cart</button>
-              <button className='accountButton' onClick={()=>open("/history")}>History</button>
-             </> 
+             :user.level === 0
+              ? <>
+                <button className='accountButton' onClick={()=>open("/cart")}>Cart</button>
+                <button className='accountButton' onClick={()=>open("/history")}>History</button>
+              </>
+              : null
             }
             <button className='accountButton' style={{width: "150px"}} onClick={logOut}>Log out</button>
           </>
@@ -156,11 +158,11 @@ export const NavBar = () => {
     </div>
     {isCurrencyPopupOpen && <div className='allScreen' onClick={()=>setCurrencyPopupOpen(false)}/>}
     <div 
-      className={'navBarPopup currPopup ' + (isCurrencyPopupOpen ? 'scale1' : '')}
+      className={'popup currPopup ' + (isCurrencyPopupOpen ? 'scale1' : '')}
     >
       {
         Object.keys(currencies).map(curr=>
-          <div className='currOption' onClick={()=>pickCurr(curr)}>
+          <div className='currOption' onClick={()=>pickCurr(curr)} key={curr}>
             <div>{currencies[curr].symbol}</div>
             <span style={currency===curr ? {fontWeight: "bold"} : {}}>{currencies[curr].name}</span>
           </div>

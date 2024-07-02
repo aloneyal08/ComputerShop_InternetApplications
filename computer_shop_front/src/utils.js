@@ -14,7 +14,7 @@ export const validatePhone = (phone) => {
 export const validateUsername = (username) => {
   /* 
     Usernames can only have: 
-    - Letters (a-z) 
+    - Letters (a-z, A-Z) 
     - Numbers (0-9)
     - Dots (.)
     - Underscores (_)
@@ -22,4 +22,8 @@ export const validateUsername = (username) => {
   const res = /^[a-zA-Z0-9_.]+$/.exec(username);
   const valid = !!res;
   return valid;
+}
+
+export const formatPhoneNumber = (n) => {
+  return n.replace( /(\d{3})(\d{3})(\d{4})/, '$1-$2-$3' )
 }
