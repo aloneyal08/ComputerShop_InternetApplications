@@ -11,11 +11,6 @@ const getUserById = async (req, res) => {
   return res.json(u);
 }
 
-const getSuppliers = async (req, res) => {
-  var s = await User.find({level: 1});
-  return res.json(s);
-}
-
 const register = async (req, res) => {
   const { username, password, email, phone, fullName, profilePhoto, google } = req.body;
   var u = await User.findOne({email});
@@ -178,7 +173,6 @@ module.exports = {
   updateUsername,
   updatePassword,
   deleteUser,
-  getSuppliers,
   getAdmins,
   suspendAccount,
   restoreAccount,
