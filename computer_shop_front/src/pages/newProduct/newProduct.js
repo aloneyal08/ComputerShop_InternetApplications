@@ -26,7 +26,6 @@ const NewProduct = () => {
   const [photo, setPhoto] = useState('');
   const [tagOptions, setTagOptions] = useState([]);
   const [tags, setTags] = useState([]);
-  const [hiddenTags, setHiddenTags] = useState([]);
   
   useEffect(() => {
     const blocksFromHtml = htmlToDraft("");
@@ -63,10 +62,6 @@ const NewProduct = () => {
     temp = tags.slice();
     temp.splice(temp.indexOf({name: tagOptions[i].name, value: i}), 1);
     setTags(temp);
-    temp = hiddenTags;
-    temp.push(tagSelect.current.children[1].children[0].children[i]);
-    temp[temp.length-1].style.display = 'block';
-    setHiddenTags(temp);
   };
 
   const addTag = (i) => {
@@ -77,10 +72,6 @@ const NewProduct = () => {
     temp = tags.slice();
     temp.push({name: tagOptions[i].name, value: i});
     setTags(temp);
-    temp = hiddenTags;
-    temp.push(tagSelect.current.children[1].children[0].children[i]);
-    temp[temp.length-1].style.display = 'none';
-    setHiddenTags(temp);
   };
 
   const addProduct = async (e) => {
@@ -199,11 +190,11 @@ const NewProduct = () => {
               <SelectSearch ref={tagSelect} onChange={addTag} search={true} getOptions={()=>tagOptions.filter((tag)=>tag.disabled === false)} name="tag" placeholder="Choose Your Tags" renderValue={(valueProps) =>
                 <div className='input1'>
                   <label>
-                  <input type='text' {...valueProps} placeholder=''/>
+                  <input type='text' required {...valueProps} placeholder=''/>
                   <span>{valueProps.placeholder}</span>
                   </label>
                 </div>} renderOption={(optionsProps, optionsData) => {
-                    return <button className='select-search-option' {...optionsProps}>{optionsData.name}</button>
+                    return tags.find(t=>t.name===optionsData.name) ? null : <button className='select-search-option' {...optionsProps}>{optionsData.name}</button>
                 }} />
             </section>
           </section>

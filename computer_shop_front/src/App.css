@@ -57,15 +57,10 @@
 }
 
 :root {
-	--input1-ink-lowest-contrast: rgba(47, 60, 85, 0.18);
 	--input1-ink-low-contrast: rgba(60, 60, 67, 0.3);
 	--input1-ink-medium-contrast: rgba(19, 19, 21, 0.6);
 	--input1-interaction: #4e4e4e;
-	--input1-interaction-minus-two: rgba(73, 133, 224, 0.12);
-	--input1-bg-low-contrast: #eff1f2;
 	--input1-ink-high-contrast: #121212;
-	--input1-bg-high-contrast: #ffffff;
-	
 }
 .input1 {
   margin-bottom: 1.5rem;
@@ -87,6 +82,7 @@
 	padding-top: 0.825rem;
 	padding-bottom: 0.5rem;
   font-family: stdFont;
+  background-color: transparent;
 }
 
 .input1 > label > textarea {
@@ -136,7 +132,6 @@
 
 .input1 > label > input:disabled,
 .input1 > label > textarea:disabled {
-	background: var(--input1-bg-low-contrast);
 	cursor: not-allowed;
 }
 
@@ -278,3 +273,34 @@
   user-select: none;
 }
 
+.popup {
+  background-color: rgb(230, 230, 230);
+  border: 1px #ddd solid;
+  border-radius: 30px;
+  -webkit-box-shadow: 21px 21px 63px -10px rgba(0,0,0,0.41);
+  -moz-box-shadow: 21px 21px 63px -10px rgba(0,0,0,0.41);
+  box-shadow: 21px 21px 63px -10px rgba(0,0,0,0.41);
+  position: absolute;
+  color: black;
+  padding: 15px;
+  padding-bottom: 30px;
+  transform-origin: center -10px;
+  transition: 0.07s;
+  scale: 0;
+  z-index: 500;
+}
+
+.iconButton {
+  border: none;
+  background-color: transparent;
+  background-size: 70% 70%;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  padding: 5px;
+  background-repeat: no-repeat;
+  background-position: center center;
+}
+.iconButton:hover {
+  background-color: rgba(0, 0, 0, .05);
+}
