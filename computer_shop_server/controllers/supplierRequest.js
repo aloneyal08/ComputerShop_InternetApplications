@@ -5,7 +5,7 @@ require('dotenv').config()
 
 const createRequest = async (req, res) => {
   const { description, username, password, email, phone, fullName } = req.body;
-  var u = await User.findOne({email});
+  var u = await User.findOne({email, status: 0});
   if (u) {
     return res.status(400).json({ error: 'Email already exists' });
   }
@@ -64,7 +64,7 @@ const acceptRequest = async (req, res) => {
   if(!admin || admin.level !== 2 || admin.password !== password)
     return res.status(400).json({error: 'Invalid Login'});
 
-  const request = await SupplierRequest.findByIdAndUpdate(id, {status: 1});
+  const request = await SupplierRequest.findOneAndUpdate({_id: id, status: 0}, {status: 1});
   if(!request) {
     return res.status(400).json({error: 'Invalid Request'});
   }
@@ -92,7 +92,7 @@ const rejectRequest = async (req, res) => {
   if(!admin || admin.level !== 2 || admin.password !== password)
     return res.status(400).json({error: 'Invalid Login'});
 
-  const request = await SupplierRequest.findByIdAndUpdate(id, {status: 2});
+  const request = await SupplierRequest.findOneAndUpdate({_id: id, status: 0}, {status: 2});
 
   if(!request)
     return res.status(400).json({error: 'Request not found'});
@@ -109,7 +109,7 @@ const cancelRequest = async (req, res) => {
     return res.status(400).json({error: 'Invalid Request'});
   }
   const { id, password } = parsed;
-  const request = await SupplierRequest.findById(id);
+  const request = await SupplierRequest.findOne({_id: id, status: 0});
   if(!request || decrypt(request.user.password) !== password)
     return res.status(400).json({error: 'Invalid Login'});
 
