@@ -77,9 +77,9 @@ const Storefront = () => {
   }, []);
   return <div>
     <div id='flashWrapper'>
-      <div id='dots'>{Array(3).fill([...flashProducts]).reduce((a, b) => a.concat(b)).map((p, index) => <span className={`dot ${flashPos===index?'selected':''}`} onClick={() => {moveFlash(index)}}>•</span>)}</div>
+      <div id='dots'>{flashProducts.map((p, index) => <span className={`dot ${flashPos===index?'selected':''}`} onClick={() => {moveFlash(index)}}>•</span>)}</div>
       <div id='flashContainers' ref={flashContainers}>
-        {Array(3).fill([...flashProducts]).reduce((a, b) => a.concat(b)).map((p) => <FlashContainer list={p}/>)}
+        {flashProducts.map((p) => <FlashContainer list={p}/>)}
       </div>
     </div>
     <div id='showContainer'>
@@ -88,7 +88,7 @@ const Storefront = () => {
         <button className='moveLeft' onClick={(e) => {moveSide(e, -1)}}>
           {'<'}
         </button>
-        {Array(10).fill([...recProducts]).reduce((a, b) => a.concat(b)).map((product)=><ProductCard product={product}/>)}
+        {recProducts.map((product)=><ProductCard product={product}/>)}
         <button className='moveRight' onClick={(e) => {moveSide(e, 1)}}>
           {'>'}
         </button>
