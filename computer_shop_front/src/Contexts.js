@@ -9,5 +9,7 @@ export const MoneyContext = createContext({
   currency: 'USD',
   setCurrency: () => {},
   exchangeRates: {},
-})
+});
+
+export const TagsContext = createContext([]);
 

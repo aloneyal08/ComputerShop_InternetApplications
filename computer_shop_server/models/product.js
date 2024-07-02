@@ -37,6 +37,10 @@ const Product = new Schema({
   tags: {
     type: JSON,
     required: false
+  },
+  date:{
+    type: Date,
+    required: true
   }
 });
 

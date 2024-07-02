@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import './NavBar.css'
-import { MoneyContext, UserContext } from '../../Contexts';
+import { MoneyContext, TagsContext, UserContext } from '../../Contexts';
 import { useLocation, useNavigate } from "react-router-dom";
 const currencies = require('../../currencies.json')
 
@@ -22,11 +22,10 @@ const searchOptions = [
   }
 ]
 
-const tags = ["Laptop", "PC", "Gaming", "Mouse", "Keyboard", "Office"] //TODO: Yaniv's tags
-
 export const NavBar = () => {
   const {user} = useContext(UserContext);
   const {currency, setCurrency} = useContext(MoneyContext);
+  const tags = useContext(TagsContext);
   const navigate = useNavigate();
   const [search, setSearch] = useState('');
   const location = useLocation();
@@ -74,10 +73,10 @@ export const NavBar = () => {
 
   const pickCurr = (curr) => {
     setCurrency(curr);
+    localStorage.setItem("currency", curr);
     setCurrencyPopupOpen(false);
   }
-
-  const tagOptions = tags.map(t=>({text: t, searchKey: `::tags:${t}`}))
+  const tagOptions = tags.map(t=>({text: t.text, searchKey: `::tags:${t}`}))
 
   return <header className='navBar' style={location.pathname !== "/" || user.level === 1 || user.level === 2 ? {height: "50px"} : {}}>
     <div className='mainBar'>
@@ -89,7 +88,7 @@ export const NavBar = () => {
         <div className='nbImageContainer' onMouseEnter={()=>setAccountPopupOpen(true)} onMouseLeave={leaveAccountIcon}>
           <img src={user.profilePhoto} alt='' className='navBarPhoto navBarAccountPhoto' style={{zIndex: 2}}/>
           <img 
-            src='https://www.sunsetlearning.com/wp-content/uploads/2019/09/User-Icon-Grey-300x300.png' 
+            src={require('../../images/userDefault.png')} 
             alt='' className='navBarPhoto navBarAccountPhoto' 
             style={{zIndex: 1}}
           />
@@ -125,7 +124,7 @@ export const NavBar = () => {
       <div style={{marginTop: "15px", height: "80px"}}>
         <img src={user.profilePhoto} alt='' className='photoPreview navBarAccountPhoto' style={{zIndex: 2}}/>
         <img 
-          src='https://www.sunsetlearning.com/wp-content/uploads/2019/09/User-Icon-Grey-300x300.png' 
+          src={require('../../images/userDefault.png')}
           alt='' 
           className='photoPreview navBarAccountPhoto' 
           style={{zIndex: 1}}

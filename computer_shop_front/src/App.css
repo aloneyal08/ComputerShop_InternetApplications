@@ -151,45 +151,36 @@
 .invalidText {
   color: red !important;
 }
-.productCard{
+.userCard{
   display: flex;
   flex-direction: column;
-  width: 18vw;
-  height: auto;
-  border: 3px solid gainsboro;
-  border-radius: 15px;
 }
-.productImg{
-  display: flex;
-  width: 18vw;
-  height: 30vh;
-  border-bottom: 2px solid #4d4d4d;
-  border-top-left-radius: 15px;
-  border-top-right-radius: 15px;
+.userPhoto{
+  border-radius: 50%;
 }
-.productText{
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  margin-top: 10px;
-  padding: 5px;
+.scrollBar1{
+  padding-bottom: 7px;
 }
-.productTextLeft{
-  display: flex;
-  flex-direction: column;
-  align-items: start;
-  line-height: 15px;
+.scrollBar1::-webkit-scrollbar{
+  height: 10px;
 }
-.productName, .productSupplier, .productStock, .productPrice, .productDesc, .productRating{
-  margin: 0;
+.scrollBar1::-webkit-scrollbar-track{
+  transition: 0.3s;
+  border-radius: 8px;
+  background-color: #e7e7e743;
+  border: 1px solid #cacaca;
+  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.3);
+  visibility: hidden;
 }
-.productName{
-  overflow:hidden;
+.scrollBar1::-webkit-scrollbar-thumb{
+  transition: 0.3s;
+  border-radius: 8px;
+  background: radial-gradient(rgba(220, 220, 220, 0.258), rgba(173, 173, 173, 0.685));
+  visibility: hidden;
 }
-.productStock{
-  margin-bottom: -3px;
-  font-size: 10px;
-  color: red;
+.scrollBar1:hover::-webkit-scrollbar-track, .scrollBar1:hover::-webkit-scrollbar-thumb{
+  transition: 0.3s;
+  visibility: visible;
 }
 
 .checkbox1 *,
