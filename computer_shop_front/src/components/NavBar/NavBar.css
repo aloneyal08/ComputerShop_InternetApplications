@@ -210,7 +210,8 @@
   justify-content: center;
   height: 40px;
   align-items: center;
-  overflow-x: scroll;
+  overflow-x: auto;
+  overflow-y: hidden;
   width: 100%;
 }
 

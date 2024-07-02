@@ -5,13 +5,15 @@ import './productCard.css'
 
 const currencies = require('../../currencies.json');
 
-export const ProductCard = ({product, getSupplier, getRate}) =>{
+export const ProductCard = ({product, renderRating = true, renderStock = true}) =>{
   const {currency, exchangeRates} = useContext(MoneyContext);
   const [supplier, setSupplier] = useState('');
   const [productRate, setProductRate] = useState(0);
   
   useEffect(()=>{
-    if(getSupplier){
+    if(product.supplierName){
+      setSupplier(product.supplierName);
+    }else{
       fetch('http://localhost:88/user/id-get',{
         method: 'POST',
         headers: {
@@ -19,11 +21,11 @@ export const ProductCard = ({product, getSupplier, getRate}) =>{
         },
         body: JSON.stringify({id: product.supplier})
     }).then((res)=>res.json()).then((res)=>{setSupplier(res.fullName)});
-  }else{
-    setSupplier(product.supplier);
   }
 
-  if(getRate){
+  if(renderRating && product.rating){
+    setProductRate(product.rating)
+  }else{
     fetch('http://localhost:88/review/get',{
       method: 'POST',
       headers: {
@@ -37,8 +39,6 @@ export const ProductCard = ({product, getSupplier, getRate}) =>{
       });
       setProductRate(Math.floor((rating / res.length)*2)/2);
     });
-  }else{
-    setProductRate(product.rating)
   }
   }, []);
 
@@ -48,14 +48,22 @@ export const ProductCard = ({product, getSupplier, getRate}) =>{
       <section className='productTextLeft'>
         <h3 className='productName'>{product.name}</h3>
         <aside><h6 className='productSupplier' >{supplier}</h6></aside>
-        <h4 className='productStock'>{product.stock>=1?"":'Currently None in Stock*' }</h4>
-        <Rating
+        { renderStock?
+          <h4 className={`productStock ${product.stock >= 1?'hidden':'visible'}`}>Currently None in Stock*</h4>
+          :
+          <></>
+        }
+        { renderRating?
+          <Rating
           readonly={true}
           initialValue={productRate}
           allowFraction={true}
           size={35}
           id='productRating'
-        />
+          />
+          :
+          <></>
+        }
       </section>
       <section className='productTextRight'>
         <h4 className='productPrice'>{isNaN(product.price)?product.price:currencies[currency].symbol + Math.floor(product.price*exchangeRates[currency]*100)/100}</h4>

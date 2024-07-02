@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect, useContext } from 'react'
-import { UserContext, MoneyContext } from '../../Contexts';
+import { UserContext, MoneyContext, TagsContext} from '../../Contexts';
 import { useNavigate } from 'react-router-dom';
 import { Editor } from "react-draft-wysiwyg";
 import { convertToRaw, EditorState, ContentState } from "draft-js";
@@ -17,6 +17,7 @@ const currencies = require('../../currencies.json');
 const NewProduct = () => {
   const {user} = useContext(UserContext);
   const {currency, exchangeRates} = useContext(MoneyContext);
+  const tags = useContext(TagsContext);
   const tagSelect = useRef(null);
   const navigate = useNavigate();
 
@@ -26,7 +27,7 @@ const NewProduct = () => {
   const [price, setPrice] = useState('');
   const [photo, setPhoto] = useState('');
   const [tagOptions, setTagOptions] = useState([]);
-  const [tags, setTags] = useState([]);
+  const [chosenTags, setChosenTags] = useState([]);
   const [hiddenTags, setHiddenTags] = useState([]);
   
   useEffect(() => {
@@ -35,13 +36,11 @@ const NewProduct = () => {
     const contentState = ContentState.createFromBlockArray(contentBlocks, entityMap);
     const editorState = EditorState.createWithContent(contentState);
     setDescription(editorState);
-    fetch('http://localhost:88/tag/get').then((res) => res.json()).then((res) =>{
-      setTagOptions(res.map((e, index) => {return {name: e.text, value: index, disabled: false}}));
-    });
   }, []);
   
-  useEffect(() =>{
-  }, [currency])
+  useEffect(()=>{
+    setTagOptions(tags.map((e, index) => {return {name: e.text, value: index, disabled: false}}));
+  }, [tags]);
 
   const onTextChange = (state) => {
     setDescription(state);
@@ -62,9 +61,9 @@ const NewProduct = () => {
     let i = e.currentTarget.id;
     temp[i].disabled = false;
     setTagOptions(temp);
-    temp = tags.slice();
+    temp = chosenTags.slice();
     temp.splice(temp.indexOf({name: tagOptions[i].name, value: i}), 1);
-    setTags(temp);
+    setChosenTags(temp);
     temp = hiddenTags;
     temp.push(tagSelect.current.children[1].children[0].children[i]);
     temp[temp.length-1].style.display = 'block';
@@ -76,9 +75,9 @@ const NewProduct = () => {
     i = i==null?0:i;
     temp[i].disabled = true;
     setTagOptions(temp);
-    temp = tags.slice();
+    temp = chosenTags.slice();
     temp.push({name: tagOptions[i].name, value: i});
-    setTags(temp);
+    setChosenTags(temp);
     temp = hiddenTags;
     temp.push(tagSelect.current.children[1].children[0].children[i]);
     temp[temp.length-1].style.display = 'none';
@@ -86,6 +85,11 @@ const NewProduct = () => {
   };
 
   const addProduct = async (e) => {
+    console.log(chosenTags.map((tag) => {
+      for(let i = 0; i < tags.length;++i){
+        if(tags[i].text === tag.name){return tags[i]._id}
+      }
+    }));
     let value = draftToHtmlPuri(
       convertToRaw(description.getCurrentContent())
     );
@@ -118,7 +122,11 @@ const NewProduct = () => {
         stock,
         price: price/exchangeRates[currency],
         photo: photo == ''?null:photo,
-        tags: tags==[]?null:tags.map((tag) => {return {text: tag.text};}),
+        tags: chosenTags==[]?null:chosenTags.map((tag) => {
+          for(let i = 0; i < tags.length;++i){
+            if(tags[i].text === tag.name){return tags[i]._id}
+          }
+        }),
         supplier: user._id
       })
     }).then((res) => res.json()).then((res) => {
@@ -198,7 +206,7 @@ const NewProduct = () => {
             <section className='inputContainer' id='tagsContainer'>
               {
                 <div className='productTags'>
-                  {tags.map(tag=>(<div className='productTag'><p className='productTagName'>{tag.name}</p><span id={tag.value} onClick={removeTag}>x</span></div>))}
+                  {chosenTags.map(tag=>(<div className='productTag'><p className='productTagName'>{tag.name}</p><span id={tag.value} onClick={removeTag}>x</span></div>))}
                 </div>
               }
               <SelectSearch ref={tagSelect} onChange={addTag} search={true} getOptions={()=>tagOptions.map((tag)=>{if(tag.disabled == false){return tag}})} name="tag" placeholder="Choose Your Tags" renderValue={(valueProps) =>
@@ -213,7 +221,7 @@ const NewProduct = () => {
             </section>
           </section>
           <section id='preview'>
-            <ProductCard getSupplier={false} getRate={false} product={{name: name==''?"Product's Name":name, price: price==''?"Product's Price":price, stock, photo, rating: 2.5, supplier: user.fullName}} />
+            <ProductCard product={{name: name==''?"Product's Name":name, price: price==''?"Product's Price":price, stock, photo, rating: 2.5, supplierName: user.fullName}} />
             <button id='addProductBtn' onClick={addProduct} className='button1'>Add New Product</button>
           </section>
         </div>

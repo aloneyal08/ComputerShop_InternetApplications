@@ -11,6 +11,7 @@ const Storefront = () => {
   const [flashProducts, setFlashProducts] = useState([]);
   const [flashSide, setFlashSide] = useState(1);
   const [flashPos, setFlashPos] = useState(0);
+  const [resetDelay, setResetDelay] = useState(false);
 
   const flashContainers = useRef();
 
@@ -28,13 +29,15 @@ const Storefront = () => {
       if (delay !== null) {
         let id = setInterval(tick, delay);
         return () => clearInterval(id);
+      } else {
+        setResetDelay(false);
       }
     }, [delay]);
   }
 
   const moveFlash = (to = -1) =>{
-    if(flashContainers != null){
-      if(flashContainers.current.children.length != 0){
+    if(flashContainers !== null){
+      if(flashContainers.current.children.length !== 0){
         let pos = to === -1?flashPos + flashSide:to;
         if(pos === 0){
           setFlashSide(1);
@@ -44,13 +47,15 @@ const Storefront = () => {
         }
         flashContainers.current.scroll(pos * (flashContainers.current.children[0].clientWidth + 100), 0);
         setFlashPos(pos);
+        setResetDelay(true);
       }
     }
   }
 
   const moveSide = (e, side) =>{
-    let scrollEnd = Math.max(0, Math.min(e.currentTarget.parentElement.scrollLeft + ((e.currentTarget.parentElement.children[1].clientWidth + 20)*5*side), e.currentTarget.parentElement.scrollWidth - e.currentTarget.parentElement.clientWidth));
-    scrollEnd = Math.round(scrollEnd/414.8)*414.8;
+    const cardWidth = e.currentTarget.parentElement.children[1].clientWidth + 24.8;
+    let scrollEnd = Math.max(0, Math.min(e.currentTarget.parentElement.scrollLeft + (cardWidth*5*side), e.currentTarget.parentElement.scrollWidth - e.currentTarget.parentElement.clientWidth));
+    scrollEnd = Math.round(scrollEnd/cardWidth)*cardWidth;
     e.currentTarget.parentElement.scroll(scrollEnd, 0);
   };
 
@@ -61,7 +66,7 @@ const Storefront = () => {
     e.currentTarget.children[e.currentTarget.children.length - 1].disabled = (pos === limit);
   }
   
-  useInterval(moveFlash, 5000)
+  useInterval(moveFlash, resetDelay?null:5000)
 
   useEffect(() => {
     fetch('http://localhost:88/product/get').then((res)=>res.json()).then((res) => {setRecProducts(res.slice(0, 50))});
@@ -72,7 +77,7 @@ const Storefront = () => {
   }, []);
   return <div>
     <div id='flashWrapper'>
-    <div id='dots'>{Array(3).fill([...flashProducts]).reduce((a, b) => a.concat(b)).map((p, index) => <span className={`dot ${flashPos===index?'selected':''}`} onClick={() => {moveFlash(index)}}>•</span>)}</div>
+      <div id='dots'>{Array(3).fill([...flashProducts]).reduce((a, b) => a.concat(b)).map((p, index) => <span className={`dot ${flashPos===index?'selected':''}`} onClick={() => {moveFlash(index)}}>•</span>)}</div>
       <div id='flashContainers' ref={flashContainers}>
         {Array(3).fill([...flashProducts]).reduce((a, b) => a.concat(b)).map((p) => <FlashContainer list={p}/>)}
       </div>
@@ -83,7 +88,7 @@ const Storefront = () => {
         <button className='moveLeft' onClick={(e) => {moveSide(e, -1)}}>
           {'<'}
         </button>
-        {Array(10).fill([...recProducts]).reduce((a, b) => a.concat(b)).map((product)=><ProductCard getSupplier={true} getRate={true} product={product}/>)}
+        {Array(10).fill([...recProducts]).reduce((a, b) => a.concat(b)).map((product)=><ProductCard product={product}/>)}
         <button className='moveRight' onClick={(e) => {moveSide(e, 1)}}>
           {'>'}
         </button>
@@ -93,7 +98,7 @@ const Storefront = () => {
         <button className='moveLeft' disabled={true} onClick={(e) => {moveSide(e, -1)}}>
           {'<'}
         </button>
-      {popProducts.map((product)=> <ProductCard getSupplier={true} getRate={true} product={product} />)}
+      {popProducts.map((product)=> <ProductCard product={product} />)}
         <button className='moveRight' onClick={(e) => {moveSide(e, 1)}}>
           {'>'}
         </button>
@@ -103,7 +108,7 @@ const Storefront = () => {
         <button className='moveLeft' disabled={true} onClick={(e) => {moveSide(e, -1)}}>
           {'<'}
         </button>
-      {newProducts.map((product)=> <ProductCard getSupplier={true} getRate={true} product={product} />)}
+      {newProducts.map((product)=> <ProductCard product={product} />)}
         <button className='moveRight' onClick={(e) => {moveSide(e, 1)}}>
           {'>'}
         </button>

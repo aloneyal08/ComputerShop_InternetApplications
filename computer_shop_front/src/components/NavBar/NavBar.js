@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import './NavBar.css'
-import { MoneyContext, UserContext } from '../../Contexts';
+import { MoneyContext, TagsContext, UserContext } from '../../Contexts';
 import { useLocation, useNavigate } from "react-router-dom";
 const currencies = require('../../currencies.json')
 
@@ -22,11 +22,10 @@ const searchOptions = [
   }
 ]
 
-const tags = ["Laptop", "PC", "Gaming", "Mouse", "Keyboard", "Office"] //TODO: Yaniv's tags
-
 export const NavBar = () => {
   const {user} = useContext(UserContext);
   const {currency, setCurrency} = useContext(MoneyContext);
+  const tags = useContext(TagsContext);
   const navigate = useNavigate();
   const [search, setSearch] = useState('');
   const location = useLocation();
@@ -77,8 +76,7 @@ export const NavBar = () => {
     localStorage.setItem("currency", curr);
     setCurrencyPopupOpen(false);
   }
-
-  const tagOptions = tags.map(t=>({text: t, searchKey: `::tags:${t}`}))
+  const tagOptions = tags.map(t=>({text: t.text, searchKey: `::tags:${t}`}))
 
   return <header className='navBar' style={location.pathname !== "/" || user.level !== 0 ? {height: "50px"} : {}}>
     <div className='mainBar'>

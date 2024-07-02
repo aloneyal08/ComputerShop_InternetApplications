@@ -1,6 +1,6 @@
 :root{
-  --product-card-width: 390px;
-  --product-img-height: 310px;
+  --product-card-width: 300px;
+  --product-img-height: 210px;
 }
 .productCard{
     display: flex;
@@ -9,6 +9,7 @@
     height: auto;
     border: 3px solid gainsboro;
     border-radius: 15px;
+    background-color: white;
   }
   .productImg{
     display: flex;
@@ -44,4 +45,10 @@
     margin-bottom: -3px;
     font-size: 10px;
     color: red;
+  }
+  .visible{
+    visibility: visible;
+  }
+  .hidden{
+    visibility: hidden;
   }

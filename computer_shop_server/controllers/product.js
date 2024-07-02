@@ -50,12 +50,11 @@ const getFlashProducts = async (req, res) => {
 	let flash = [];
 	let current = [];
 	dates = [new Date(), new Date(), new Date()];
-	dates[0].setDate(dates[1].getDate() - 1);
+	dates[0].setDate(dates[0].getDate() - 1);
 	dates[1].setDate(dates[1].getDate() - 7);
 	dates[2].setMonth(dates[2].getMonth()-1);
 	let tempList = [];
-	let p;
-	/*let p = await Purchase.aggregate([{$match: {"date": {$gte: dates[0]}}}, {$group: {_id: "$product", count: {$sum:1}}}, {$sort: {count: -1}}]).limit(1);
+	let p = await Purchase.aggregate([{$match: {"date": {$gte: dates[0]}}}, {$group: {_id: "$product", count: {$sum:1}}}, {$sort: {count: -1}}]).limit(1);
 	tempList.push(p[0]);
 	p = await Purchase.aggregate([{$match: {"date": {$gte: dates[1]}}}, {$group: {_id: "$product", count: {$sum:1}}}, {$sort: {count: -1}}]).limit(1);
 	tempList.push(p[0]);
@@ -65,15 +64,14 @@ const getFlashProducts = async (req, res) => {
 		p = await Product.findById(tempList[i]);
 		current.push(p);
 	}
-	flash.push(["Most Purchased", current]);
-	*/
+	flash.push(["Most Purchased", current, 'https://media.istockphoto.com/id/826661764/video/falling-dollar-banknotes-in-4k-loopable.jpg?s=640x640&k=20&c=VkMeB7CyxyI96uGVnRuJLg5mI4AHlVVlc9DsT6jMA0Q=']);
 	p = await Product.find({date: {$gte: dates[0]}}).sort({$natural:-1}).limit(1);
 	current.push(p[0]);
 	p = await Product.find({date: {$gte: dates[1], $lte: dates[0]}}).sort({$natural:-1}).limit(1);
 	current.push(p[0]);
 	p = await Product.find({date: {$gte: dates[2], $lte: dates[1]}}).sort({$natural:-1}).limit(1);
 	current.push(p[0]);
-	flash.push(["Newest", current]);
+	flash.push(["Newest", current, 'https://img.freepik.com/free-vector/bokeh-lights-glitter-background_1048-8548.jpg']);
 	/*
 	current = [];
 	tempList = [];

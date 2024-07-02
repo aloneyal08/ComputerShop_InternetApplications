@@ -1,13 +1,13 @@
 
 #flashContainers{
-    --product-card-width: 250px;
-    --product-img-height: 200px
+    --product-card-width: 180px;
+    --product-img-height: 120px
 }
 #flashContainers{
     display: flex;
     flex-direction: row;
     align-items: center;
-    width: calc((var(--product-card-width) + 19px)*3);
+    width: calc((var(--product-card-width) + 20px)*3);
     column-gap: 100px;
     overflow: hidden;
     margin: auto;
@@ -17,6 +17,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    width: calc((var(--product-card-width) + 20px)*3);
 }
 .flashProductContainer{
     display: flex;
@@ -27,9 +28,11 @@
     margin: 0;
     font-size: 30px;
 }
-.productPrice, .productName{
-
+.flashProductTitle{
+    white-space: nowrap;
+    width: var(--product-card-width);
+    font-size: 13px;
 }
-.productStock{
-    font-size: 7px;
+.flashProduct > div > div > section > .productPrice, .flashProduct > div > div > section > .productName{
+    font-size: 14px;
 }
