@@ -254,3 +254,77 @@ export const AdminListItem = ({admin, reload}) => {
     </td>
   </tr>
 }
+
+export const TagListItem = ({tag, reload}) => {
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [text, setText] = useState(tag.text);
+  const [background, setBackground] = useState(tag.background);
+
+  const onTextChange = (e) => setText(e.target.value);
+  const onBackgroundChange = (e) => setBackground(e.target.value);
+
+  const deleteTag = () => {
+    if(!window.confirm(`Are you sure you want to delete ${tag.text}?`))
+      return;
+    fetch(`http://localhost:88/tag/delete`, {
+      method: 'DELETE',
+      body: JSON.stringify({_id: tag._id}),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }).then(res=>res.json()).then(rs=>{
+      if(rs.error) {
+        alert(rs.error);
+      } else {
+        reload();
+      }
+    })
+  }
+
+  const onSubmit = () => {
+    fetch(`http://localhost:88/tag/edit`, {
+      method: 'PUT',
+      body: JSON.stringify({_id: tag._id, text, background}),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }).then(res=>res.json()).then(rs=>{
+      if(rs.error) {
+        alert(rs.error);
+      } else {
+        reload();
+        setIsPopupOpen(false);
+      }
+    })
+  }
+
+  return <tr className='dashboardListItem'>
+    <td >
+      {tag.text}
+    </td>
+    <td>
+      <img src={tag.background} alt=' ' style={{height: "50px"}}/>
+    </td>
+    <td>
+      <button className='iconButton deleteButton' onClick={deleteTag}/>
+      <button className='iconButton editButton' onClick={()=>setIsPopupOpen(true)}/>
+    </td>
+    {isPopupOpen&&<div className='allScreen' onClick={()=>setIsPopupOpen(false)}/>}
+    <td className={'popup requestPopup tagEditPopup ' + (isPopupOpen ? 'scale1' : '')}>
+      <div className='arrowUp'/>
+      <div className="input1">
+        <label>
+          <input type='text' value={text} required onChange={onTextChange}/>
+          <span>Text</span>
+        </label>
+      </div>
+      <div className="input1">
+        <label>
+          <input type='text' value={background} required onChange={onBackgroundChange}/>
+          <span>Background Photo</span>
+        </label>
+      </div>
+      <button className='button1' onClick={onSubmit}>Submit</button>
+    </td>
+  </tr>
+}

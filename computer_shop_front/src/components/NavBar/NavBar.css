@@ -103,6 +103,7 @@
   height: 330px;
   scrollbar-width: none;
   z-index: 999;
+  top: 48px;
 }
 
 

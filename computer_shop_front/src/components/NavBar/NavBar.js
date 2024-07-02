@@ -79,7 +79,7 @@ export const NavBar = () => {
 
   const tagOptions = tags.map(t=>({text: t, searchKey: `::tags:${t}`}))
 
-  return <header className='navBar' style={location.pathname !== "/" || user.level || user.level === undefined ? {height: "50px"} : {}}>
+  return <header className='navBar' style={location.pathname !== "/" || user.level === 1 || user.level === 2 ? {height: "50px"} : {}}>
     <div className='mainBar'>
       <div className='logo' onClick={()=>navigate("/")}>
         <h1>SHOP</h1>
@@ -107,7 +107,7 @@ export const NavBar = () => {
         </div>
       </div>
     </div>
-    {location.pathname === "/" && !user.level && user.level !== undefined && <div className='specialSearch'>
+    {location.pathname === "/" && user.level !== 1 && user.level !== 2 && <nav className='specialSearch'>
       {
         searchOptions.concat(tagOptions).map(option=>(
           <button className={'searchOption ' + (option.special ? 'optionSpecial' : '')} onClick={()=>navigate(`/search?key=${option.searchKey}`)}>
@@ -115,7 +115,7 @@ export const NavBar = () => {
           </button>
         ))
       }
-    </div>}
+    </nav>}
     <div 
       className={'popup navBarPopup ' + (isAccountPopupOpen ? 'scale1' : '')}
       onMouseEnter={()=>clearTimeout(timeoutId)} onMouseLeave={()=>setAccountPopupOpen(false)}

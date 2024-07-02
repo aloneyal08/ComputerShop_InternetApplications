@@ -30,6 +30,7 @@ const CreateAdmin = ({reload}) => {
       } else {
         reload();
         setIsPopupOpen(false);
+        setEmail('');
       }
     })
   }

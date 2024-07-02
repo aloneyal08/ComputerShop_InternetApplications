@@ -56,6 +56,10 @@ const CreateMessage = ({reload}) => {
       } else {
         reload();
         setIsPopupOpen(false);
+        setTo('');
+        setSubject('');
+        setHeader('');
+        setContent('');
       }
     })
   }

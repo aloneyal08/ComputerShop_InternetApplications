@@ -1,8 +1,9 @@
 import React, {useState, useEffect} from 'react'
 import './adminConsole.css'
-import {AdminListItem, MessageListItem, RequestListItem, SupplierListItem} from './listItem';
+import {AdminListItem, MessageListItem, RequestListItem, SupplierListItem, TagListItem} from './listItem';
 import CreateMessage from './createMessage';
 import CreateAdmin from './createAdmin';
+import CreateTag from './createTag';
 
 
 const AdminConsole = () => {
@@ -13,6 +14,7 @@ const AdminConsole = () => {
   const [suppliers, setSuppliers] = useState([]);
   const [messages, setMessages] = useState([]);
   const [admins, setAdmins] = useState([]);
+  const [tags, setTags] = useState([]);
 
   useEffect(() => {
     fetch(`http://localhost:88/supplier/request`).then(res=>res.json()).then(req=>{
@@ -26,6 +28,9 @@ const AdminConsole = () => {
     });
     fetch(`http://localhost:88/user/admins`).then(res=>res.json()).then(a=>{
       setAdmins(a);
+    });
+    fetch(`http://localhost:88/tag/get`).then(res=>res.json()).then(t=>{
+      setTags(t);
     });
   }, [force])
 
@@ -101,14 +106,35 @@ const AdminConsole = () => {
         <div className='dashboardList'>
           <table>
             <tbody>
-              <tr className='dashboardListItem adminTblHeader' style={{backgroundColor: "white"}}>
-                <th style={{backgroundColor: "white"}}>Name</th>
-                <th style={{backgroundColor: "white"}}>Email</th>
-                <th style={{backgroundColor: "white"}}>Phone</th>
-                <th style={{backgroundColor: "white"}}> </th>
+              <tr className='dashboardListItem adminTblHeader' style={{backgroundColor: "black", color: "white"}}>
+                <th style={{backgroundColor: "black"}}>Name</th>
+                <th style={{backgroundColor: "black"}}>Email</th>
+                <th style={{backgroundColor: "black"}}>Phone</th>
+                <th style={{backgroundColor: "black"}}> </th>
               </tr>
               {
                 admins.map((admin, i)=><AdminListItem admin={admin} key={i} reload={reload}/>)
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div className='dashboardContainer'>
+        <div className='dashboardHeaderContainer' style={{position: "relative"}}>
+          <h2 className='dashboardHeader'>Tags</h2>
+          <CreateTag reload={reload}/>
+        </div>
+
+        <div className='dashboardList'>
+          <table>
+            <tbody>
+              <tr className='dashboardListItem adminTblHeader' style={{backgroundColor: "#a7c9ba"}}>
+                <th style={{backgroundColor: "#a7c9ba"}}>Text</th>
+                <th style={{backgroundColor: "#a7c9ba"}}>Background</th>
+                <th style={{backgroundColor: "#a7c9ba"}}> </th>
+              </tr>
+              {
+                tags.map((tag, i)=><TagListItem tag={tag} key={i} reload={reload}/>)
               }
             </tbody>
           </table>

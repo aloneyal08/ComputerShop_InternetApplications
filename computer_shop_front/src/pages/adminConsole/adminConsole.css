@@ -156,3 +156,10 @@
 .adminEditPopup .arrowUp {
   left: 92.75%;
 }
+
+.tagEditPopup {
+  transform-origin: 87% -10px;
+}
+.tagEditPopup .arrowUp {
+  left: 87%;
+}
