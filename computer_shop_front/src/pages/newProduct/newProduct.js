@@ -110,10 +110,7 @@ const NewProduct = () => {
         stock,
         price: price/exchangeRates[currency],
         photo: photo === ''?null:photo,
-        tags: chosenTags.length===0?null:chosenTags.filter((tag) => {
-          for(let i = 0; i < tags.length;++i){
-            if(tags[i].text === tag.name){return tags[i]._id}
-          }}),
+        tags: chosenTags.length===0?null:chosenTags.map(tag => tags.find(t => t.text === tag.name)._id).filter(tag => tag),
         supplier: user._id
       })
     }).then((res) => res.json()).then((res) => {
@@ -176,7 +173,7 @@ const NewProduct = () => {
             <section className='inputContainer' id='detailContainer'>
               <div className="input1">
                 <label>
-                  <input required type='number' step={1} min={1} onChange={(e) => {setStock(e.target.value);}}/>
+                  <input required type='number' step={1} min={0} onChange={(e) => {setStock(e.target.value);}}/>
                   <span>Starting Stock*</span>
                 </label>
               </div>
