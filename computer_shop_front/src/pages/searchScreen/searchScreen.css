@@ -3,4 +3,30 @@
   padding: 20px;
   flex-direction: row;
   flex-wrap: wrap;
+  align-self: flex-start;
+  gap: 35px;
+  justify-content: center;
+}
+
+.filters {
+  height: 3000px;
+  min-width: 220px;
+  grid-area: menu;
+}
+.sort {
+  height: 50px;
+  grid-area: header;
+}
+
+.searchContainer {
+  display: grid;
+  grid-template-areas:
+    'header header header header header header'
+    'menu main main main right right'
+    'menu footer footer footer footer footer';
+  gap: 0px;
+}
+
+.searchProducts h2 {
+  margin: 5px;
 }

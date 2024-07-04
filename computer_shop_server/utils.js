@@ -72,18 +72,10 @@ const removeHTMLTags = (html) => {
   return html.replace(regX, "");
 }
 
-const fuzzySearch = (str, s) => {
-  var hay = str.toLowerCase(), i = 0, n = -1, l;
-  s = s.toLowerCase();
-  for (; l = s[i++] ;) if (!~(n = hay.indexOf(l, n + 1))) return false;
-  return true;
-};
-
 module.exports = {
   encrypt,
   decrypt,
   sendEmail,
   getKeywords,
   removeHTMLTags,
-  fuzzySearch
 }
