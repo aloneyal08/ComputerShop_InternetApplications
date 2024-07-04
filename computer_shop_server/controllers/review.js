@@ -19,6 +19,15 @@ const getReviews = async (req, res) => {
   res.json(reviews);
 }
 
+const getRating = async (req, res) => {
+  const {product} = req.query;
+  const reviews = await Review.find({product});
+  let rating = 0;
+  reviews.forEach((rev) => {rating += rev.rating});
+  if(reviews.length > 0){rating /= reviews.length;}
+  res.json(rating);
+}
+
 const editReview = async (req, res) => {
   const { _id, date, text, rating } = req.body;
   const review = Review.findByIdAndUpdate(_id, {
@@ -44,6 +53,7 @@ const deleteReview = async (req, res) => {
 module.exports = {
   writeReview,
   getReviews,
+  getRating,
   editReview,
   deleteReview
 };

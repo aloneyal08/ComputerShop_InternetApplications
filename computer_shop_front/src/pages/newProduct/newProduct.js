@@ -50,7 +50,7 @@ const NewProduct = () => {
   const priceChange = (e) =>{
     let pr = e.target.value === ''? '' : Math.floor(e.target.value*100)/100
     e.target.value = pr;
-    setPrice(pr);
+    setPrice(pr/exchangeRates[currency]);
   }
   const removeTag = (e) =>{
     let temp = tagOptions;
@@ -117,7 +117,6 @@ const NewProduct = () => {
       if(res.error) {
         alert(res.error);
       } else {
-        alert('Successfully added product!');
         navigate('/');
       }
     })
@@ -205,7 +204,7 @@ const NewProduct = () => {
             </section>
           </section>
           <section id='preview'>
-            <ProductCard product={{name: name===''?"Product's Name":name, price: price===''?"Product's Price":price, stock, photo, rating: 2.5, supplierName: user.fullName}} />
+            <ProductCard isClickable={false} product={{name: name===''?"Product's Name":name, price: price===''?"Product's Price":price, stock, photo, rating: 2.5, supplierName: user.fullName}} />
             <button id='addProductBtn' onClick={addProduct} className='button1'>Add New Product</button>
           </section>
         </div>

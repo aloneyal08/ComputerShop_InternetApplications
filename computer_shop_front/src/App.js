@@ -13,6 +13,7 @@ import { MoneyContext, UserContext, TagsContext } from './Contexts';
 import { NavBar } from './components/NavBar/NavBar';
 import SupplierDashboard from './pages/supplierDashboard/supplierDashboard';
 import AdminConsole from './pages/adminConsole/adminConsole';
+import ProductPage from './pages/productPage/productPage';
 
 const App = () => {
   const [user, setUser] = useState({});
@@ -76,6 +77,7 @@ const App = () => {
                   <Route path="/login" element={<Login/>} />
                   <Route path="/register" element={<Register />} />
                   <Route path="/product/new" element={<NewProduct />} />
+                  <Route path='/product/:productId' element={<ProductPage />} />
                   <Route path="/settings" element={<UserSettings />} />
                   <Route path="/cart" element={<Cart />} />
                   <Route path="/history" element={<History />} />

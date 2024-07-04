@@ -10,6 +10,7 @@
     border: 3px solid gainsboro;
     border-radius: 15px;
     background-color: white;
+    cursor: pointer;
   }
   .productImg{
     display: flex;

@@ -1,0 +1,4 @@
+#productWrapper{
+    display: flex;
+    flex-direction: row;
+}

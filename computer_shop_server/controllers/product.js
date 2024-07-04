@@ -1,7 +1,6 @@
 const Review = require('../models/review');
 const Product = require('../models/product');
 const Purchase = require('../models/purchase');
-const { connect } = require('mongoose');
 
 const addProduct = async (req, res) => {
 	const { name, price, photo, description, stats, parentProduct, stock, supplier, tags } = req.body;
@@ -28,6 +27,12 @@ const addProduct = async (req, res) => {
 		...obj
 	});
 	await product.save();
+	res.json(product);
+};
+
+const getProductById = async (req, res) => {
+	const {id} = req.body;
+	const product = await Product.findById(id);
 	res.json(product);
 };
 
@@ -72,17 +77,6 @@ const getFlashProducts = async (req, res) => {
 	p = await Product.find({date: {$gte: dates[2], $lte: dates[1]}}).sort({$natural:-1}).limit(1);
 	current.push(p[0]);
 	flash.push(["Newest", current, 'https://img.freepik.com/free-vector/bokeh-lights-glitter-background_1048-8548.jpg']);
-	/*
-	current = [];
-	tempList = [];
-	p = await Review.aggregate([{$match: {"date": {$gte: dates[0]}}}, {$group: {_id: "$product", count: {$sum:1}}}, {$sort: {count: -1}}]).limit(1);
-	tempList.push(p);
-	p = await Review.aggregate([{$match: {"date": {$gte: dates[1]}}}, {$group: {_id: "$product", count: {$sum:1}}}, {$sort: {count: -1}}]).limit(1);
-	tempList.push(p);
-	p = await Review.aggregate([{$match: {"date": {$gte: dates[2]}}}, {$group: {_id: "$product", count: {$sum:1}}}, {$sort: {count: -1}}]).limit(1);
-	tempList.push(p);
-	console.log(tempList);
-	*/
 	res.json(flash);
 };
 
@@ -117,6 +111,7 @@ const deleteProduct = async (req, res) => {
 module.exports = {
     addProduct,
     getProducts,
+	getProductById,
 	getNewProducts,
 	getPopularProducts,
 	getFlashProducts,

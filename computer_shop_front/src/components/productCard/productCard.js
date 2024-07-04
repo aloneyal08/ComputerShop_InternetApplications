@@ -1,14 +1,16 @@
 import React, {useContext, useState, useEffect} from 'react';
 import { Rating } from 'react-simple-star-rating';
+import {useNavigate } from "react-router-dom";
 import {MoneyContext} from '../../Contexts'
 import './productCard.css'
 
 const currencies = require('../../currencies.json');
 
-export const ProductCard = ({product, renderRating = true, renderStock = true}) =>{
+export const ProductCard = ({product, renderRating = true, renderStock = true, isClickable=true}) =>{
   const {currency, exchangeRates} = useContext(MoneyContext);
   const [supplier, setSupplier] = useState('');
   const [productRate, setProductRate] = useState(0);
+  const navigate = useNavigate();
   
   useEffect(()=>{
     if(product.supplierName){
@@ -26,23 +28,18 @@ export const ProductCard = ({product, renderRating = true, renderStock = true}) 
   if(renderRating && product.rating){
     setProductRate(product.rating)
   }else{
-    fetch('http://localhost:88/review/get',{
+    fetch('http://localhost:88/review/get-rating',{
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({product: product._id})
-    }).then((res)=>res.json()).then((res)=>{
-      let rating = 0;
-      res.forEach(review => {
-        rating += review.rating;
-      });
-      setProductRate(Math.floor((rating / res.length)*2)/2);
+    }).then((res)=>res.json()).then((res)=>{setProductRate(Math.floor(res*2)/2);
     });
   }
   }, []);
 
-    return <div className='productCard'>
+    return <div className='productCard' onClick={isClickable?() => {navigate(`/product/${product._id}`)}:undefined}>
     <img alt='           ' className='productImg' src={product.photo} onError={(e) =>{e.currentTarget.src = require('../../images/defaultProduct.jpg')}}/>
     <div className='productText'>
       <section className='productTextLeft'>
