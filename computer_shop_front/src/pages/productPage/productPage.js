@@ -2,6 +2,7 @@ import React, {useState, useEffect, useContext} from 'react'
 import {MoneyContext, TagsContext} from '../../Contexts'
 import { useParams } from 'react-router-dom';
 import { Rating } from 'react-simple-star-rating';
+import './productPage.css';
 
 const currencies = require('../../currencies.json');
 
@@ -20,7 +21,8 @@ const ProductPage = () => {
           },
           body: JSON.stringify({id: productId})
       }).then((res)=>res.json()).then((res)=>{
-        if(res.tags){
+        if(res.tags && tags.length > 0){
+            console.log(res.tags, tags)
             res.tags = res.tags.map((tag) => tags.find(t => t._id === tag).text).filter(tag => tag);
         }
         setProduct(res)});
@@ -31,11 +33,12 @@ const ProductPage = () => {
         },
         body: JSON.stringify({id: productId})
     }).then((res)=>res.json()).then((res)=>{console.log(res);setRating(res)});
-    }, [productId])
+    }, [productId, tags])
+
     if(Object.keys(product).length === 0){return}
     return <div>
         <div id='productWrapper'>
-            <img src={product.photo} />
+            <img id='productPhoto' src={product.photo} />
             <div className='productInfo'>
                 <Rating
                 readonly={true}
@@ -49,12 +52,14 @@ const ProductPage = () => {
                 </div>
                 {   product.tags?
                     <div id='tags'>
-                        {product.tags.map(tag=>(<div className='productTag'><p className='productTagName'>{tag}</p></div>))}
+                        {product.tags.map((tag, index)=>(<div className='productTag' key={index} ><p className='productTagName'>{tag}</p></div>))}
                     </div>
                     :
                     <></>
                 }
                 <h3 id='productPrice'>{currencies[currency].symbol + Math.floor(product.price*exchangeRates[currency]*100)/100}</h3>
+                <h6 id='productStock'>Currently {product.stock > 0?product.stock:'none'} in stock</h6>
+                <button className='button1'>Add To Cart</button>
             </div>
         </div>
     </div>

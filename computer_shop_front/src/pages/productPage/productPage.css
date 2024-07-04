@@ -1,4 +1,31 @@
 #productWrapper{
     display: flex;
     flex-direction: row;
+    justify-content: center;
+}
+#tags{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    border-radius: 15px;
+    padding: 5px;
+    cursor: pointer;
+    margin: 0 0px;
+}
+.productTagName{
+margin: 0;
+font-size: 14px;
+}
+#productPhoto{
+    width: 500px;
+    height: 400px;
+}
+.productInfo{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+#productDesc{
+    align-self: flex-start;
 }
