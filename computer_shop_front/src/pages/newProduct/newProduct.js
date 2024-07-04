@@ -73,11 +73,6 @@ const NewProduct = () => {
   };
 
   const addProduct = async (e) => {
-    console.log(chosenTags.map((tag) => {
-      for(let i = 0; i < tags.length;++i){
-        if(tags[i].text === tag.name){return tags[i]._id}
-      }
-    }));
     let value = draftToHtmlPuri(
       convertToRaw(description.getCurrentContent())
     );
@@ -190,7 +185,7 @@ const NewProduct = () => {
             <section className='inputContainer' id='tagsContainer'>
               {
                 <div className='productTags'>
-                  {chosenTags.map(tag=>(<div className='productTag'><p className='productTagName'>{tag.name}</p><span id={tag.value} onClick={removeTag}>x</span></div>))}
+                  {chosenTags.map(tag=>(<div className='productTag' key={tag.name}><p className='productTagName'>{tag.name}</p><span id={tag.value} onClick={removeTag}>x</span></div>))}
                 </div>
               }
               <SelectSearch ref={tagSelect} onChange={addTag} search={true} getOptions={()=>tagOptions.filter((tag)=>tag.disabled === false)} name="tag" placeholder="Choose Your Tags" renderValue={(valueProps) =>
@@ -200,7 +195,7 @@ const NewProduct = () => {
                   <span>{valueProps.placeholder}</span>
                   </label>
                 </div>} renderOption={(optionsProps, optionsData) => {
-                    return tags.find(t=>t.name===optionsData.name) ? null : <button className='select-search-option' {...optionsProps}>{optionsData.name}</button>
+                    return chosenTags.find(t=>t.name===optionsData.name) ? null : <button className='select-search-option' {...optionsProps}>{optionsData.name}</button>
                 }} />
             </section>
           </section>

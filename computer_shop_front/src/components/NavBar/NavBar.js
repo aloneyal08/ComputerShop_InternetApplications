@@ -50,6 +50,10 @@ export const NavBar = () => {
   }
   useEffect(()=>setCurrencyPopupOpen(false), [isAccountPopupOpen])
   useEffect(()=>{
+    const urlParams = new URLSearchParams(window.location.search);
+    const key = urlParams.get('key')||'';
+    setSearch(key);
+
     var canvas = arrowRef.current;
     if (canvas.getContext) {
       var ctx = canvas.getContext('2d');
@@ -76,14 +80,21 @@ export const NavBar = () => {
     localStorage.setItem("currency", curr);
     setCurrencyPopupOpen(false);
   }
-  const tagOptions = tags.map(t=>({text: t.text, searchKey: `::tags:${t}`}))
+
+  const onKeyDown = (e) => {
+    if (e.key === "Enter") {
+      navigate(`/search?key=${search}`, { state: Math.random() });
+    }
+  }
+
+  const tagOptions = tags.map(t=>({text: t.text, searchKey: `::tags:${t.text}`}))
 
   return <header className='navBar' style={location.pathname !== "/" || user.level === 1 || user.level === 2 ? {height: "50px"} : {}}>
     <div className='mainBar'>
       <div className='logo' onClick={()=>navigate("/")}>
         <h1>SHOP</h1>
       </div>
-      <input type='text' className='searchBox' onChange={onSearchChange} placeholder='Search...' value={search}/>
+      <input type='text' className='searchBox' onChange={onSearchChange} placeholder='Search...' value={search} onKeyDown={onKeyDown}/>
       <div className='navBarOthers'>
         <div className='nbImageContainer' onMouseEnter={()=>setAccountPopupOpen(true)} onMouseLeave={leaveAccountIcon}>
           <img src={user.profilePhoto} alt='' className='navBarPhoto navBarAccountPhoto' style={{zIndex: 2}}/>
@@ -109,7 +120,7 @@ export const NavBar = () => {
     {location.pathname === "/" && user.level !== 1 && user.level !== 2 && <nav className='specialSearch'>
       {
         searchOptions.concat(tagOptions).map(option=>(
-          <button className={'searchOption ' + (option.special ? 'optionSpecial' : '')} onClick={()=>navigate(`/search?key=${option.searchKey}`)}>
+          <button className={'searchOption ' + (option.special ? 'optionSpecial' : '')} onClick={()=>navigate(`/search?key=${option.searchKey}`)} key={option.text}>
             {option.text}
           </button>
         ))

@@ -8,7 +8,7 @@ const Tag = new Schema({
   },
   background: {
     type: String,
-    required: true
+    required: false
   }
 });
 

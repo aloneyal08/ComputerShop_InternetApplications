@@ -60,9 +60,30 @@ const sendEmail = async (to, subject, header, content, buttons='') => {
   });
 }
 
+const getKeywords = (query) => {
+  var tokens = query.toLowerCase().replace(/[^a-z0-9_\s]/g, '').split(/\s+/g);
+  var keywords = tokens.map(token=>token.replace(/(ing|s)$/, ''));
+
+  return keywords;
+}
+
+const removeHTMLTags = (html) => {
+  var regX = /(<([^>]+)>)/ig;                
+  return html.replace(regX, "");
+}
+
+const fuzzySearch = (str, s) => {
+  var hay = str.toLowerCase(), i = 0, n = -1, l;
+  s = s.toLowerCase();
+  for (; l = s[i++] ;) if (!~(n = hay.indexOf(l, n + 1))) return false;
+  return true;
+};
 
 module.exports = {
   encrypt,
   decrypt,
-  sendEmail
+  sendEmail,
+  getKeywords,
+  removeHTMLTags,
+  fuzzySearch
 }

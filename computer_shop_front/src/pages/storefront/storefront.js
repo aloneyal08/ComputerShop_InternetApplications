@@ -77,9 +77,9 @@ const Storefront = () => {
   }, []);
   return <div>
     <div id='flashWrapper'>
-      <div id='dots'>{flashProducts.map((p, index) => <span className={`dot ${flashPos===index?'selected':''}`} onClick={() => {moveFlash(index)}}>•</span>)}</div>
+      <div id='dots'>{flashProducts.map((p, index) => <span key={index} className={`dot ${flashPos===index?'selected':''}`} onClick={() => {moveFlash(index)}}>•</span>)}</div>
       <div id='flashContainers' ref={flashContainers}>
-        {flashProducts.map((p) => <FlashContainer list={p}/>)}
+        {flashProducts.map((p, i) => <FlashContainer list={p} key={i}/>)}
       </div>
     </div>
     <div id='showContainer'>
@@ -88,7 +88,7 @@ const Storefront = () => {
         <button className='moveLeft' onClick={(e) => {moveSide(e, -1)}}>
           {'<'}
         </button>
-        {recProducts.map((product)=><ProductCard product={product}/>)}
+        {recProducts.map((product)=><ProductCard product={product} key={product._id}/>)}
         <button className='moveRight' onClick={(e) => {moveSide(e, 1)}}>
           {'>'}
         </button>
@@ -98,7 +98,7 @@ const Storefront = () => {
         <button className='moveLeft' disabled={true} onClick={(e) => {moveSide(e, -1)}}>
           {'<'}
         </button>
-      {popProducts.map((product)=> <ProductCard product={product} />)}
+      {popProducts.map((product)=> <ProductCard product={product} key={product._id}/>)}
         <button className='moveRight' onClick={(e) => {moveSide(e, 1)}}>
           {'>'}
         </button>
@@ -108,7 +108,7 @@ const Storefront = () => {
         <button className='moveLeft' disabled={true} onClick={(e) => {moveSide(e, -1)}}>
           {'<'}
         </button>
-      {newProducts.map((product)=> <ProductCard product={product} />)}
+      {newProducts.map((product)=> <ProductCard product={product} key={product._id}/>)}
         <button className='moveRight' onClick={(e) => {moveSide(e, 1)}}>
           {'>'}
         </button>
@@ -119,7 +119,7 @@ const Storefront = () => {
         {'<'}
       </button>
       {recSupplier.map((supplier)=>
-      <div className='userCard'>
+      <div className='userCard' key={supplier._id}>
         <img alt='           ' className='userPhoto' src={supplier.profilePhoto} onError={(e) =>{e.currentTarget.src = require('../../images/userDefault.png')}} />
         <h4>{supplier.fullName}</h4>
       </div>)}

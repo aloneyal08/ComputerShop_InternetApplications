@@ -1,7 +1,9 @@
 const Review = require('../models/review');
 const Product = require('../models/product');
 const Purchase = require('../models/purchase');
+const Tag = require('../models/tag');
 const { connect } = require('mongoose');
+const { getKeywords, removeHTMLTags, fuzzySearch } = require('../utils');
 
 const addProduct = async (req, res) => {
 	const { name, price, photo, description, stats, parentProduct, stock, supplier, tags } = req.body;
@@ -114,12 +116,41 @@ const deleteProduct = async (req, res) => {
 	res.send();
 };
 
+
+const tagPriority = 2;
+const namePriority = 1;
+const descriptionPriority = 0.75;
+const search = async (req, res) => {
+	const {key} = req.headers;
+	const keywords = getKeywords(key);
+
+	const products = await Product.find({});
+	const tags = await Tag.find({})
+
+	const searchedProducts = products.map(product=>{
+		var match = 0;
+		keywords.forEach(word=>{
+			if(tags.find(tag=>tag.text===word&&fuzzySearch(product.tags,tag._id)))
+			 	match += tagPriority;
+			else if(fuzzySearch(getKeywords(product.name).join(' '), word))
+				match += namePriority;
+			else if(fuzzySearch(getKeywords(removeHTMLTags(product.description)).join(' '),word))
+				match += descriptionPriority;
+		})
+		return {...product, match};
+	}).map(p=>({...p._doc, match:p.match})).sort((a,b)=>b.match-a.match).slice(0, 50);
+
+	res.json(searchedProducts);
+
+}
+
 module.exports = {
-    addProduct,
-    getProducts,
+	addProduct,
+	getProducts,
 	getNewProducts,
 	getPopularProducts,
 	getFlashProducts,
-    editProduct,
-    deleteProduct
+	editProduct,
+	deleteProduct,
+	search
 };
