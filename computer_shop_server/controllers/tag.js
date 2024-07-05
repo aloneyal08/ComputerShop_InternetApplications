@@ -1,5 +1,4 @@
 const Tag = require('../models/tag');
-const ObjectId = require('mongoose').Types.ObjectId;
 
 const getTags = async (req, res) => {
 	const tags = await Tag.find();

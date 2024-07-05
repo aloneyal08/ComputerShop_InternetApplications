@@ -127,7 +127,7 @@ const NewProduct = () => {
   if(tagOptions.length === 0){
     return;
   }
-  return <div>
+  return <div style={{paddingBottom: "500px"}}>
     {user.level === 1?
       <div id='newProductContainer'>
         <h1 id='title'>Add New Product</h1>
@@ -195,10 +195,11 @@ const NewProduct = () => {
               <SelectSearch ref={tagSelect} onChange={addTag} search={true} getOptions={()=>tagOptions.filter((tag)=>tag.disabled === false)} name="tag" placeholder="Choose Your Tags" renderValue={(valueProps) =>
                 <div className='input1'>
                   <label>
-                  <input type='text' required {...valueProps} placeholder=''/>
+                  <input onSelect={()=>{tagSelect.current.scrollIntoView();}} type='text' required {...valueProps} placeholder=''/>
                   <span>{valueProps.placeholder}</span>
                   </label>
                 </div>} renderOption={(optionsProps, optionsData) => {
+                    console.log(optionsProps);
                     return tags.find(t=>t.name===optionsData.name) ? null : <button className='select-search-option' {...optionsProps}>{optionsData.name}</button>
                 }} />
             </section>

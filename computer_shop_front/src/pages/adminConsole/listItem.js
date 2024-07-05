@@ -1,4 +1,4 @@
-import React, {useState, useContext} from 'react'
+import React, {useState, useContext, useRef} from 'react'
 import { formatPhoneNumber, validateUsername } from '../../utils';
 import { UserContext } from '../../Contexts'
 
@@ -259,6 +259,7 @@ export const TagListItem = ({tag, reload}) => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [text, setText] = useState(tag.text);
   const [background, setBackground] = useState(tag.background);
+  const popup = useRef(null);
 
   const onTextChange = (e) => setText(e.target.value);
   const onBackgroundChange = (e) => setBackground(e.target.value);
@@ -307,10 +308,10 @@ export const TagListItem = ({tag, reload}) => {
     </td>
     <td>
       <button className='iconButton deleteButton' onClick={deleteTag}/>
-      <button className='iconButton editButton' onClick={()=>setIsPopupOpen(true)}/>
+      <button className='iconButton editButton' onClick={(e)=>{setIsPopupOpen(true);popup.current.scrollIntoView()}}/>
     </td>
     {isPopupOpen&&<div className='allScreen' onClick={()=>setIsPopupOpen(false)}/>}
-    <td className={'popup requestPopup tagEditPopup ' + (isPopupOpen ? 'scale1' : '')}>
+    <td ref={popup} className={'popup requestPopup tagEditPopup ' + (isPopupOpen ? 'scale1' : '')}>
       <div className='arrowUp'/>
       <div className="input1">
         <label>
