@@ -25,6 +25,7 @@ const NewProduct = () => {
   const [photo, setPhoto] = useState('');
   const [tagOptions, setTagOptions] = useState([]);
   const [chosenTags, setChosenTags] = useState([]);
+  const [validPhoto, setValidPhoto] = useState(false);
   
   useEffect(() => {
     const blocksFromHtml = htmlToDraft("");
@@ -38,12 +39,17 @@ const NewProduct = () => {
     setTagOptions(tags.map((e, index) => {return {name: e.text, value: index, disabled: false}}));
   }, [tags]);
 
+  useEffect(()=>{
+    console.log(validPhoto)
+  }, [validPhoto])
+
   const onTextChange = (state) => {
     setDescription(state);
   };
 
   const changeImageFunc = (e) => {
     let val = e?e.currentTarget.value:'';
+    setValidPhoto(true);
     setPhoto(val);
   };
 
@@ -73,11 +79,6 @@ const NewProduct = () => {
   };
 
   const addProduct = async (e) => {
-    console.log(chosenTags.map((tag) => {
-      for(let i = 0; i < tags.length;++i){
-        if(tags[i].text === tag.name){return tags[i]._id}
-      }
-    }));
     let value = draftToHtmlPuri(
       convertToRaw(description.getCurrentContent())
     );
@@ -95,9 +96,11 @@ const NewProduct = () => {
     }
     if(value === ''){
       alert('A product description must be entered!');
+      return;
     }
-    if(photo === ''){
+    if(photo === '' || !validPhoto){
       alert('A product picture must be entered!');
+      return;
     }
     fetch('http://localhost:88/product/add', {
       method: 'POST',
@@ -141,13 +144,13 @@ const NewProduct = () => {
                 <span>Product Name*</span>
                 </label>
                 <hr className='separator' />
-                <Editor 
+                <Editor
                   editorState={description}
                   toolbarClassName="toolbarClassName"
                   wrapperClassName="wrapperClassName"
                   editorClassName="editorClassName"
                   spellCheck={true}
-                  editorStyle={{minHeight: '15vh', border: '1px solid gainsboro', fontSize: '14px', lineHeight: '6px'}}
+                  editorStyle={{minHeight: '15vh', border: '1px solid gainsboro', fontSize: '14px', lineHeight: '15px'}}
                   toolbar={{
                     options: ['inline', 'fontSize', 'list', 'textAlign'],
                     list: {inDropdown: true}
@@ -199,13 +202,12 @@ const NewProduct = () => {
                   <span>{valueProps.placeholder}</span>
                   </label>
                 </div>} renderOption={(optionsProps, optionsData) => {
-                    console.log(optionsProps);
                     return tags.find(t=>t.name===optionsData.name) ? null : <button className='select-search-option' {...optionsProps}>{optionsData.name}</button>
                 }} />
             </section>
           </section>
           <section id='preview'>
-            <ProductCard isClickable={false} product={{name: name===''?"Product's Name":name, price: price===''?"Product's Price":price, stock, photo, rating: 2.5, supplierName: user.fullName}} />
+            <ProductCard isClickable={false} onImageError={()=>{setValidPhoto(false)}} product={{name: name===''?"Product's Name":name, price: price===''?"Product's Price":price, stock, photo, rating: 2.5, supplierName: user.fullName}} />
             <button id='addProductBtn' onClick={addProduct} className='button1'>Add New Product</button>
           </section>
         </div>

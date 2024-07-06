@@ -86,3 +86,10 @@
     height: 310px;
     overflow-x: scroll;
 }
+.userPhoto{
+    width: 120px;
+    height: 120px;
+}
+.userName{
+    margin-top: 0;
+}

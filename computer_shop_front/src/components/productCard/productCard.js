@@ -6,7 +6,7 @@ import './productCard.css'
 
 const currencies = require('../../currencies.json');
 
-export const ProductCard = ({product, renderRating = true, renderStock = true, isClickable=true}) =>{
+export const ProductCard = ({product, renderRating = true, renderStock = true, isClickable=true, onImageError = () => {}}) =>{
   const {currency, exchangeRates} = useContext(MoneyContext);
   const [supplier, setSupplier] = useState('');
   const [productRate, setProductRate] = useState(0);
@@ -40,27 +40,29 @@ export const ProductCard = ({product, renderRating = true, renderStock = true, i
   }, []);
 
     return <div className='productCard' onClick={isClickable?() => {navigate(`/product/${product._id}`)}:undefined}>
-    <img alt='           ' className='productImg' src={product.photo} onError={(e) =>{e.currentTarget.src = require('../../images/defaultProduct.jpg')}}/>
+    <img alt='           ' className='productImg' src={product.photo} onError={(e) =>{e.currentTarget.src = require('../../images/defaultProduct.jpg');onImageError(e);}}/>
     <div className='productText'>
       <section className='productTextLeft'>
         <h3 className='productName'>{product.name}</h3>
         <aside><h6 className='productSupplier' >{supplier}</h6></aside>
-        { renderStock?
-          <h4 className={`productStock ${product.stock >= 1?'hidden':'visible'}`}>Currently None in Stock*</h4>
-          :
-          <></>
-        }
-        { renderRating?
-          <Rating
-          readonly={true}
-          initialValue={productRate}
-          allowFraction={true}
-          size={35}
-          id='productRating'
-          />
-          :
-          <></>
-        }
+        <footer>
+          { renderStock?
+            <h4 className={`productStock ${product.stock >= 1?'hidden':'visible'}`}>Currently None in Stock*</h4>
+            :
+            <></>
+          }
+          { renderRating?
+            <Rating
+            readonly={true}
+            initialValue={productRate}
+            allowFraction={true}
+            size={35}
+            id='productRating'
+            />
+            :
+            <></>
+          }
+          </footer>
       </section>
       <section className='productTextRight'>
         <h4 className='productPrice'>{isNaN(product.price)?product.price:currencies[currency].symbol + Math.floor(product.price*exchangeRates[currency]*100)/100}</h4>

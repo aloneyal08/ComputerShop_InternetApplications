@@ -3,6 +3,7 @@
     flex-direction: row;
     justify-content: center;
     column-gap: 50px;
+    margin-top: 50px;
 }
 #tags{
     display: flex;
@@ -12,7 +13,7 @@
     border-radius: 15px;
     padding: 5px;
     cursor: pointer;
-    margin: 0 0px;
+    margin: -7px 0;
 }
 .productTagName{
 margin: 0;
@@ -27,9 +28,23 @@ font-size: 14px;
     flex-direction: column;
     align-items: center;
 }
-#productDesc > p{
+#productDesc{
     display: flex;
-    flex-direction: row;
-    justify-content: flex-start;
+    flex-direction: column;
     text-align: start;
+    width: 20vw;
+    height: 18vh;
+    overflow: auto;
+}
+#productName, #productDesc > p, #productPrice, #cartBtn{
+    margin: 0;
+}
+#productStock{
+    margin: 0;
+    margin-top: 7px;
+}
+.separator{
+    border-top: 2px solid gainsboro;
+    margin: 7px 0;
+    width: 100%;
 }

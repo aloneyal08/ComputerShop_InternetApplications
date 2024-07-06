@@ -70,6 +70,7 @@ const getFlashProducts = async (req, res) => {
 		current.push(p);
 	}
 	flash.push(["Most Purchased", current, 'https://media.istockphoto.com/id/826661764/video/falling-dollar-banknotes-in-4k-loopable.jpg?s=640x640&k=20&c=VkMeB7CyxyI96uGVnRuJLg5mI4AHlVVlc9DsT6jMA0Q=']);
+	current = [];
 	p = await Product.find({date: {$gte: dates[0]}}).sort({$natural:-1}).limit(1);
 	current.push(p[0]);
 	p = await Product.find({date: {$gte: dates[1], $lte: dates[0]}}).sort({$natural:-1}).limit(1);

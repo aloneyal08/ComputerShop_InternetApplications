@@ -126,3 +126,9 @@ input[type=number] {
     align-self: center;
     margin-top: 7vh;
 }
+.wrapperClassName{
+    width: 39.1vw;
+}
+.public-DraftEditor-content{
+    height: 18vh;
+}

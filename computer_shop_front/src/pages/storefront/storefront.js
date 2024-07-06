@@ -121,7 +121,7 @@ const Storefront = () => {
       {recSupplier.map((supplier)=>
       <div className='userCard'>
         <img alt='           ' className='userPhoto' src={supplier.profilePhoto} onError={(e) =>{e.currentTarget.src = require('../../images/userDefault.png')}} />
-        <h4>{supplier.fullName}</h4>
+        <h4 className='userName'>{supplier.fullName}</h4>
       </div>)}
         <button className='moveRight' onClick={(e) => {moveSide(e, 1)}}>
           {'>'}

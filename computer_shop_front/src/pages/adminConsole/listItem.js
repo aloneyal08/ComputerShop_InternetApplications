@@ -1,5 +1,5 @@
 import React, {useState, useContext, useRef} from 'react'
-import { formatPhoneNumber, validateUsername } from '../../utils';
+import { formatPhoneNumber, sleep, validateUsername } from '../../utils';
 import { UserContext } from '../../Contexts'
 
 const getStatusObj = (s) => {
@@ -259,7 +259,6 @@ export const TagListItem = ({tag, reload}) => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [text, setText] = useState(tag.text);
   const [background, setBackground] = useState(tag.background);
-  const popup = useRef(null);
 
   const onTextChange = (e) => setText(e.target.value);
   const onBackgroundChange = (e) => setBackground(e.target.value);
@@ -308,10 +307,22 @@ export const TagListItem = ({tag, reload}) => {
     </td>
     <td>
       <button className='iconButton deleteButton' onClick={deleteTag}/>
-      <button className='iconButton editButton' onClick={(e)=>{setIsPopupOpen(true);popup.current.scrollIntoView()}}/>
+      <button className='iconButton editButton' onClick={async (e)=>{
+        setIsPopupOpen(true);
+        let row = e.currentTarget.parentElement.parentElement;
+        let pos = row.parentElement.firstChild.clientHeight + 2;
+        for(let i = 0; i < e.currentTarget.parentElement.parentElement.parentElement.children.length; ++i){
+          if(e.currentTarget.parentElement.parentElement.parentElement.children[i] === e.currentTarget.parentElement.parentElement){
+            pos += (i-2)*(e.currentTarget.parentElement.parentElement.clientHeight);
+            break;
+          }
+        }
+        await sleep(50);
+        row.parentElement.parentElement.parentElement.scrollTo(0, pos)
+        }}/>
     </td>
     {isPopupOpen&&<div className='allScreen' onClick={()=>setIsPopupOpen(false)}/>}
-    <td ref={popup} className={'popup requestPopup tagEditPopup ' + (isPopupOpen ? 'scale1' : '')}>
+    <td className={'popup requestPopup tagEditPopup ' + (isPopupOpen ? 'scale1' : '')}>
       <div className='arrowUp'/>
       <div className="input1">
         <label>

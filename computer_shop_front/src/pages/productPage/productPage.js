@@ -22,7 +22,6 @@ const ProductPage = () => {
           body: JSON.stringify({id: productId})
       }).then((res)=>res.json()).then((res)=>{
         if(res.tags && tags.length > 0){
-            console.log(res.tags, tags)
             res.tags = res.tags.map((tag) => tags.find(t => t._id === tag).text).filter(tag => tag);
         }
         setProduct(res)});
@@ -32,7 +31,7 @@ const ProductPage = () => {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({id: productId})
-    }).then((res)=>res.json()).then((res)=>{console.log(res);setRating(res)});
+    }).then((res)=>res.json()).then((res)=>{setRating(res)});
     }, [productId, tags])
 
     if(Object.keys(product).length === 0){return}
@@ -48,8 +47,10 @@ const ProductPage = () => {
                 id='productRating'
                 />
                 <h1 id='productName'>{product.name}</h1>
+                <hr className='separator'/>
                 <div id='productDesc' dangerouslySetInnerHTML={{__html: product.description}}>
                 </div>
+                <hr className='separator'/>
                 {   product.tags?
                     <div id='tags'>
                         {product.tags.map((tag, index)=>(<div className='productTag' key={index} ><p className='productTagName'>{tag}</p></div>))}
@@ -57,9 +58,10 @@ const ProductPage = () => {
                     :
                     <></>
                 }
+                <hr className='separator'/>
                 <h3 id='productPrice'>{currencies[currency].symbol + Math.floor(product.price*exchangeRates[currency]*100)/100}</h3>
-                <h6 id='productStock'>Currently {product.stock > 0?product.stock:'none'} in stock</h6>
-                <button className='button1'>Add To Cart</button>
+                <h6 id='productStock' style={{color: product.stock > 0?'black':'red'}}>Currently {product.stock > 0?product.stock + ' in':'out of'} stock</h6>
+                <button id='cartBtn' className='button1'>Add To Cart</button>
             </div>
         </div>
     </div>

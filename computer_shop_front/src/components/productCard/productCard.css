@@ -43,6 +43,7 @@
     white-space: nowrap;
   }
   .productStock{
+    width: fit-content;
     margin-bottom: -3px;
     font-size: 10px;
     color: red;
