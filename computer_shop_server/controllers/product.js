@@ -121,7 +121,10 @@ const tagPriority = 2;
 const namePriority = 1;
 const descriptionPriority = 0.75;
 const search = async (req, res) => {
-	const {key} = req.headers;
+	var { key, filters} = req.headers;
+	filters = JSON.parse(filters);
+	console.log(filters);
+
 	const keywords = getKeywords(key);
 
 	const products = await Product.find({});
@@ -138,7 +141,16 @@ const search = async (req, res) => {
 				match += descriptionPriority;
 		})
 		return {...product, match};
-	}).map(p=>({...p._doc, match:p.match})).sort((a,b)=>b.match-a.match).filter(p=>p.match>0).slice(0, 50);
+	}).map(p=>({...p._doc, match:p.match})).sort((a,b)=>b.match-a.match).filter(p=>{
+		if(p.match==0) return false;
+		var flag = true;
+		filters.tags.forEach(tag=>{
+			if(!p.tags.includes(tag))
+				flag = false;
+		})
+		if(!flag) return false;
+		return true;
+	}).slice(0, 50);
 
 	res.json(searchedProducts);
 

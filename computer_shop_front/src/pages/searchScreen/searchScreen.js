@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import './searchScreen.css';
 import { ProductCard } from '../../components/productCard/productCard';
-import { Link, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
+import TagSelect from '../../components/tagSelect/tagSelect';
 
 const SearchScreen = () => {
   const { state } = useLocation();
@@ -9,17 +10,37 @@ const SearchScreen = () => {
   const [didYouMean, setDidYouMean] = useState('');
   const [key, setKey] = useState('');
 
+  //filters
+  const [tags, setTags] = useState([]);
+
+
+  const getProducts = useCallback(() => {
+    fetch(`http://localhost:88/product/search`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        key,
+        filters: JSON.stringify({tags: tags.map(t=>t.value)})
+      }
+    }).then(res => res.json()).then(p=>{
+      setProducts(p);
+    })
+  }, [key, tags])
+
+  useEffect(()=>{
+    getProducts();
+  }, [getProducts])
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const key = (urlParams.get('key')||'').split('::')[0];
     setKey(urlParams.get('key'));
-
+    getProducts();
     fetch(`http://localhost:88/spell`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        key
+        key,
       }
     }).then(res => res.json()).then(p=>{
       if(p.isMisspelled) {
@@ -28,17 +49,7 @@ const SearchScreen = () => {
         setDidYouMean('');
       }
     })
-
-    fetch(`http://localhost:88/product/search`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        key
-      }
-    }).then(res => res.json()).then(p=>{
-      setProducts(p);
-    })
-  }, [state])
+  }, [getProducts, state])
   
 
   return <div>
@@ -57,6 +68,8 @@ const SearchScreen = () => {
       </div>
       <div className='filters'>
         <h2>Filter:</h2>
+        <label>Tags: </label>
+        <TagSelect value={tags} onChange={(v)=>{setTags(v);getProducts();}}/>
       </div>
       <div className='searchProducts'>
         {

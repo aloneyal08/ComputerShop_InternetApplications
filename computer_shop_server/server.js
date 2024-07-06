@@ -33,7 +33,6 @@ app.get('/spell', (req, res)=>{
     var isMisspelled = false;
     const mean = key.split(' ').map(word=>{
       var misspelled = !dictionary.spellCheck(word);
-      console.log(misspelled);
       if(misspelled) {
         isMisspelled = true;
         var suggestions = dictionary.getSuggestions(word);

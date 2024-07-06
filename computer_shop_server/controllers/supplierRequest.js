@@ -58,7 +58,6 @@ const acceptRequestGet = async (req, res) => {
 
 const acceptRequest = async (req, res) => {
   const { id, username, password } = req.body;
-  console.log("object");
 
   const admin = await User.findOne({username});
   if(!admin || admin.level !== 2 || admin.password !== password)
