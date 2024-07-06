@@ -52,7 +52,7 @@ export const NavBar = () => {
   useEffect(()=>{
     const urlParams = new URLSearchParams(window.location.search);
     const key = urlParams.get('key')||'';
-    setSearch(key);
+    setSearch(key.split("::")[0]);
 
     var canvas = arrowRef.current;
     if (canvas.getContext) {
@@ -83,7 +83,7 @@ export const NavBar = () => {
 
   const onKeyDown = (e) => {
     if (e.key === "Enter") {
-      navigate(`/search?key=${search}`, { state: Math.random() });
+      window.open(`/search?key=${search}`, "_self");
     }
   }
 

@@ -57,6 +57,7 @@ input::-webkit-inner-spin-button {
 /*firefox*/
 input[type=number] {
   -moz-appearance: textfield;
+  appearance: textfield;
 }
 .select-search-value > div.input1 > label > input{
     box-sizing: content-box;

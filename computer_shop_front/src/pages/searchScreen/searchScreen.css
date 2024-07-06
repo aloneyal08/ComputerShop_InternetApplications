@@ -5,14 +5,19 @@
   flex-wrap: wrap;
   align-self: flex-start;
   gap: 35px;
-  justify-content: center;
 }
 
 .filters {
-  height: 3000px;
-  min-width: 220px;
+  min-width: 270px;
+  max-width: 270px;
   grid-area: menu;
+  padding: 10px;
 }
+
+.filters > section {
+  margin-top: 30px;
+}
+
 .sort {
   height: 50px;
   grid-area: header;
@@ -22,8 +27,8 @@
   display: grid;
   grid-template-areas:
     'header header header header header header'
-    'menu main main main right right'
-    'menu footer footer footer footer footer';
+    'menu main main main main main'
+    'menu main main main main main';
   gap: 0px;
 }
 

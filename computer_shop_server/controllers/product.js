@@ -4,6 +4,7 @@ const Purchase = require('../models/purchase');
 const Tag = require('../models/tag');
 const { connect } = require('mongoose');
 const { getKeywords, removeHTMLTags } = require('../utils');
+const User = require('../models/user');
 
 const addProduct = async (req, res) => {
 	const { name, price, photo, description, stats, parentProduct, stock, supplier, tags } = req.body;
@@ -121,16 +122,17 @@ const tagPriority = 2;
 const namePriority = 1;
 const descriptionPriority = 0.75;
 const search = async (req, res) => {
-	var { key, filters} = req.headers;
+	let { key, filters, sort} = req.headers;
 	filters = JSON.parse(filters);
-	console.log(filters);
 
 	const keywords = getKeywords(key);
 
 	const products = await Product.find({});
-	const tags = await Tag.find({})
+	const tags = await Tag.find({});
+	const Suppliers = await User.find({level: 1});
+	const allReviews = await Review.find();
 
-	const searchedProducts = products.map(product=>{
+	let searchedProducts = products.map(product=>{
 		var match = 0;
 		keywords.forEach(word=>{
 			if(tags.find(tag=>tag.text===word&&product.tags.includes(tag._id)))
@@ -140,19 +142,79 @@ const search = async (req, res) => {
 			else if(getKeywords(removeHTMLTags(product.description)).includes(word))
 				match += descriptionPriority;
 		})
-		return {...product, match};
-	}).map(p=>({...p._doc, match:p.match})).sort((a,b)=>b.match-a.match).filter(p=>{
-		if(p.match==0) return false;
-		var flag = true;
-		filters.tags.forEach(tag=>{
-			if(!p.tags.includes(tag))
-				flag = false;
-		})
-		if(!flag) return false;
-		return true;
-	}).slice(0, 50);
 
-	res.json(searchedProducts);
+		const reviews = allReviews.filter(rev=>rev.product===product._id);
+		let rating = 0;
+		reviews.forEach((rev) => {rating += rev.rating});
+		if(reviews.length > 0){rating /= reviews.length;}
+		else rating = 2.5;
+
+		return {...product, match, rating};
+	}).map(p=>({...p._doc, match:p.match, rating: p.rating}));
+	
+	var min=0, max=0;
+	if(searchedProducts.length) {
+		min = searchedProducts[0].price;
+		max = searchedProducts[0].price||0;
+		searchedProducts.forEach(p=>{
+			min = Math.min(min, p.price);
+			max = Math.max(max, p.price);
+		});
+	}
+	
+	const ids = [...new Set(searchedProducts.map(p=>p.supplier.toString()))];
+
+	const suppliers = ids.map(p=>{
+		const supplier = Suppliers.find(s=>s._id.toString()===p);
+		return {id: supplier._id, name: supplier.fullName};
+	})
+
+	searchedProducts = searchedProducts.filter(p=>{
+		if(p.match==0) return false;
+
+		var flag = false;
+		filters.tags.forEach(tag=>{
+			if(p.tags.includes(tag))
+				flag = true;
+		})
+		if(!flag && filters.tags.length>0) 
+			return false;
+
+		if((p.price < filters.prices[0] || p.price > filters.prices[1]) && filters.prices[0]!==-1)
+			return false;
+
+		if(p.rating < filters.rating)
+			return false;
+
+		if(filters.suppliers && !filters.suppliers.includes(p.supplier.toString()))
+			return false;
+
+		return true;
+	})
+
+	
+	sort = Number(sort);
+	if(sort === 2)
+		searchedProducts.sort((a,b)=>a.price-b.price)
+	else if(sort === 3)
+		searchedProducts.sort((a,b)=>b.price-a.price)
+	else if(sort === 4)
+		searchedProducts.sort((a,b)=>b.rating-a.rating)
+	else if(sort === 5)
+		searchedProducts.sort((a,b)=>new Date(b.date) - new Date(a.date));
+	else
+		searchedProducts.sort((a,b)=>b.match-a.match)
+
+	searchedProducts = searchedProducts.slice(0, 50);
+
+	res.json({
+		products: searchedProducts,
+		price: {
+			min,
+			max
+		},
+		suppliers
+	});
 
 }
 

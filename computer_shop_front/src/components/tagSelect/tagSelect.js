@@ -14,8 +14,7 @@ const TagSelect = ({onChange, value}) => {
     let id = e.currentTarget.id;
     let temp = tagOptions.map(o=>o._id===id?{...o, disabled: false}:o);
     setTagOptions(temp);
-    temp = value.slice();
-    temp.splice(temp.indexOf({name: tagOptions.find(t=>t.value===id).name, value: id}), 1);
+    temp = value.map(t=>t.value===id?null:t).filter(t=>t!==null);
     onChange(temp);
   };
 
@@ -32,11 +31,9 @@ const TagSelect = ({onChange, value}) => {
   }
 
   return <>
-    {
-    <div className='productTags'>
-      {value.map(tag=>(<div className='productTag' key={tag.name}><p className='productTagName'>{tag.name}</p><span id={tag.value} onClick={removeTag}>x</span></div>))}
-    </div>
-  }
+  <div className='productTags'>
+    {value.map(tag=>(<div className='productTag' key={tag.name}><p className='productTagName'>{tag.name}</p><span id={tag.value} onClick={removeTag}>x</span></div>))}
+  </div>
   <SelectSearch onChange={addTag} search={true} getOptions={()=>tagOptions.filter((tag)=>tag.disabled === false)} name="tag" placeholder="Choose Your Tags" renderValue={(valueProps) =>
     <div className='input1'>
       <label>
