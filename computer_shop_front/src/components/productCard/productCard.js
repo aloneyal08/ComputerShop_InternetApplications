@@ -1,5 +1,5 @@
 import React, {useContext, useState, useEffect} from 'react';
-import { Rating } from 'react-simple-star-rating';
+import ReactStarsRating from 'react-awesome-stars-rating';
 import {MoneyContext} from '../../Contexts'
 import './productCard.css'
 
@@ -54,13 +54,14 @@ export const ProductCard = ({product, renderRating = true, renderStock = true}) 
           <></>
         }
         { renderRating?
-          <Rating
-          readonly={true}
-          initialValue={productRate}
-          allowFraction={true}
-          size={35}
-          id='productRating'
-          />
+          <ReactStarsRating 
+            value={productRate} 
+            isEdit={false}
+            secondaryColor="#cccccc"
+            primaryColor="#ffbc0b"
+            size={33}
+            id={product._id}
+          /> 
           :
           <></>
         }

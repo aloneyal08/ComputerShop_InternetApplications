@@ -5,8 +5,9 @@ import TagSelect from '../../components/tagSelect/tagSelect';
 import RangeSlider from "react-range-slider-input";
 import "react-range-slider-input/dist/style.css";
 import { MoneyContext, TagsContext } from '../../Contexts';
-import { Rating } from 'react-simple-star-rating';
+
 import { useNavigate } from 'react-router-dom';
+import ReactStarsRating from 'react-awesome-stars-rating';
 
 const SearchScreen = () => {
   const navigate = useNavigate();
@@ -77,11 +78,10 @@ const SearchScreen = () => {
         ]});
         if(!firstSearch) return;
         setPrices([prices[0]===-1?res.price.min:prices[0], prices[1]===-1?res.price.max:prices[1]]);
-        setRangeValuePrice([res.price.min, res.price.max]);
         setSuppliers(res.suppliers.map(s=>({...s, checked: suppliers.length===0||!suppliers.includes(s.id)})))
       }
     })
-  }, [createSearchStr, currency, exchangeRates, firstSearch, key, prices, rating, setRangeValuePrice, sort, suppliers, tagsFilter])
+  }, [createSearchStr, currency, exchangeRates, firstSearch, key, prices, rating, sort, suppliers, tagsFilter])
 
   const convertRangeToPrice = () => {
     if(rangeValue[0]===-1||rangeValue[1]===-1||!exchangeRates[currency]) return;
@@ -223,14 +223,15 @@ const SearchScreen = () => {
         </section>
         <section>
           <label>Rating:<br/></label>
-          <Rating
-            onClick={setRating}
-            initialValue={rating}
-            allowFraction={true}
-            allowHover={false}
-            size={35}
-            id='productRating'
-          /> and above<br/>
+          <div style={{display: "flex", alignItems: "center", justifyContent: "center", gap: "5px"}}>
+            <ReactStarsRating 
+              value={rating} 
+              onChange={setRating}
+              secondaryColor="#cccccc"
+              primaryColor="#ffbc0b"
+              size={35}
+            /> and above<br/>
+          </div>
         </section>
         <section>
           <label>Suppliers: </label>

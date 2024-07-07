@@ -150,7 +150,7 @@ const search = async (req, res) => {
 		else rating = 2.5;
 
 		return {...product, match, rating};
-	}).map(p=>({...p._doc, match:p.match, rating: p.rating}));
+	}).map(p=>({...p._doc, match:p.match, rating: p.rating})).filter(p=>p.match>0);
 	
 	var min=0, max=0;
 	if(searchedProducts.length) {
@@ -170,8 +170,6 @@ const search = async (req, res) => {
 	})
 
 	searchedProducts = searchedProducts.filter(p=>{
-		if(p.match==0) return false;
-
 		var flag = false;
 		filters.tags.forEach(tag=>{
 			if(p.tags.includes(tag))
