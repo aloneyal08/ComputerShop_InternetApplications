@@ -16,13 +16,12 @@ const writeReview = async (req, res) => {
 const getReviews = async (req, res) => {
   const { product } = req.body;
   const reviews = await Review.find({product});
-  console.log(product);
-  console.log(reviews)
   res.json(reviews);
 }
 
 const getRating = async (req, res) => {
-  const {product} = req.query;
+  const {product} = req.body;
+  console.log(product)
   const reviews = await Review.find({product});
   let rating = 0;
   reviews.forEach((rev) => {rating += rev.rating});

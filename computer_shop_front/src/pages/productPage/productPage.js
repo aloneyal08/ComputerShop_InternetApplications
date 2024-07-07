@@ -1,6 +1,6 @@
 import React, {useState, useEffect, useContext} from 'react'
 import {MoneyContext, TagsContext, UserContext} from '../../Contexts'
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { Rating } from 'react-simple-star-rating';
 import { Editor } from "react-draft-wysiwyg";
 import { convertToRaw, EditorState, ContentState } from "draft-js";
@@ -13,6 +13,7 @@ const currencies = require('../../currencies.json');
 
 const ProductPage = () => {
     const {productId} = useParams();
+    const navigate = useNavigate();
     const {currency, exchangeRates} = useContext(MoneyContext);
     const {user} = useContext(UserContext);
     const tags = useContext(TagsContext);
@@ -23,7 +24,6 @@ const ProductPage = () => {
     const [changedReview, setChangedReview] = useState(false);
     const [reviewDescription, setReviewDescription] = useState('');
     const [reviews, setReviews] = useState([]);
-
     
     const onTextChange = (state) => {
         setReviewDescription(state);
@@ -78,7 +78,7 @@ const ProductPage = () => {
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({id: productId})
+        body: JSON.stringify({product: productId})
     }).then((res)=>res.json()).then((res)=>{setRating(res)});
     fetch('http://localhost:88/review/get',{
     method: 'POST',
