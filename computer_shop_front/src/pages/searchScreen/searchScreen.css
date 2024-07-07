@@ -1,9 +1,16 @@
+.searchHeader {
+  margin: 12px;
+  font-size: 35px;
+  margin-bottom: 0px;
+}
+
 .searchProducts {
   display: flex;
   padding: 20px;
   flex-direction: row;
   flex-wrap: wrap;
   align-self: flex-start;
+  justify-content: space-around;
   gap: 35px;
 }
 
@@ -12,15 +19,17 @@
   max-width: 270px;
   grid-area: menu;
   padding: 10px;
+  padding-left: 25px;
 }
 
 .filters > section {
-  margin-top: 30px;
+  margin-top: 10px;
 }
 
 .sort {
   height: 50px;
   grid-area: header;
+  position: relative;
 }
 
 .searchContainer {
@@ -34,4 +43,25 @@
 
 .searchProducts h2 {
   margin: 5px;
+}
+
+.didYouMean {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.single-thumb .range-slider__thumb[data-lower] {
+  width: 0;
+}
+.single-thumb .range-slider__range {
+  border-radius: 6px;
+}
+
+.searchRating {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  height: 90px;
 }

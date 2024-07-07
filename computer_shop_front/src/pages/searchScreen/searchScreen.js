@@ -5,7 +5,6 @@ import TagSelect from '../../components/tagSelect/tagSelect';
 import RangeSlider from "react-range-slider-input";
 import "react-range-slider-input/dist/style.css";
 import { MoneyContext, TagsContext } from '../../Contexts';
-
 import { useNavigate } from 'react-router-dom';
 import ReactStarsRating from 'react-awesome-stars-rating';
 
@@ -26,6 +25,8 @@ const SearchScreen = () => {
   const [rangeValue, setRangeValue] = useState([-1, -1]);
   const [prices, setPrices] = useState([-1, -1]);
   const [suppliers, setSuppliers] = useState([]);
+  const [dRangeValue, setDRangeValue] = useState(0);
+  const [discount, setDiscount] = useState(0);
 
   const [firstSearch, setFirstSearch] = useState(true);
 
@@ -37,20 +38,21 @@ const SearchScreen = () => {
   }, [currency, exchangeRates])
 
   const createSearchStr = useCallback(() => {
-    if(prices[0] === 0||tags.length===0) return;
-    const biggerThan = prices[0]===minMaxPrices.dollar[0] ? "" : `>${prices[0]}`;
-    const smallerThan = prices[1]===minMaxPrices.dollar[1] ? "" : `<${prices[1]}`;
+    if(prices[0] === 0||tags.length===0||prices[0] === -1||prices[1] === -1) return;
+    const biggerThan = prices[0]===minMaxPrices.dollar[0]||prices[0]===-1 ? "" : `>${prices[0]}`;
+    const smallerThan = prices[1]===minMaxPrices.dollar[1]||prices[1]===-1 ? "" : `<${prices[1]}`;
     const arr = [
       ["tags", tagsFilter.map(t=>tags.find(t2=>t2._id===t.value).text).join('^')],
       ["price",  smallerThan.length>0||biggerThan.length>0 ? biggerThan + (biggerThan.length>0?"^":"") + smallerThan : ''],
       ["rating", rating<=0.5 ? '' : rating],
       ["suppliers", suppliers.filter(s=>!s.checked).map(s=>s.id).join(',')],
+      ["discount", discount===0 ? '' : discount],
       ["sort", sort===1 ? '' : sort]
     ].filter(v=>v[1] !== '');
     const params = arr.map(val=>val[0] + "=" + val[1]).join(',');
     const str = key.split("::")[0] + (params.length ? "::" + params : '');
     navigate("/search?key="+str);
-  }, [key, minMaxPrices.dollar, navigate, prices, rating, sort, suppliers, tags, tagsFilter])
+  }, [discount, key, minMaxPrices.dollar, navigate, prices, rating, sort, suppliers, tags, tagsFilter])
 
   const getProducts = useCallback(() => {
     if(!exchangeRates[currency]) return;
@@ -64,11 +66,11 @@ const SearchScreen = () => {
           tags: tagsFilter.map(t=>t.value), 
           suppliers: suppliers.length ? suppliers.filter(s=>s.checked).map(s=>s.id) : null,
           prices,
-          rating
+          rating,
+          discount
         })
       }
     }).then(res => res.json()).then(res=>{
-      setProducts(res.products);
       setFirstSearch(false);
       createSearchStr();
       if(firstSearch){
@@ -79,9 +81,11 @@ const SearchScreen = () => {
         if(!firstSearch) return;
         setPrices([prices[0]===-1?res.price.min:prices[0], prices[1]===-1?res.price.max:prices[1]]);
         setSuppliers(res.suppliers.map(s=>({...s, checked: suppliers.length===0||!suppliers.includes(s.id)})))
+      } else {
+        setProducts(res.products);
       }
     })
-  }, [createSearchStr, currency, exchangeRates, firstSearch, key, prices, rating, sort, suppliers, tagsFilter])
+  }, [createSearchStr, currency, discount, exchangeRates, firstSearch, key, prices, rating, sort, suppliers, tagsFilter])
 
   const convertRangeToPrice = () => {
     if(rangeValue[0]===-1||rangeValue[1]===-1||!exchangeRates[currency]) return;
@@ -97,6 +101,9 @@ const SearchScreen = () => {
     ]})
     setRangeValuePrice(prices);
   }, [currency, exchangeRates, minMaxPrices.dollar, prices, setRangeValuePrice])
+  useEffect(()=>{
+    setDRangeValue(discount);
+  }, [discount])
 
   useEffect(()=>{
     getProducts();
@@ -142,6 +149,9 @@ const SearchScreen = () => {
     if(params.rating) {
       setRating(Number(params.rating));
     }
+    if(params.discount) {
+      setDiscount(Number(params.discount));
+    }
     if(params.suppliers) {
       setSuppliers(params.suppliers.split('^').map(id=>{
         return id;
@@ -170,20 +180,20 @@ const SearchScreen = () => {
   }
 
   return <div>
-    <h1>Search</h1>
-    {didYouMean.length>0&&
-    <a href={`/search?key=${didYouMean+(key.split('::')[1] ? '::'+key.split('::')[1] : '')}`} >
-      Did you mean: <label style={{cursor: "pointer", fontStyle: "italic"}}>{
-        didYouMean.split(' ').map((word, i)=>(key.split(' ')[i]===word 
-        ? <label style={{cursor: "pointer"}} key={i}>{word} </label> 
-        : <b key={i}>{word} </b>))
-      }</label>
-    </a>}
+    <h1 className='searchHeader'>Search</h1>
     <div className='searchContainer'>
       <div className='sort'>
-        <div style={{display: "flex", float: "right", marginRight: "30px"}}>
-          <label style={{marginRight: "5px"}}>Sort by:</label>
-          <select onChange={(e)=>setSort(e.target.value)} value={sort}>
+        {didYouMean.length>0&&didYouMean.toLocaleLowerCase()!==key.split("::")[0].toLocaleLowerCase()&&
+        <a href={`/search?key=${didYouMean+(key.split('::')[1] ? '::'+key.split('::')[1] : '')}`} className='didYouMean'>
+          Did you mean: <label style={{cursor: "pointer", fontStyle: "italic"}}>{
+            didYouMean.split(' ').map((word, i)=>(key.split(' ')[i]===word 
+            ? <label style={{cursor: "pointer"}} key={i}>{word} </label> 
+            : <b key={i}>{word} </b>))
+          }</label>
+        </a>}
+        <div style={{display: "flex", float: "right", marginRight: "30px", alignItems: "center"}}>
+          <label style={{marginRight: "10px"}}>Sort by:</label>
+          <select onChange={(e)=>setSort(e.target.value)} value={sort} className='select1'>
             <option value="1">Best Match</option>
             <option value="2">Price: Low to high</option>
             <option value="3">Price: High to low</option>
@@ -198,19 +208,17 @@ const SearchScreen = () => {
           <div style={{display: "flex", alignItems: "center"}}>
             <div className="input1 num" style={{width: "70px"}}>
               <label>
-                <input required type='number' value={rangeValue[0]===-1 ? "" : rangeValue[0]} step={0.01} min={minMaxPrices.other[0]} max={minMaxPrices.other[1]}
-                onChange={(e)=>{setRangeValue([Number(e.target.value)/exchangeRates[currency], rangeValue[1]]);convertRangeToPrice();}}
+                <input required type='number' value={rangeValue[0]===-1 ? "" : rangeValue[0]}
                 disabled={true} style={{textAlign: "center"}}  
               />
               </label>
             </div>
             <RangeSlider min={minMaxPrices.other[0]} max={minMaxPrices.other[1]}  step={1} value={rangeValue} onInput={setRangeValue}
-              onRangeDragEnd={convertRangeToPrice} onThumbDragEnd={convertRangeToPrice}
+              onRangeDragEnd={convertRangeToPrice} onThumbDragEnd={convertRangeToPrice} className="range1"
             />
             <div className="input1 num" style={{width: "70px"}}>
               <label>
-                <input required type='number' value={rangeValue[1]===-1 ? "" : rangeValue[1]} step={0.01} min={minMaxPrices.other[0]} max={minMaxPrices.other[1]}
-                onChange={(e)=>{setRangeValue([rangeValue[0], Number(e.target.value)/exchangeRates[currency]]);convertRangeToPrice()}}
+                <input required type='number' value={rangeValue[1]===-1 ? "" : rangeValue[1]}
                 disabled={true} style={{textAlign: "center"}}    
               />
               </label>
@@ -218,12 +226,30 @@ const SearchScreen = () => {
           </div>
         </section>
         <section>
-          <label>Tags: </label>
-          <TagSelect value={tagsFilter} onChange={(v)=>{setTags(v);getProducts();}}/>
+          <label>Discount:</label>
+          <div style={{display: "flex", alignItems: "center"}}>
+            <RangeSlider
+              className="single-thumb range1"
+              step={1}
+              min={0} max={99}
+              value={[0, dRangeValue]}
+              thumbsDisabled={[true, false]}
+              rangeSlideDisabled={true}
+              onInput={(value)=>setDRangeValue(value[1])}
+              onThumbDragEnd={()=>setDiscount(dRangeValue)}
+            />
+            <div className="input1 num" style={{width: "70px"}}>
+              <label>
+                <input required type='text' value={dRangeValue + '%'} 
+                disabled={true} style={{textAlign: "center"}}    
+              />
+              </label>
+            </div>
+          </div>
         </section>
         <section>
           <label>Rating:<br/></label>
-          <div style={{display: "flex", alignItems: "center", justifyContent: "center", gap: "5px"}}>
+          <div className='searchRating'>
             <ReactStarsRating 
               value={rating} 
               onChange={setRating}
@@ -234,8 +260,12 @@ const SearchScreen = () => {
           </div>
         </section>
         <section>
+          <label>Tags: </label>
+          <TagSelect value={tagsFilter} onChange={(v)=>{setTags(v);getProducts();}} isAll={true}/>
+        </section>
+        <section>
           <label>Suppliers: </label>
-          <div style={{marginTop: "10px"}}>
+          <div style={{marginTop: "20px"}}>
             {
               suppliers.map((supplier, i)=>{
                 return <div key={i}>

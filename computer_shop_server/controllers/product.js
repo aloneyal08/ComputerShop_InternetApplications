@@ -27,7 +27,6 @@ const addProduct = async (req, res) => {
 		stock,
 		supplier,
 		description,
-		date: new Date().toISOString(),
 		...obj
 	});
 	await product.save();
@@ -187,6 +186,9 @@ const search = async (req, res) => {
 		if(filters.suppliers && !filters.suppliers.includes(p.supplier.toString()))
 			return false;
 
+		if(p.discount < filters.discount)
+			return false;
+
 		return true;
 	})
 
@@ -216,6 +218,16 @@ const search = async (req, res) => {
 
 }
 
+const getAutoCompletes = async (req, res) => {
+	const {key} = req.headers;
+	const products = await Product.find({});
+
+	const names = products.map(p=>p.name).filter(name=>name.toLowerCase().startsWith(key)).slice(0, 10); 
+	const recommendations = products.map(p=>p.name).slice(0, 10);
+	//TODO: Implement a better autocomplete
+	res.json(key==='' ? recommendations :names);
+}
+
 module.exports = {
 	addProduct,
 	getProducts,
@@ -224,5 +236,6 @@ module.exports = {
 	getFlashProducts,
 	editProduct,
 	deleteProduct,
-	search
+	search,
+	getAutoCompletes
 };

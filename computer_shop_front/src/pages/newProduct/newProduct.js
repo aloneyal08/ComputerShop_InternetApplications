@@ -102,7 +102,7 @@ const NewProduct = () => {
           <section id='inputs'>
             <h3 className='inputTitle'>Base Information</h3>
             <section className='inputContainer' id='baseInfoContainer'>
-              <div className="input1">
+              <div className="input1 input2">
                 <label>
                 <input type='text' required onChange={(e) => {setName(e.target.value);}}/>
                 <span>Product Name*</span>
@@ -127,7 +127,7 @@ const NewProduct = () => {
             <hr className='separator' />
             <h3 className='inputTitle'>Picture</h3>
             <section className='inputContainer' id='pictureContainer'>
-              <div className="input1">
+              <div className="input1 input2">
                 <label>
                   <input required type='text' onChange={changeImageFunc}/>
                   <span>Product Photo*</span>
@@ -137,14 +137,14 @@ const NewProduct = () => {
             <hr className='separator' />
             <h3 className='inputTitle'>Details</h3>
             <section className='inputContainer' id='detailContainer'>
-              <div className="input1">
+              <div className="input1 input2">
                 <label>
                   <input required type='number' step={1} min={0} onChange={(e) => {setStock(e.target.value);}}/>
                   <span>Starting Stock*</span>
                 </label>
               </div>
               <hr className='separator' />
-              <div className="input1 num">
+              <div className="input1 input2 num">
                 <label>
                   <input required type='number' step={0.01} min={0.01} onChange={priceChange}/>
                   <span>Product Price*</span>

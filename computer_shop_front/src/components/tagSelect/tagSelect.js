@@ -2,7 +2,7 @@ import React, { useEffect, useState, useContext } from 'react'
 import SelectSearch from 'react-select-search';
 import { TagsContext } from '../../Contexts';
 
-const TagSelect = ({onChange, value}) => {
+const TagSelect = ({onChange, value, isAll=false}) => {
   const tags = useContext(TagsContext);
   const [tagOptions, setTagOptions] = useState([]);
 
@@ -33,6 +33,7 @@ const TagSelect = ({onChange, value}) => {
   return <>
   <div className='productTags'>
     {value.map(tag=>(<div className='productTag' key={tag.name}><p className='productTagName'>{tag.name}</p><span id={tag.value} onClick={removeTag}>x</span></div>))}
+    {isAll&&value.length===0&&<div className='productTag' style={{width: "50px"}}><p className='productTagName'>All</p></div>}
   </div>
   <SelectSearch onChange={addTag} search={true} getOptions={()=>tagOptions.filter((tag)=>tag.disabled === false)} name="tag" placeholder="Choose Your Tags" renderValue={(valueProps) =>
     <div className='input1'>
