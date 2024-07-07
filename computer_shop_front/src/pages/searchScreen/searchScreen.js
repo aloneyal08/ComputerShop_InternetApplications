@@ -39,8 +39,8 @@ const SearchScreen = () => {
 
   const createSearchStr = useCallback(() => {
     if(prices[0] === 0||tags.length===0||prices[0] === -1||prices[1] === -1) return;
-    const biggerThan = prices[0]===minMaxPrices.dollar[0]||prices[0]===-1 ? "" : `>${prices[0]}`;
-    const smallerThan = prices[1]===minMaxPrices.dollar[1]||prices[1]===-1 ? "" : `<${prices[1]}`;
+    const biggerThan = prices[0]===minMaxPrices.dollar[0] ? "" : `>${prices[0]}`;
+    const smallerThan = prices[1]===minMaxPrices.dollar[1] ? "" : `<${prices[1]}`;
     const arr = [
       ["tags", tagsFilter.map(t=>tags.find(t2=>t2._id===t.value).text).join('^')],
       ["price",  smallerThan.length>0||biggerThan.length>0 ? biggerThan + (biggerThan.length>0?"^":"") + smallerThan : ''],
@@ -78,7 +78,6 @@ const SearchScreen = () => {
           Math.floor(res.price.min*exchangeRates[currency]),
           Math.ceil(res.price.max*exchangeRates[currency])
         ]});
-        if(!firstSearch) return;
         setPrices([prices[0]===-1?res.price.min:prices[0], prices[1]===-1?res.price.max:prices[1]]);
         setSuppliers(res.suppliers.map(s=>({...s, checked: suppliers.length===0||!suppliers.includes(s.id)})))
       } else {
@@ -111,8 +110,10 @@ const SearchScreen = () => {
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
-    if(!urlParams.get('key'))
-      navigate("/search?key=")
+    if(!urlParams.get('key')) {
+      navigate("/search?key=");
+      return;
+    }
 
     setKey(urlParams.get('key'));
 
@@ -153,9 +154,7 @@ const SearchScreen = () => {
       setDiscount(Number(params.discount));
     }
     if(params.suppliers) {
-      setSuppliers(params.suppliers.split('^').map(id=>{
-        return id;
-      }));
+      setSuppliers(params.suppliers.split('^'));
     }
     if(params.sort)
       setSort(Number(params.sort)||1);

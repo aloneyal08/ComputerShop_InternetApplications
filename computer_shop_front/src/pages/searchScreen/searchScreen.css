@@ -10,7 +10,8 @@
   flex-direction: row;
   flex-wrap: wrap;
   align-self: flex-start;
-  justify-content: space-around;
+  justify-content: center;
+  grid-area: main;
   gap: 35px;
 }
 

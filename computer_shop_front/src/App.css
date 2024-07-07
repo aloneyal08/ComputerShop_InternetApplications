@@ -354,3 +354,7 @@ select:-moz-focusring {
 .range1 .range-slider__range {
   background: rgb(151, 151, 151) !important;
 }
+
+.select-search-container {
+  width: 100%;
+}

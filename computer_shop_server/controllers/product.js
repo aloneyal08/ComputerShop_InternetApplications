@@ -154,7 +154,7 @@ const search = async (req, res) => {
 	var min=0, max=0;
 	if(searchedProducts.length) {
 		min = searchedProducts[0].price;
-		max = searchedProducts[0].price||0;
+		max = searchedProducts[0].price;
 		searchedProducts.forEach(p=>{
 			min = Math.min(min, p.price);
 			max = Math.max(max, p.price);
@@ -177,7 +177,7 @@ const search = async (req, res) => {
 		if(!flag && filters.tags.length>0) 
 			return false;
 
-		if((p.price < filters.prices[0] || p.price > filters.prices[1]) && filters.prices[0]!==-1)
+		if(p.price < filters.prices[0] || p.price > filters.prices[1])
 			return false;
 
 		if(p.rating < filters.rating)
@@ -204,8 +204,6 @@ const search = async (req, res) => {
 		searchedProducts.sort((a,b)=>new Date(b.date) - new Date(a.date));
 	else
 		searchedProducts.sort((a,b)=>b.match-a.match)
-
-	searchedProducts = searchedProducts.slice(0, 50);
 
 	res.json({
 		products: searchedProducts,
