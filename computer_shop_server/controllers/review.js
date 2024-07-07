@@ -1,11 +1,11 @@
 const Review = require('../models/review');
 
 const writeReview = async (req, res) => {
-  const { product, user, date, text, rating } = req.body;
+  const { product, user, text, rating } = req.body;
   const review = new Review({
     product,
     user,
-    date,
+    date: new Date(),
     text,
     rating
   });
@@ -14,8 +14,10 @@ const writeReview = async (req, res) => {
 }
 
 const getReviews = async (req, res) => {
-  const { product } = req.query;
+  const { product } = req.body;
   const reviews = await Review.find({product});
+  console.log(product);
+  console.log(reviews)
   res.json(reviews);
 }
 

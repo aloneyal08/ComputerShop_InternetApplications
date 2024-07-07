@@ -48,3 +48,27 @@ font-size: 14px;
     margin: 7px 0;
     width: 100%;
 }
+#reviewWrapper{
+    display: flex;
+    flex-direction: column;
+    align-items: end;
+    padding: 50px;
+}
+#reviewPopup{
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    row-gap: 20px;
+}
+#buttonContainer{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+}
+.wrapperClassName{
+    width: 39.1vw;
+    background-color: white;
+}
+.public-DraftEditor-content{
+    height: 18vh;
+}
