@@ -1,21 +1,19 @@
-import React, { useRef, useState, useEffect, useContext } from 'react'
-import { UserContext, MoneyContext, TagsContext} from '../../Contexts';
+import React, { useState, useEffect, useContext } from 'react'
+import { UserContext, MoneyContext} from '../../Contexts';
 import { useNavigate } from 'react-router-dom';
 import { Editor } from "react-draft-wysiwyg";
 import { convertToRaw, EditorState, ContentState } from "draft-js";
 import htmlToDraft from 'html-to-draftjs';
 import draftToHtmlPuri from "draftjs-to-html";
-import SelectSearch from 'react-select-search';
 import 'react-select-search/style.css'
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import './newProduct.css';
 import { ProductCard } from '../../components/productCard/productCard';
+import TagSelect from '../../components/tagSelect/tagSelect';
 
 const NewProduct = () => {
   const {user} = useContext(UserContext);
   const {currency, exchangeRates} = useContext(MoneyContext);
-  const tags = useContext(TagsContext);
-  const tagSelect = useRef(null);
   const navigate = useNavigate();
 
   const [name, setName] = useState('');
@@ -23,7 +21,6 @@ const NewProduct = () => {
   const [stock, setStock] = useState('');
   const [price, setPrice] = useState('');
   const [photo, setPhoto] = useState('');
-  const [tagOptions, setTagOptions] = useState([]);
   const [chosenTags, setChosenTags] = useState([]);
   
   useEffect(() => {
@@ -33,10 +30,6 @@ const NewProduct = () => {
     const editorState = EditorState.createWithContent(contentState);
     setDescription(editorState);
   }, []);
-  
-  useEffect(()=>{
-    setTagOptions(tags.map((e, index) => {return {name: e.text, value: index, disabled: false}}));
-  }, [tags]);
 
   const onTextChange = (state) => {
     setDescription(state);
@@ -52,32 +45,8 @@ const NewProduct = () => {
     e.target.value = pr;
     setPrice(pr);
   }
-  const removeTag = (e) =>{
-    let temp = tagOptions;
-    let i = e.currentTarget.id;
-    temp[i].disabled = false;
-    setTagOptions(temp);
-    temp = chosenTags.slice();
-    temp.splice(temp.indexOf({name: tagOptions[i].name, value: i}), 1);
-    setChosenTags(temp);
-  };
-
-  const addTag = (i) => {
-    let temp = tagOptions;
-    i = i===null?0:i;
-    temp[i].disabled = true;
-    setTagOptions(temp);
-    temp = chosenTags.slice();
-    temp.push({name: tagOptions[i].name, value: i});
-    setChosenTags(temp);
-  };
 
   const addProduct = async (e) => {
-    console.log(chosenTags.map((tag) => {
-      for(let i = 0; i < tags.length;++i){
-        if(tags[i].text === tag.name){return tags[i]._id}
-      }
-    }));
     let value = draftToHtmlPuri(
       convertToRaw(description.getCurrentContent())
     );
@@ -110,7 +79,7 @@ const NewProduct = () => {
         stock,
         price: price/exchangeRates[currency],
         photo: photo === ''?null:photo,
-        tags: chosenTags.length===0?null:chosenTags.map(tag => tags.find(t => t.text === tag.name)._id).filter(tag => tag),
+        tags: chosenTags.length===0?null:chosenTags.map(t=>t.value),
         supplier: user._id
       })
     }).then((res) => res.json()).then((res) => {
@@ -125,9 +94,6 @@ const NewProduct = () => {
   if(Object.keys(user).length === 0){
     return;
   }
-  if(tagOptions.length === 0){
-    return;
-  }
   return <div>
     {user.level === 1?
       <div id='newProductContainer'>
@@ -136,7 +102,7 @@ const NewProduct = () => {
           <section id='inputs'>
             <h3 className='inputTitle'>Base Information</h3>
             <section className='inputContainer' id='baseInfoContainer'>
-              <div className="input1">
+              <div className="input1 input2">
                 <label>
                 <input type='text' required onChange={(e) => {setName(e.target.value);}}/>
                 <span>Product Name*</span>
@@ -161,7 +127,7 @@ const NewProduct = () => {
             <hr className='separator' />
             <h3 className='inputTitle'>Picture</h3>
             <section className='inputContainer' id='pictureContainer'>
-              <div className="input1">
+              <div className="input1 input2">
                 <label>
                   <input required type='text' onChange={changeImageFunc}/>
                   <span>Product Photo*</span>
@@ -171,14 +137,14 @@ const NewProduct = () => {
             <hr className='separator' />
             <h3 className='inputTitle'>Details</h3>
             <section className='inputContainer' id='detailContainer'>
-              <div className="input1">
+              <div className="input1 input2">
                 <label>
                   <input required type='number' step={1} min={0} onChange={(e) => {setStock(e.target.value);}}/>
                   <span>Starting Stock*</span>
                 </label>
               </div>
               <hr className='separator' />
-              <div className="input1 num">
+              <div className="input1 input2 num">
                 <label>
                   <input required type='number' step={0.01} min={0.01} onChange={priceChange}/>
                   <span>Product Price*</span>
@@ -188,20 +154,7 @@ const NewProduct = () => {
             <hr className='separator' />
             <h3 className='inputTitle'>Tags</h3>
             <section className='inputContainer' id='tagsContainer'>
-              {
-                <div className='productTags'>
-                  {chosenTags.map(tag=>(<div className='productTag'><p className='productTagName'>{tag.name}</p><span id={tag.value} onClick={removeTag}>x</span></div>))}
-                </div>
-              }
-              <SelectSearch ref={tagSelect} onChange={addTag} search={true} getOptions={()=>tagOptions.filter((tag)=>tag.disabled === false)} name="tag" placeholder="Choose Your Tags" renderValue={(valueProps) =>
-                <div className='input1'>
-                  <label>
-                  <input type='text' required {...valueProps} placeholder=''/>
-                  <span>{valueProps.placeholder}</span>
-                  </label>
-                </div>} renderOption={(optionsProps, optionsData) => {
-                    return tags.find(t=>t.name===optionsData.name) ? null : <button className='select-search-option' {...optionsProps}>{optionsData.name}</button>
-                }} />
+              <TagSelect value={chosenTags} onChange={setChosenTags}/>
             </section>
           </section>
           <section id='preview'>

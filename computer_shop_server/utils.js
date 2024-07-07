@@ -60,9 +60,22 @@ const sendEmail = async (to, subject, header, content, buttons='') => {
   });
 }
 
+const getKeywords = (query) => {
+  var tokens = query.toLowerCase().replace(/[^a-z0-9_\s]/g, '').split(/\s+/g);
+  var keywords = tokens.map(token=>token.replace(/(ing|s)$/, ''));
+
+  return keywords;
+}
+
+const removeHTMLTags = (html) => {
+  var regX = /(<([^>]+)>)/ig;                
+  return html.replace(regX, "");
+}
 
 module.exports = {
   encrypt,
   decrypt,
-  sendEmail
+  sendEmail,
+  getKeywords,
+  removeHTMLTags,
 }

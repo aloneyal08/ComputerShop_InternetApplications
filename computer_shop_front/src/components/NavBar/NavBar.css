@@ -27,20 +27,32 @@
   justify-content: flex-start;
 }
 
+.searchArea {
+  width: 50%;
+  max-width: 5000px;
+  margin-left: 20px;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  position: relative;
+  align-items: center;
+}
+
 .searchBox {
   height: 30px;
   border-radius: 30px;
-  width: 50%;
-  max-width: 5000px;
   outline: none;
-  border: none;
-
+  border: 0.5px solid gray;
+  width: calc(100% - 40px);
   background-image: url(https://static-00.iconduck.com/assets.00/search-icon-2048x2048-cmujl7en.png);
   background-position: 10px center;
   background-repeat: no-repeat;
   padding-left: 40px;
-  margin-left: 20px;
+  padding-right: 0px;
   background-size: 15px;
+  z-index: 999;
+  position: relative;
+  align-self: center;
 }
 
 .navBarOthers {
@@ -252,4 +264,39 @@
 
 .addProduct:hover {
   filter: opacity(0.6);
+}
+
+.autoCompletes {
+  width: 100%;
+  background-color: white;
+  top: 25px;
+  padding-top: 25px;
+  z-index: 100;
+  transform: scale(1, 0);
+  transform-origin: top center;
+  transition: 0.2s;
+  position: absolute;
+}
+
+.fullScaleComplete {
+  transform: scale(1,1);
+}
+
+.autoCompleteItem {
+  color: black;
+  height: 30px;
+  text-align: left;
+  padding: 10px;
+  padding-left: 40px;
+  display: flex;
+  align-items: center;
+}
+
+.roundBorderBottom {
+  border-radius: 30px;
+  border-top-left-radius: 0px;
+  border-top-right-radius: 0px;
+}
+.autoCompleteItem:hover {
+  background-color: #cccccc !important;
 }

@@ -1,5 +1,5 @@
 import React, {useContext, useState, useEffect} from 'react';
-import { Rating } from 'react-simple-star-rating';
+import ReactStarsRating from 'react-awesome-stars-rating';
 import {MoneyContext} from '../../Contexts'
 import './productCard.css'
 
@@ -40,9 +40,9 @@ export const ProductCard = ({product, renderRating = true, renderStock = true}) 
       setProductRate(Math.floor((rating / res.length)*2)/2);
     });
   }
-  }, []);
+  }, [product._id, product.rating, product.supplier, product.supplierName, renderRating]);
 
-    return <div className='productCard'>
+  return <div className='productCard'>
     <img alt='           ' className='productImg' src={product.photo} onError={(e) =>{e.currentTarget.src = require('../../images/defaultProduct.jpg')}}/>
     <div className='productText'>
       <section className='productTextLeft'>
@@ -54,13 +54,14 @@ export const ProductCard = ({product, renderRating = true, renderStock = true}) 
           <></>
         }
         { renderRating?
-          <Rating
-          readonly={true}
-          initialValue={productRate}
-          allowFraction={true}
-          size={35}
-          id='productRating'
-          />
+          <ReactStarsRating 
+            value={productRate} 
+            isEdit={false}
+            secondaryColor="#cccccc"
+            primaryColor="#ffbc0b"
+            size={33}
+            id={product._id}
+          /> 
           :
           <></>
         }
