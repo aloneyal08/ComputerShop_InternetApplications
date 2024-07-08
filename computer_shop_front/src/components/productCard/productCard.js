@@ -20,7 +20,9 @@ export const ProductCard = ({product, renderRating = true, renderStock = true}) 
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({id: product.supplier})
-    }).then((res)=>res.json()).then((res)=>{setSupplier(res.fullName)});
+    }).then((res)=>res.json()).then((res)=>{
+      setSupplier(res.fullName);
+    });
   }
 
   if(renderRating && product.rating){
@@ -40,7 +42,7 @@ export const ProductCard = ({product, renderRating = true, renderStock = true}) 
       setProductRate(Math.floor((rating / res.length)*2)/2);
     });
   }
-  }, [product._id, product.rating, product.supplier, product.supplierName, renderRating]);
+  }, [product, product._id, product.rating, product.supplier, product.supplierName, renderRating]);
 
   return <div className='productCard'>
     <img alt='           ' className='productImg' src={product.photo} onError={(e) =>{e.currentTarget.src = require('../../images/defaultProduct.jpg')}}/>

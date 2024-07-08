@@ -157,6 +157,8 @@
 }
 .userPhoto{
   border-radius: 50%;
+  width: 150px;
+  height: 150px;
 }
 .scrollBar1{
   padding-bottom: 7px;

@@ -279,14 +279,16 @@ const SearchScreen = () => {
           </div>
         </section>
       </div>
-      <div className='searchProducts'>
-        {
-          products.map(product=>(
-            <ProductCard product={product} key={product._id}/>
-          ))
-        }
+      <div style={{gridArea: "main"}}>
+        <div className='searchProducts'>
+          {
+            products.map(product=>(
+              <ProductCard product={product} key={product._id}/>
+            ))
+          }
+        </div>
+        {products.length===0&&<h2>No Products Found...</h2>}
       </div>
-      {products.length===0&&<h2>No Products Found...</h2>}
     </div>
   </div>
 }

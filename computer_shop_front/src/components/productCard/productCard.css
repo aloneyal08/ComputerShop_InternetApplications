@@ -53,3 +53,7 @@
 .hidden{
   visibility: hidden;
 }
+
+.productSupplier {
+  height: 20px;
+}
