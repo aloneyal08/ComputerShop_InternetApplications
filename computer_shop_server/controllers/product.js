@@ -231,6 +231,18 @@ const search = async (req, res) => {
 
 }
 
+const exactSearch = async (req, res) => {
+	const { key, tag, supplier } = req.headers;
+	const products = await Product.find();
+	
+
+	let searchedProducts = products.filter(product=>{
+		return product.name.toLowerCase().includes(key.toLowerCase())&&product.tags.includes(tag)&&product.supplier.toString()===supplier;
+	});
+
+	res.json(searchedProducts.slice(0, 50));
+}
+
 const getAutoCompletes = async (req, res) => {
 	const {key} = req.headers;
 	const products = await Product.find({});
@@ -250,5 +262,6 @@ module.exports = {
 	editProduct,
 	deleteProduct,
 	search,
+	exactSearch,
 	getAutoCompletes
 };

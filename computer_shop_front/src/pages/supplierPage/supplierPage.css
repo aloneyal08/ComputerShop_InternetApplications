@@ -90,7 +90,15 @@ mask-composite:
 .supplierData {
   align-self: flex-start;
   position: relative;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 100%;
   bottom: -45px;
+}
+
+.supplierData input {
+  width: 300px;
 }
 
 .supplierTabs {

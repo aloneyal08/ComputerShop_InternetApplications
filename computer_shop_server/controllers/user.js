@@ -190,8 +190,6 @@ const getSupplier = async (req, res) => {
     const products = await Product.find({supplier: id});
 
     const supplierTags = tags.filter(tag=>products.find(p=>p.tags.map(t=>t.toString()).includes(tag._id.toString()))).map(tag=>({text: tag.text, _id: tag._id}));
-    
-    console.log(supplierTags);
 
     res.json({supplier, tags: supplierTags});
   } catch(e) {

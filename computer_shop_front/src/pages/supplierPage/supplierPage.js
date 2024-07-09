@@ -10,6 +10,7 @@ const SupplierPage = () => {
   const [supplier, setSupplier] = useState({});
   const [tags, setTags] = useState([]);
   const [tab, setTab] = useState('Home');
+  const [search, setSearch] = useState('');
 
 
   const [recProducts, setRecProducts] = useState([]);
@@ -33,28 +34,23 @@ const SupplierPage = () => {
   }, [navigate, supplier.name, supplierId])
 
   useEffect(() => {
-    fetch(`http://localhost:88/product/search`, {
+    fetch(`http://localhost:88/product/search/exact`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        key: '',
-        sort: 1,
-        filters: JSON.stringify({
-          tags: [tab], 
-          suppliers: null,
-          prices: null,
-          rating: 0,
-          discount: 0
-        })
+        key: search,
+        tag: tab,
+        supplier: supplier._id
       }
     }).then(res => res.json()).then(data => {
       if(data.error) {
         navigate('/')
         return;
       }
-      setTagProducts(data.products);
+
+      setTagProducts(data);
     });
-  }, [navigate, tab])
+  }, [navigate, search, supplier._id, tab])
   
   
   const moveSide = (e, side) =>{
@@ -71,6 +67,12 @@ const SupplierPage = () => {
     e.currentTarget.children[e.currentTarget.children.length - 1].disabled = (pos === limit);
   }
 
+  const onSearchChange = (e) => {
+    setSearch(e.target.value);
+    if(tab === 'Home')
+      setTab('Recommended')
+  }
+
   const mainTabs = [
     {text: 'Home'},
     {text: 'Recommended'},
@@ -85,6 +87,7 @@ const SupplierPage = () => {
 
   const tabTag = tags.find(t=>t._id===tab);
 
+
   return <div>
     <div className='supplierHeaderCon'>
       <div className='supplierBackground' style={{backgroundImage: `url(${supplier.background})`}}/>
@@ -95,19 +98,25 @@ const SupplierPage = () => {
         secondaryColor="#cccccc"
         primaryColor="#ffbc0b"
         size={20}
-      /> 
-      <table className='supplierData'>
-        <tbody>
-          <tr>
-            <td>Contact phone:</td>
-            <td>{supplier.phone}</td>
-          </tr>
-          <tr>
-            <td>Email:</td>
-            <td>{supplier.email}</td>
-          </tr>
-        </tbody>
-      </table>
+      />
+      <div  className='supplierData'>
+        <table>
+          <tbody>
+            <tr>
+              <td>Contact phone:</td>
+              <td>{supplier.phone}</td>
+            </tr>
+            <tr>
+              <td>Email:</td>
+              <td>{supplier.email}</td>
+            </tr>
+          </tbody>
+        </table>
+        <input 
+          type='text' className='searchBox supplierSearch' onChange={onSearchChange} 
+          placeholder={`Search ${supplier.fullName}'s Products...`} value={search}
+        />
+      </div>
     </div>
     <div className='supplierTabs'>
       <div className='tabsCon'>
