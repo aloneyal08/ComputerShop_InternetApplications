@@ -47,7 +47,6 @@ export const ProductCard = ({product, renderRating = true, renderStock = true, i
       <section className='productTextLeft'>
         <h3 className='productName'>{product.name}</h3>
         <aside><h6 className='productSupplier' >{supplier}</h6></aside>
-        <footer>
           { renderStock?
             <h4 className={`productStock ${product.stock >= 1?'hidden':'visible'}`}>Currently None in Stock*</h4>
             :
