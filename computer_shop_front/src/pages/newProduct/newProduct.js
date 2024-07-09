@@ -22,6 +22,7 @@ const NewProduct = () => {
   const [price, setPrice] = useState('');
   const [photo, setPhoto] = useState('');
   const [chosenTags, setChosenTags] = useState([]);
+  const [validPhoto, setValidPhoto] = useState(false);
   
   useEffect(() => {
     const blocksFromHtml = htmlToDraft("");
@@ -31,19 +32,24 @@ const NewProduct = () => {
     setDescription(editorState);
   }, []);
 
+  useEffect(()=>{
+    console.log(validPhoto)
+  }, [validPhoto])
+
   const onTextChange = (state) => {
     setDescription(state);
   };
 
   const changeImageFunc = (e) => {
     let val = e?e.currentTarget.value:'';
+    setValidPhoto(true);
     setPhoto(val);
   };
 
   const priceChange = (e) =>{
     let pr = e.target.value === ''? '' : Math.floor(e.target.value*100)/100
     e.target.value = pr;
-    setPrice(pr);
+    setPrice(pr/exchangeRates[currency]);
   }
 
   const addProduct = async (e) => {
@@ -64,9 +70,11 @@ const NewProduct = () => {
     }
     if(value === ''){
       alert('A product description must be entered!');
+      return;
     }
-    if(photo === ''){
+    if(photo === '' || !validPhoto){
       alert('A product picture must be entered!');
+      return;
     }
     fetch('http://localhost:88/product/add', {
       method: 'POST',
@@ -86,7 +94,6 @@ const NewProduct = () => {
       if(res.error) {
         alert(res.error);
       } else {
-        alert('Successfully added product!');
         navigate('/');
       }
     })
@@ -94,7 +101,10 @@ const NewProduct = () => {
   if(Object.keys(user).length === 0){
     return;
   }
-  return <div>
+  if(tagOptions.length === 0){
+    return;
+  }
+  return <div style={{paddingBottom: "500px"}}>
     {user.level === 1?
       <div id='newProductContainer'>
         <h1 id='title'>Add New Product</h1>
@@ -108,13 +118,13 @@ const NewProduct = () => {
                 <span>Product Name*</span>
                 </label>
                 <hr className='separator' />
-                <Editor 
+                <Editor
                   editorState={description}
                   toolbarClassName="toolbarClassName"
                   wrapperClassName="wrapperClassName"
                   editorClassName="editorClassName"
                   spellCheck={true}
-                  editorStyle={{minHeight: '15vh', border: '1px solid gainsboro', fontSize: '14px', lineHeight: '6px'}}
+                  editorStyle={{minHeight: '15vh', border: '1px solid gainsboro', fontSize: '14px', lineHeight: '15px'}}
                   toolbar={{
                     options: ['inline', 'fontSize', 'list', 'textAlign'],
                     list: {inDropdown: true}
@@ -158,7 +168,7 @@ const NewProduct = () => {
             </section>
           </section>
           <section id='preview'>
-            <ProductCard product={{name: name===''?"Product's Name":name, price: price===''?"Product's Price":price, stock, photo, rating: 2.5, supplierName: user.fullName}} />
+            <ProductCard isClickable={false} onImageError={()=>{setValidPhoto(false)}} product={{name: name===''?"Product's Name":name, price: price===''?"Product's Price":price, stock, photo, rating: 2.5, supplierName: user.fullName}} />
             <button id='addProductBtn' onClick={addProduct} className='button1'>Add New Product</button>
           </section>
         </div>

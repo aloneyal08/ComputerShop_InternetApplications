@@ -10,6 +10,7 @@
   border: 3px solid gainsboro;
   border-radius: 15px;
   background-color: white;
+  cursor: pointer;
 }
 .productImg{
   display: flex;
@@ -37,12 +38,13 @@
   margin: 0;
 }
 .productName{
-  max-width: calc(var(--product-card-width) - 70px);
+  max-width: calc(var(--product-card-width)/1.8);
   overflow:hidden;
   white-space: nowrap;
   height: 20px;
 }
 .productStock{
+  width: fit-content;
   margin-bottom: -3px;
   font-size: 10px;
   color: red;
@@ -53,13 +55,8 @@
 .hidden{
   visibility: hidden;
 }
-
 .productSupplier {
   height: 20px;
-}
-
-.productCard {
-  cursor: pointer;
 }
 
 .productCard:hover h3 {

@@ -86,7 +86,7 @@ const Storefront = () => {
     </div>
     <div id='showContainer'>
       <h1 className='title'>Recommended</h1>
-      <div className='itemContainer scrollBar1' onLoad={scrollHandle} onScroll={scrollHandle}>
+      <div className='itemContainer scrollBar1 hover' onLoad={scrollHandle} onScroll={scrollHandle}>
         <button className='moveLeft' onClick={(e) => {moveSide(e, -1)}}>
           {'<'}
         </button>
@@ -96,7 +96,7 @@ const Storefront = () => {
         </button>
       </div>
       <h1 className='title'>Popular</h1>
-      <div className='itemContainer scrollBar1' onLoad={scrollHandle} onScroll={scrollHandle}>
+      <div className='itemContainer scrollBar1 hover' onLoad={scrollHandle} onScroll={scrollHandle}>
         <button className='moveLeft' disabled={true} onClick={(e) => {moveSide(e, -1)}}>
           {'<'}
         </button>
@@ -106,7 +106,7 @@ const Storefront = () => {
         </button>
       </div>
       <h1 className='title'>New</h1>
-      <div className='itemContainer scrollBar1' onLoad={scrollHandle} onScroll={scrollHandle}>
+      <div className='itemContainer scrollBar1 hover' onLoad={scrollHandle} onScroll={scrollHandle}>
         <button className='moveLeft' disabled={true} onClick={(e) => {moveSide(e, -1)}}>
           {'<'}
         </button>
@@ -116,7 +116,7 @@ const Storefront = () => {
         </button>
       </div>
       <h1 className='title'>Recommended</h1>
-      <div className='itemContainer scrollBar1' onLoad={scrollHandle} onScroll={scrollHandle} style={{marginLeft: '50px'}}>
+      <div className='itemContainer scrollBar1 hover' onLoad={scrollHandle} onScroll={scrollHandle} style={{marginLeft: '50px'}}>
       <button className='moveLeft' disabled={true} onClick={(e) => {moveSide(e, -1)}}>
         {'<'}
       </button>

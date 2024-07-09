@@ -15,15 +15,15 @@ export const FlashContainer = ({list}) => {
         <div className='flashProductContainer'>
             <div className='flashProduct'>
                 <h4 className='flashProductTitle'>The {list[0]} Today</h4>
-                <ProductCard renderRating={false} renderStock={false} product={list[1][0]?list[1][0]:emptyProduct}/>
+                <ProductCard renderRating={false} renderStock={false} isClickable={list[1][0]!==null} product={list[1][0]?list[1][0]:emptyProduct}/>
             </div>
             <div className='flashProduct'>
                 <h4 className='flashProductTitle'>The {list[0]} This Week</h4>
-                <ProductCard renderRating={false} renderStock={false} product={list[1][1]?list[1][1]:emptyProduct}/>
+                <ProductCard renderRating={false} renderStock={false} isClickable={list[1][1]!==null} product={list[1][1]?list[1][1]:emptyProduct}/>
             </div>
             <div className='flashProduct'>
                 <h4 className='flashProductTitle'>The {list[0]} This Month</h4>
-                <ProductCard renderRating={false} renderStock={false} product={list[1][2]?list[1][2]:emptyProduct}/>
+                <ProductCard renderRating={false} renderStock={false} isClickable={list[1][2]!==null} product={list[1][2]?list[1][2]:emptyProduct}/>
             </div>
         </div>
     </div>);

@@ -10,9 +10,13 @@ const Purchase = new Schema({
     type: mongoose.Types.ObjectId,
     required: true
   },
+  quantity : {
+    type: Number,
+    required: true
+  },
   date: {
     type: Date,
-    required: true
+    default: Date.now
   },
 });
 

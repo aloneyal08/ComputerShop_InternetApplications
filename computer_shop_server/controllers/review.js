@@ -1,11 +1,11 @@
 const Review = require('../models/review');
 
 const writeReview = async (req, res) => {
-  const { product, user, date, text, rating } = req.body;
+  const { product, user, title, text, rating } = req.body;
   const review = new Review({
+    title,
     product,
     user,
-    date,
     text,
     rating
   });
@@ -14,9 +14,18 @@ const writeReview = async (req, res) => {
 }
 
 const getReviews = async (req, res) => {
-  const { product } = req.query;
-  const reviews = await Review.find({product});
+  const { product } = req.body;
+  const reviews = await Review.find({product}).sort({$natural: -1});
   res.json(reviews);
+}
+
+const getRating = async (req, res) => {
+  const {product} = req.body;
+  const reviews = await Review.find({product});
+  let rating = 0;
+  reviews.forEach((rev) => {rating += rev.rating});
+  if(reviews.length > 0){rating /= reviews.length;}
+  res.json(rating);
 }
 
 const editReview = async (req, res) => {
@@ -44,6 +53,7 @@ const deleteReview = async (req, res) => {
 module.exports = {
   writeReview,
   getReviews,
+  getRating,
   editReview,
   deleteReview
 };

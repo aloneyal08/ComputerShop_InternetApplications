@@ -99,11 +99,11 @@ const CreateMessage = ({reload}) => {
       <Editor 
         editorState={content}
         toolbarClassName="toolbarClassName"
-        wrapperClassName="wrapperClassName"
-        editorClassName="richTextInput1"
+        wrapperClassName="wrapperClassName messageWrapperEditor"
+        editorClassName="richTextInput1 scrollBar2"
         spellCheck={true}
         toolbarStyle={{backgroundColor: "transparent", border: "none"}}
-        editorStyle={{minHeight: '15vh', marginLeft: "10px", fontSize: '14px', lineHeight: '6px', borderBottom: "0.125rem solid rgba(19, 19, 21, 0.6)"}}
+        editorStyle={{overflowX: 'auto', marginLeft: "10px", maxHeight: '10.5vh', fontSize: '14px', lineHeight: '15px', borderBottom: "0.125rem solid rgba(19, 19, 21, 0.6)"}}
         toolbar={{
           options: ['inline', 'fontSize', 'list', 'textAlign'],
           list: {inDropdown: true}

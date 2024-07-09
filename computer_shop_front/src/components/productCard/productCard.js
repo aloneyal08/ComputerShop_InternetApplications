@@ -1,14 +1,16 @@
 import React, {useContext, useState, useEffect} from 'react';
+import {useNavigate } from "react-router-dom";
 import ReactStarsRating from 'react-awesome-stars-rating';
 import {MoneyContext} from '../../Contexts'
 import './productCard.css'
 
 const currencies = require('../../currencies.json');
 
-export const ProductCard = ({product, renderRating = true, renderStock = true}) =>{
+export const ProductCard = ({product, renderRating = true, renderStock = true, isClickable=true, onImageError = () => {}}) =>{
   const {currency, exchangeRates} = useContext(MoneyContext);
   const [supplier, setSupplier] = useState(product.supplierName);
   const [productRate, setProductRate] = useState(0);
+  const navigate = useNavigate();
   
   useEffect(()=>{
     if(product.supplierName){
@@ -28,33 +30,29 @@ export const ProductCard = ({product, renderRating = true, renderStock = true}) 
   if(renderRating && product.rating){
     setProductRate(product.rating)
   }else{
-    fetch('http://localhost:88/review/get',{
+    fetch('http://localhost:88/review/get-rating',{
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({product: product._id})
-    }).then((res)=>res.json()).then((res)=>{
-      let rating = 0;
-      res.forEach(review => {
-        rating += review.rating;
-      });
-      setProductRate(Math.floor((rating / res.length)*2)/2);
+    }).then((res)=>res.json()).then((res)=>{setProductRate(Math.floor(res*2)/2);
     });
   }
   }, [product, renderRating]);
 
-  return <div className='productCard'>
-    <img alt='           ' className='productImg' src={product.photo} onError={(e) =>{e.currentTarget.src = require('../../images/defaultProduct.jpg')}}/>
+    return <div className='productCard' onClick={isClickable?() => {navigate(`/product/${product._id}`)}:undefined}>
+    <img alt='           ' className='productImg' src={product.photo} onError={(e) =>{e.currentTarget.src = require('../../images/defaultProduct.jpg');onImageError(e);}}/>
     <div className='productText'>
       <section className='productTextLeft'>
         <h3 className='productName'>{product.name}</h3>
         <aside><h6 className='productSupplier' >{supplier}</h6></aside>
-        { renderStock?
-          <h4 className={`productStock ${product.stock >= 1?'hidden':'visible'}`}>Currently None in Stock*</h4>
-          :
-          <></>
-        }
+        <footer>
+          { renderStock?
+            <h4 className={`productStock ${product.stock >= 1?'hidden':'visible'}`}>Currently None in Stock*</h4>
+            :
+            <></>
+          }
         { renderRating?
           <ReactStarsRating 
             value={productRate} 

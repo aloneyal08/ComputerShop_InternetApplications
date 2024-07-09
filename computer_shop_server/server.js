@@ -4,6 +4,7 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const user = require('./routers/user');
 const product = require('./routers/product');
+const purchase = require('./routers/purchase');
 const tag = require('./routers/tag');
 const review = require('./routers/review')
 const message = require('./routers/message');
@@ -20,6 +21,7 @@ app.use(express.json());
 
 app.use('/user', user);
 app.use('/product', product);
+app.use('/purchase', purchase);
 app.use('/tag', tag);
 app.use('/review', review);
 app.use('/supplier/request', supplierRequest);

@@ -27,3 +27,5 @@ export const validateUsername = (username) => {
 export const formatPhoneNumber = (n) => {
   return n.replace( /(\d{3})(\d{3})(\d{4})/, '$1-$2-$3' )
 }
+
+export const sleep = ms => new Promise(r => setTimeout(r, ms));

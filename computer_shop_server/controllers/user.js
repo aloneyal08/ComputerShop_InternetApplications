@@ -116,6 +116,20 @@ const updatePassword = async (req, res) => {
   res.json(user);
 }
 
+const addToCart = async (req, res) => {
+  const {email, addition} = req.body;
+  let cart = (await User.findOne({email})).cart;
+  for(let i = 0; i < cart.length;++i){
+    if(cart[i].productId == addition.productId){
+      return res.status(400).json({error: 'Product Already in Cart'})
+    }
+  }
+  cart.push(addition)
+  const u = await User.findOneAndUpdate({email}, {
+    cart
+  });
+  res.json(u);
+};
 const updateBackground = async (req, res) => {
   const { email, background } = req.body;
   var u = await User.findOne({email});
@@ -205,6 +219,7 @@ module.exports = {
   updateUserProfile,
   updateUsername,
   updatePassword,
+  addToCart,
   updateBackground,
   deleteUser,
   getAdmins,
