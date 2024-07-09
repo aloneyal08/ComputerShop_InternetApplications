@@ -2,6 +2,7 @@ import React, {useRef, useEffect, useState} from 'react';
 import './storefront.css';
 import { FlashContainer } from './flashContainer';
 import {ProductCard} from '../../components/productCard/productCard';
+import { useNavigate } from 'react-router-dom';
 
 const Storefront = () => {
   const [recProducts, setRecProducts] = useState([]);
@@ -14,6 +15,7 @@ const Storefront = () => {
   const [resetDelay, setResetDelay] = useState(false);
 
   const flashContainers = useRef();
+  const navigate = useNavigate();
 
   function useInterval(callback, delay) {
     const savedCallback = useRef();
@@ -69,10 +71,10 @@ const Storefront = () => {
   useInterval(moveFlash, resetDelay?null:5000)
 
   useEffect(() => {
-    fetch('http://localhost:88/product/get').then((res)=>res.json()).then((res) => {setRecProducts(res.slice(0, 50))});
-    fetch('http://localhost:88/product/get-popular').then((res)=>res.json()).then((res) => {setPopProducts(res.slice(0, 50))});
-    fetch('http://localhost:88/product/get-new').then((res)=>res.json()).then((res) => {setNewProducts(res.slice(0, 50))});
-    fetch('http://localhost:88/user/get-suppliers').then((res)=>res.json()).then((res) => {setRecSupplier(res.slice(0, 50))});
+    fetch('http://localhost:88/product/get').then((res)=>res.json()).then((res) => {setRecProducts(res)});
+    fetch('http://localhost:88/product/get-popular').then((res)=>res.json()).then((res) => {setPopProducts(res)});
+    fetch('http://localhost:88/product/get-new').then((res)=>res.json()).then((res) => {setNewProducts(res)});
+    fetch('http://localhost:88/user/get-suppliers').then((res)=>res.json()).then((res) => {setRecSupplier(res)});
     fetch('http://localhost:88/product/get-flash').then((res) =>res.json()).then((res) => {setFlashProducts(res)});
   }, []);
   return <div>
@@ -119,9 +121,9 @@ const Storefront = () => {
         {'<'}
       </button>
       {recSupplier.map((supplier)=>
-      <div className='userCard' key={supplier._id}>
+      <div className='userCard' key={supplier._id} onClick={()=>navigate(`/supplier/${supplier._id}`)}>
         <img alt='           ' className='userPhoto' src={supplier.profilePhoto} onError={(e) =>{e.currentTarget.src = require('../../images/userDefault.png')}} />
-        <h4>{supplier.fullName}</h4>
+        <h4 className='supplierName'>{supplier.fullName}</h4>
       </div>)}
         <button className='moveRight' onClick={(e) => {moveSide(e, 1)}}>
           {'>'}

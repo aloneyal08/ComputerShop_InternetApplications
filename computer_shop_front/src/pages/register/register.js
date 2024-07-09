@@ -181,7 +181,7 @@ const Register = () => {
       <div className="input1">
         <label>
           <input type='text' required onChange={onEmailChange} onBlur={checkEmailValid} className={emailValid ? '' : 'invalidBox'}/>
-          <span className={emailValid ? '' : 'invalidText'}>{emailValid ? 'Email*' : 'INVALID EMAIL*'}</span>
+          <span className={emailValid ? '' : 'invalidText'}>{emailValid ? `Email* ${isSupplier ? '(Contact)' : ''}` : 'INVALID EMAIL*'}</span>
         </label>
       </div>
       <div className="input1">

@@ -127,7 +127,7 @@ export const NavBar = () => {
       <div className='logo' onClick={()=>navigate("/")}>
         <h1>SHOP</h1>
       </div>
-      <div className='searchArea'>
+      {(user.level===0||!user.level)&&<div className='searchArea'>
         <input 
           type='text' className='searchBox' onChange={onSearchChange} 
           placeholder='Search...' value={search} onKeyDown={onKeyDown}
@@ -146,7 +146,7 @@ export const NavBar = () => {
             ))
           }
         </div>
-      </div>
+      </div>}
       <div className='navBarOthers'>
         <div className='nbImageContainer' onMouseEnter={()=>setAccountPopupOpen(true)} onMouseLeave={leaveAccountIcon}>
           <img src={user.profilePhoto} alt='' className='navBarPhoto navBarAccountPhoto' style={{zIndex: 2}}/>
@@ -169,15 +169,17 @@ export const NavBar = () => {
         </div>
       </div>
     </div>
-    {location.pathname === "/" && user.level !== 1 && user.level !== 2 && <nav className='specialSearch'>
-      {
-        searchOptions.concat(tagOptions).map(option=>(
-          <button className={'searchOption ' + (option.special ? 'optionSpecial' : '')} onClick={()=>window.open(`/search?key=${option.searchKey}`, '_self')} key={option.text}>
-            {option.text}
-          </button>
-        ))
-      }
-    </nav>}
+    {location.pathname === "/" && user.level !== 1 && user.level !== 2 && <div className='specialSearchCon'>
+          <nav className='specialSearch'>
+          {
+            searchOptions.concat(tagOptions).map(option=>(
+              <button className={'searchOption ' + (option.special ? 'optionSpecial' : '')} onClick={()=>window.open(`/search?key=${option.searchKey}`, '_self')} key={option.text}>
+                {option.text}
+              </button>
+            ))
+          }
+        </nav>
+      </div>}
     <div 
       className={'popup navBarPopup ' + (isAccountPopupOpen ? 'scale1' : '')}
       onMouseEnter={()=>clearTimeout(timeoutId)} onMouseLeave={()=>setAccountPopupOpen(false)}
