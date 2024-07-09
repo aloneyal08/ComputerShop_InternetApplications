@@ -116,7 +116,12 @@ const updatePassword = async (req, res) => {
 
 const addToCart = async (req, res) => {
   const {email, addition} = req.body;
-  let cart = await User.findOne({email}).cart;
+  let cart = (await User.findOne({email})).cart;
+  for(let i = 0; i < cart.length;++i){
+    if(cart[i].productId == addition.productId){
+      return res.status(400).json({error: 'Product Already in Cart'})
+    }
+  }
   cart.push(addition)
   const u = await User.findOneAndUpdate({email}, {
     cart

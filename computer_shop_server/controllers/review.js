@@ -6,7 +6,6 @@ const writeReview = async (req, res) => {
     title,
     product,
     user,
-    date: new Date(),
     text,
     rating
   });

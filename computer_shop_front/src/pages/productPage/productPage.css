@@ -52,7 +52,7 @@ font-size: 14px;
 }
 #reviewWrapper{
     display: flex;
-    flex-direction: row;
+    flex-direction: row-reverse;
 }
 #buttonContainer{
     display: flex;
@@ -105,12 +105,12 @@ font-size: 14px;
 }
 #buyInfo > .button1{
     margin-top: 20px;
-    width: fit-content;
+    width: 150px;
     align-self: center;
 }
 #ratingInfo{
     margin-top: 30px;
-    margin-left: 50px;  
+    margin-right: 50px;  
 }
 .ratePercentage{
     display: flex;
@@ -142,15 +142,30 @@ font-size: 14px;
     display: flex;
     flex-direction: row;
     align-items: center;
+    align-self: center;
 }
 #quantityWrapper > input{
-    width: min-content;
+    box-sizing: border-box;
+    text-align: center;
+    width: 50px;
+    height: 22px;
 }
 #quantityWrapper > button{
-    justify-content: center;
-    padding: 5px;
-    width: fit-content;
-    height: fit-content;
+    padding: 0 0 6.5px 0;
+    font-size: 30px;
+    width: 22px;
+    height: 22px;
+    border-radius: 0;
+    ;
+}
+#revTitleWrapper{
+    max-width: 35vw;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+#revTitle{
+    width: 100%;
 }
 @keyframes enlarge {
     from {max-width: 0;}

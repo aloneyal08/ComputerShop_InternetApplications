@@ -62,7 +62,7 @@ const ProductPage = () => {
         navigate(0);
     };
     const onChangeQuantity = (e) => {
-        e.value = Math.max(0, Math.min(e.value, product.stock));
+        e.value = Math.max(1, Math.min(e.value, product.stock));
         setQuantity(e.value);
     };
     const changeQuantity = (e, num) => {
@@ -73,7 +73,50 @@ const ProductPage = () => {
     };
 
     const addToCart = () =>{
-        console.log(quantity);
+        if(quantity == ''){
+            alert('Enter Quantity of Product');
+            return;
+        }
+        fetch('http://localhost:88/user/update/cart-add', {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            email: user.email,
+            addition: {productId, quantity}
+          })
+        }).then((res) => res.json()).then((res) => {
+          if(res.error) {
+            alert(res.error);
+          } else {
+            navigate(0);
+          }
+        })
+    };
+    
+    const buyNow = () =>{
+        if(quantity == ''){
+            alert('Enter Quantity of Product');
+            return;
+        }
+        fetch('http://localhost:88/purchase/buy-one', {
+            method: 'POST',
+            headers: {
+            'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                product: productId,
+                user: user._id,
+                quantity
+            })
+        }).then((res) => res.json()).then((res) => {
+            if(res.error) {
+                alert(res.error);
+            } else {
+                navigate(0);
+            }
+        })
     };
 
     useEffect(() => {
@@ -170,7 +213,7 @@ const ProductPage = () => {
                     <></>
                 }
                 <button disabled={product.stock <= 0 || user.loggedOut} id='cartBtn' className='button1' onClick={addToCart}>Add To Cart</button>
-                <button disabled={product.stock <= 0 || user.loggedOut} id='buyBtn' className='button1'>Buy Now</button>
+                <button disabled={product.stock <= 0 || user.loggedOut} id='buyBtn' className='button1' onClick={buyNow}>Buy Now</button>
             </div>
         </div>
         <div ref={reviewList} id='reviewWrapper'>
@@ -186,11 +229,31 @@ const ProductPage = () => {
             <div id='reviewList'>
                 {!user.loggedOut?
                     <div className='reviewCard'>
-                        <div className="input1">
-                            <label>
-                            <input required type='text' onChange={(e) => {setReviewTitle(e.currentTarget.value);}}/>
-                            <span>Review Title*</span>
-                            </label>
+                        <header className='reviewTop'>
+                            <div className='reviewUser'>
+                                <img alt='           ' src={user.profilePhoto} onError={(e) =>{e.currentTarget.src = require('../../images/userDefault.png')}} />
+                            </div>
+                            <div>
+                                <div className='reviewUnderText'>
+                                    <h5 className='userName'>{user.fullName}</h5>
+                                    <h5 className='reviewDate'>{new Date().toLocaleDateString()}</h5>
+                                </div>
+                            </div>
+                        </header>
+                        <div id='revTitleWrapper'>
+                            <Rating
+                            onClick={(rate) => {setReviewRating(rate);setChangedReview(true);}}
+                            initialValue={reviewRating}
+                            allowFraction={true}
+                            size={35}
+                            id='productRating'
+                            />
+                            <div id='revTitle' className="input1">
+                                <label>
+                                <input required type='text' onChange={(e) => {setReviewTitle(e.currentTarget.value);}}/>
+                                <span>Review Title*</span>
+                                </label>
+                            </div>
                         </div>
                         <Editor
                         editorState={reviewDescription}
@@ -206,24 +269,6 @@ const ProductPage = () => {
                         onEditorStateChange={onTextChange}
                         placeholder='Write what you think about the product'
                         />
-                        <footer className='reviewBottom'>
-                            <div className='reviewUser'>
-                                <img alt='           ' src={user.profilePhoto} onError={(e) =>{e.currentTarget.src = require('../../images/userDefault.png')}} />
-                            </div>
-                            <div>
-                                <Rating
-                                onClick={(rate) => {setReviewRating(rate);setChangedReview(true);}}
-                                initialValue={reviewRating}
-                                allowFraction={true}
-                                size={35}
-                                id='productRating'
-                                />
-                                <div className='reviewUnderText'>
-                                    <h5 className='userName'>{user.fullName}</h5>
-                                    <h5 className='reviewDate'>{new Date().toLocaleDateString()}</h5>
-                                </div>
-                            </div>
-                        </footer>
                         <button className='button1' id='reviewBtn' onClick={sendReview}>Send Review</button>
                     </div>
                     :

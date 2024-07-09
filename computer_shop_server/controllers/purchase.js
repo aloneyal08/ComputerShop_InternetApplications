@@ -1,20 +1,19 @@
-const Review = require('../models/review');
 const Product = require('../models/product');
-const Purchase = require()
-const productController = require('./product');
+const Purchase = require('../models/purchase');
 
 const makePurchase = async (req, res) => {
-    const { user, product } = req.body;
-    const date = new Date().toISOString();
+    const { user, product, quantity } = req.body;
+    const stock = (await Product.findOne({_id: product})).stock;
+    if(stock < quantity){
+        return res.status(400).json({error: 'Product Out of Stock'});
+    }
     const purchase = new Purchase({
         user,
         product,
-        date
+        quantity
     });
     await purchase.save();
-    const p_id = await Purchase.find({_id}).product;
-    const stock = await Product.find({p_id}).stock;
-    const _product = await Product.findByIdAndUpdate(p_id, {stock: stock - 1});
+    const _product = await Product.findByIdAndUpdate(product, {stock: stock - quantity});
     res.json(purchase);
 };
 

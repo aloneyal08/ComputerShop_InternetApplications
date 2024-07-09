@@ -23,7 +23,6 @@ const addProduct = async (req, res) => {
 		stock,
 		supplier,
 		description,
-		date: new Date().toISOString(),
 		...obj
 	});
 	await product.save();
@@ -59,11 +58,11 @@ const getFlashProducts = async (req, res) => {
 	dates[1].setDate(dates[1].getDate() - 7);
 	dates[2].setMonth(dates[2].getMonth()-1);
 	let tempList = [];
-	let p = await Purchase.aggregate([{$match: {"date": {$gte: dates[0]}}}, {$group: {_id: "$product", count: {$sum:1}}}, {$sort: {count: -1}}]).limit(1);
+	let p = await Purchase.aggregate([{$match: {"date": {$gte: dates[0]}}}, {$group: {_id: "$product", count: {$sum: "$quantity"}}}, {$sort: {count: -1}}]).limit(1);
 	tempList.push(p[0]);
-	p = await Purchase.aggregate([{$match: {"date": {$gte: dates[1]}}}, {$group: {_id: "$product", count: {$sum:1}}}, {$sort: {count: -1}}]).limit(1);
+	p = await Purchase.aggregate([{$match: {"date": {$gte: dates[1]}}}, {$group: {_id: "$product", count: {$sum: "$quantity"}}}, {$sort: {count: -1}}]).limit(1);
 	tempList.push(p[0]);
-	p = await Purchase.aggregate([{$match: {"date": {$gte: dates[2]}}}, {$group: {_id: "$product", count: {$sum:1}}}, {$sort: {count: -1}}]).limit(1);
+	p = await Purchase.aggregate([{$match: {"date": {$gte: dates[2]}}}, {$group: {_id: "$product", count: {$sum: "$quantity"}}}, {$sort: {count: -1}}]).limit(1);
 	tempList.push(p[0]);
 	for(let i = 0; i < tempList.length;++i){
 		p = await Product.findById(tempList[i]);
