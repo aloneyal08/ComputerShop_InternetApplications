@@ -30,6 +30,10 @@ const User = new Schema({
     type: String,
     required: false
   },
+  cart : {
+    type: Array,
+    default: []
+  }
 }, {strict: false});
 
 module.exports = mongoose.model('User', User);

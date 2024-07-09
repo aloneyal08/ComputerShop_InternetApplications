@@ -26,6 +26,8 @@ const ProductPage = () => {
     const [reviewDescription, setReviewDescription] = useState('');
     const [reviews, setReviews] = useState([]);
     const [ratingPercentages, setRatingPercentages] = useState([]);
+    const [quantity, setQuantity] = useState('');
+
     const reviewList = useRef(null);
     
     const onTextChange = (state) => {
@@ -58,6 +60,20 @@ const ProductPage = () => {
         setReviewRating(0);
         setChangedReview(false);
         navigate(0);
+    };
+    const onChangeQuantity = (e) => {
+        e.value = Math.max(0, Math.min(e.value, product.stock));
+        setQuantity(e.value);
+    };
+    const changeQuantity = (e, num) => {
+        let input = e.currentTarget.parentElement.children[1];
+        input.value = input.value===''?0:input.value;
+        input.value = Number(input.value) + num;
+        onChangeQuantity(input)
+    };
+
+    const addToCart = () =>{
+        console.log(quantity);
     };
 
     useEffect(() => {
@@ -145,11 +161,15 @@ const ProductPage = () => {
                 <h3 id='productStock' style={{color: product.stock > 0?'black':'red'}}>Currently {product.stock > 0?product.stock + ' in':'out of'} stock</h3>
                 <hr className='separator' />
                 {product.stock > 0 && !user.loggedOut?
-                    <input type='number'></input>
+                    <div id='quantityWrapper'>
+                        <button className='quantityBtn button1' onClick={(e) => changeQuantity(e, -1)}>-</button>
+                        <input onChange={(e) => {onChangeQuantity(e.currentTarget)}} type='number'></input>
+                        <button className='quantityBtn button1' onClick={(e) => changeQuantity(e, 1)}>+</button>
+                    </div>
                     :
                     <></>
                 }
-                <button disabled={product.stock <= 0 || user.loggedOut} id='cartBtn' className='button1'>Add To Cart</button>
+                <button disabled={product.stock <= 0 || user.loggedOut} id='cartBtn' className='button1' onClick={addToCart}>Add To Cart</button>
                 <button disabled={product.stock <= 0 || user.loggedOut} id='buyBtn' className='button1'>Buy Now</button>
             </div>
         </div>
@@ -158,7 +178,7 @@ const ProductPage = () => {
                 {
                     ratingPercentages.map((rate, index) => <div key={index} className='ratePercentage'>
                         <h3>{index + 0.5} - {index + 1}</h3>
-                        <div className='emptyBar'><div className='fullBar' style={{'--max-width': `${rate*101}%`}} ></div></div>
+                        <div className='emptyBar'><div className='fullBar' style={{'--max-width': `${rate*100}%`}} ></div></div>
                         <h3>{Math.round(rate*100)}%</h3>
                     </div>)
                 }

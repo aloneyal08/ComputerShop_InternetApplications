@@ -110,7 +110,7 @@ font-size: 14px;
 }
 #ratingInfo{
     margin-top: 30px;
-    margin-left: 50px;
+    margin-left: 50px;  
 }
 .ratePercentage{
     display: flex;
@@ -119,21 +119,38 @@ font-size: 14px;
     column-gap: 20px;
 }
 .ratePercentage > .emptyBar{
+    display: flex;
     border: 2px solid rgb(161, 161, 161);
     border-radius: 10px;
     background-color: gainsboro;
     width: 150px;
     height: 20px;
+    align-items: center;
+    justify-content: flex-start;
+
 }
 .ratePercentage > .emptyBar > .fullBar{
     animation: enlarge 1s;
     border-radius: 10px;
     border-bottom-left-radius: 10px;
     background-color: rgb(255, 188, 11);
-    margin-left: -0.5px;
-    width: auto;
+    width: var(--max-width);
     max-width: var(--max-width);
     height: 20px;
+}
+#quantityWrapper{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+#quantityWrapper > input{
+    width: min-content;
+}
+#quantityWrapper > button{
+    justify-content: center;
+    padding: 5px;
+    width: fit-content;
+    height: fit-content;
 }
 @keyframes enlarge {
     from {max-width: 0;}
