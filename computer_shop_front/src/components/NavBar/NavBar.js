@@ -127,7 +127,7 @@ export const NavBar = () => {
       <div className='logo' onClick={()=>navigate("/")}>
         <h1>SHOP</h1>
       </div>
-      <div className='searchArea'>
+      {(user.level===0||!user.level)&&<div className='searchArea'>
         <input 
           type='text' className='searchBox' onChange={onSearchChange} 
           placeholder='Search...' value={search} onKeyDown={onKeyDown}
@@ -146,7 +146,7 @@ export const NavBar = () => {
             ))
           }
         </div>
-      </div>
+      </div>}
       <div className='navBarOthers'>
         <div className='nbImageContainer' onMouseEnter={()=>setAccountPopupOpen(true)} onMouseLeave={leaveAccountIcon}>
           <img src={user.profilePhoto} alt='' className='navBarPhoto navBarAccountPhoto' style={{zIndex: 2}}/>
