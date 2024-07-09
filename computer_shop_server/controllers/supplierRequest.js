@@ -3,6 +3,8 @@ const User = require('../models/user');
 const { encrypt, decrypt, sendEmail } = require('../utils');
 require('dotenv').config()
 
+const background = `https://marketplace.canva.com/EAEthkBVLfQ/1/0/1600w/canva-blush-wave-desktop-wallpaper-drvq3zaYl2E.jpg`
+
 const createRequest = async (req, res) => {
   const { description, username, password, email, phone, fullName } = req.body;
   var u = await User.findOne({email, status: 0});
@@ -25,6 +27,7 @@ const createRequest = async (req, res) => {
       email,
       fullName,
       phone,
+      background,
       level: 1
     },
     description,
@@ -58,7 +61,6 @@ const acceptRequestGet = async (req, res) => {
 
 const acceptRequest = async (req, res) => {
   const { id, username, password } = req.body;
-  console.log("object");
 
   const admin = await User.findOne({username});
   if(!admin || admin.level !== 2 || admin.password !== password)

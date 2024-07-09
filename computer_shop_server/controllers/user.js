@@ -1,4 +1,6 @@
 const User = require('../models/user');
+const Tag = require('../models/tag');
+const Product = require('../models/product');
 const { encrypt, decrypt } = require('../utils');
 
 
@@ -128,6 +130,16 @@ const addToCart = async (req, res) => {
   });
   res.json(u);
 };
+const updateBackground = async (req, res) => {
+  const { email, background } = req.body;
+  var u = await User.findOne({email});
+  if (!u) {
+    return res.status(404).json({ error: 'User not found' });
+  }
+
+  const user = await User.findOneAndUpdate({email}, {background});
+  res.json(user);
+}
 
 const deleteUser = async (req, res) => {
   const { email } = req.body;
@@ -179,6 +191,26 @@ const addAdmin = async (req, res) => {
   res.json(admin);
 }
 
+const getSupplier = async (req, res) => {
+  const {id} = req.query;
+  try{
+    const supplier = await User.findById(id);
+    if(!supplier || supplier.level !== 1)
+      return res.status(404).json({error: 'Supplier not found'});
+    delete supplier.password;
+
+    const tags = await Tag.find({});
+
+    const products = await Product.find({supplier: id});
+
+    const supplierTags = tags.filter(tag=>products.find(p=>p.tags.map(t=>t.toString()).includes(tag._id.toString()))).map(tag=>({text: tag.text, _id: tag._id}));
+
+    res.json({supplier, tags: supplierTags});
+  } catch(e) {
+    res.status(404).json({error: 'Supplier not found'});
+  }
+}
+
 module.exports = {
   getUserById,
   getSuppliers,
@@ -188,10 +220,12 @@ module.exports = {
   updateUsername,
   updatePassword,
   addToCart,
+  updateBackground,
   deleteUser,
   getAdmins,
   suspendAccount,
   restoreAccount,
   getAllEmails,
-  addAdmin
+  addAdmin,
+  getSupplier
 }

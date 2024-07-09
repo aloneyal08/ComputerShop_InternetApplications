@@ -8,7 +8,6 @@
     margin: auto;
     width: fit-content;
     height: min-content;
-    border: 1px solid gainsboro;
 }
 #divider{
     display: flex;
@@ -16,6 +15,7 @@
 }
 #inputs{
     border: 2px solid gainsboro;
+    border-radius: 15px;
     padding: 10px 15px;
 }
 #preview{
@@ -39,14 +39,14 @@
     margin-top: 10px;
     margin-bottom: 10px;
 }
-.input1 {
+.input2 {
     margin: 0 30px 0.75rem 5px;
 }
-.input1 > label > span{
+.input2 > label > span{
     left: 0.2rem;
 }
-.input1 > label > input:focus + span,
-.input1 > label > input:valid + span {
+.input2 > label > input:focus + span,
+.input2 > label > input:valid + span {
     left: 0.2rem;
 }
 
@@ -60,6 +60,7 @@ input::-webkit-inner-spin-button {
 /*firefox*/
 input[type=number] {
   -moz-appearance: textfield;
+  appearance: textfield;
 }
 .select-search-value > div.input1 > label > input{
     box-sizing: content-box;
@@ -99,10 +100,11 @@ input[type=number] {
   box-sizing: content-box;
   display: flex;
   flex-direction: row;
-  flex-wrap: wrap;
+  overflow-x: auto;
   justify-content: flex-start;
-  max-width: 300px;
-  margin: 15px;
+  max-width: 100%;
+  align-items: center;
+  height: 55px;
   overflow-wrap: break-word;
 }
 .productTag{
@@ -131,4 +133,7 @@ input[type=number] {
 }
 .public-DraftEditor-content{
     height: 18vh;
+}
+#tagsContainer {
+    padding: 5px;
 }

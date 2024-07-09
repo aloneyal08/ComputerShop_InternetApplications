@@ -7,17 +7,17 @@ const currencies = require('../../currencies.json')
 const searchOptions = [
   {
     text: "New",
-    searchKey: "::recent:1",
+    searchKey: "::sort=5",
     special: 1
   },
   {
     text: "On Sale",
-    searchKey: "::discount:>0",
+    searchKey: "::discount=1",
     special: 1
   },
   {
     text: "Prices under 50$",
-    searchKey: "::price:<50",
+    searchKey: "::price=<50",
     special: 1
   }
 ]
@@ -33,8 +33,23 @@ export const NavBar = () => {
 
   const [isAccountPopupOpen, setAccountPopupOpen] = useState(false);
   const [isCurrencyPopupOpen, setCurrencyPopupOpen] = useState(false);
+  const [isFocused, setFocused] = useState(false);
+  const [selectIndex, setSelectIndex] = useState(-1);
+  const [autoCompletes, setAutoCompletes] = useState([]);
 
-  const onSearchChange = (e) => setSearch(e.target.value);
+  const getAutoCompletes = (search) => {
+    fetch('http://localhost:88/product/autocomplete', {
+      method: 'GET',
+      headers: {
+        key: search.toLowerCase()
+      }
+    }).then(res=>res.json()).then(res=>setAutoCompletes(res));
+  }
+
+  const onSearchChange = (e) => {
+    setSearch(e.target.value);
+    getAutoCompletes(e.target.value);
+  }
   const logOut = () => {
     localStorage.removeItem("username");
     localStorage.removeItem("password");
@@ -50,6 +65,11 @@ export const NavBar = () => {
   }
   useEffect(()=>setCurrencyPopupOpen(false), [isAccountPopupOpen])
   useEffect(()=>{
+    getAutoCompletes('');
+    const urlParams = new URLSearchParams(window.location.search);
+    const key = urlParams.get('key')||'';
+    setSearch(key.split("::")[0]);
+
     var canvas = arrowRef.current;
     if (canvas.getContext) {
       var ctx = canvas.getContext('2d');
@@ -76,14 +96,57 @@ export const NavBar = () => {
     localStorage.setItem("currency", curr);
     setCurrencyPopupOpen(false);
   }
-  const tagOptions = tags.map(t=>({text: t.text, searchKey: `::tags:${t}`}))
+
+  useEffect(()=> {
+    if(selectIndex===-1) return;
+    setSearch(autoCompletes[selectIndex]);
+  }, [autoCompletes, selectIndex])
+
+  const onKeyDown = (e) => {
+    if (e.key === "Enter") {
+      window.open(`/search?key=${search}`, "_self");
+    }
+    else if (e.key === "ArrowDown") {
+      setSelectIndex(selectIndex+1);
+      if(selectIndex > autoCompletes)
+        setSelectIndex(0);
+    }
+    else if (e.key === "ArrowUp") {
+      setSelectIndex(selectIndex-1);
+      if(selectIndex < 0)
+        setSelectIndex(autoCompletes.length-1);
+    } else {
+      setSelectIndex(-1);
+    }
+  }
+
+  const tagOptions = tags.map(t=>({text: t.text, searchKey: `::tags=${t.text}`}))
 
   return <header className='navBar' style={location.pathname !== "/" || user.level === 1 || user.level === 2 ? {height: "50px"} : {}}>
     <div className='mainBar'>
       <div className='logo' onClick={()=>navigate("/")}>
         <h1>SHOP</h1>
       </div>
-      <input type='text' className='searchBox' onChange={onSearchChange} placeholder='Search...' value={search}/>
+      {(user.level===0||!user.level)&&<div className='searchArea'>
+        <input 
+          type='text' className='searchBox' onChange={onSearchChange} 
+          placeholder='Search...' value={search} onKeyDown={onKeyDown}
+          onFocus={()=>{setFocused(true);setSelectIndex(-1)}} 
+          onBlur={()=>setFocused(false)}
+        />
+        <div className={'autoCompletes roundBorderBottom ' + (isFocused ? 'fullScaleComplete' : '')}>
+          {
+            autoCompletes.map((complete, i)=>(
+              <div className={'autoCompleteItem ' + (i===autoCompletes.length-1 ? 'roundBorderBottom' : '')} 
+                style={{backgroundColor: i===selectIndex ? "#cccccc" : "white"}}
+                onMouseDown={()=>{window.open(`/search?key=${complete}`, "_self")}} key={i}
+              >
+                {complete}
+              </div>
+            ))
+          }
+        </div>
+      </div>}
       <div className='navBarOthers'>
         <div className='nbImageContainer' onMouseEnter={()=>setAccountPopupOpen(true)} onMouseLeave={leaveAccountIcon}>
           <img src={user.profilePhoto} alt='' className='navBarPhoto navBarAccountPhoto' style={{zIndex: 2}}/>
@@ -106,15 +169,17 @@ export const NavBar = () => {
         </div>
       </div>
     </div>
-    {location.pathname === "/" && user.level !== 1 && user.level !== 2 && <nav className='specialSearch'>
-      {
-        searchOptions.concat(tagOptions).map(option=>(
-          <button className={'searchOption ' + (option.special ? 'optionSpecial' : '')} onClick={()=>navigate(`/search?key=${option.searchKey}`)}>
-            {option.text}
-          </button>
-        ))
-      }
-    </nav>}
+    {location.pathname === "/" && user.level !== 1 && user.level !== 2 && <div className='specialSearchCon'>
+          <nav className='specialSearch'>
+          {
+            searchOptions.concat(tagOptions).map(option=>(
+              <button className={'searchOption ' + (option.special ? 'optionSpecial' : '')} onClick={()=>window.open(`/search?key=${option.searchKey}`, '_self')} key={option.text}>
+                {option.text}
+              </button>
+            ))
+          }
+        </nav>
+      </div>}
     <div 
       className={'popup navBarPopup ' + (isAccountPopupOpen ? 'scale1' : '')}
       onMouseEnter={()=>clearTimeout(timeoutId)} onMouseLeave={()=>setAccountPopupOpen(false)}

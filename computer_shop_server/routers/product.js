@@ -9,5 +9,8 @@ router.get('/get', productController.getProducts);
 router.get('/get-new', productController.getNewProducts);
 router.get('/get-popular', productController.getPopularProducts);
 router.get('/get-flash', productController.getFlashProducts);
+router.get('/search', productController.search);
+router.get('/search/exact', productController.exactSearch)
+router.get('/autocomplete', productController.getAutoCompletes);
 
 module.exports = router;

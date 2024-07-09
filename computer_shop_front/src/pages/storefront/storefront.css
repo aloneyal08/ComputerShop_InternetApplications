@@ -17,6 +17,8 @@
     overflow-x: auto;
     column-gap: 20px;
     scroll-behavior: smooth;
+    width: calc(100% - 100px);
+    margin: auto;
 }
 .moveRight, .moveLeft{
     transition: 0.3s;
@@ -90,6 +92,15 @@
     width: 120px;
     height: 120px;
 }
-.userName{
-    margin-top: 0;
+.supplierName {
+    margin: 15px;
+    font-size: 23px;
+}
+
+.userCard {
+    cursor: pointer;
+}
+
+.userCard:hover {
+    text-decoration: underline;
 }

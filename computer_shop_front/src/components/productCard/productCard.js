@@ -1,6 +1,6 @@
 import React, {useContext, useState, useEffect} from 'react';
-import { Rating } from 'react-simple-star-rating';
 import {useNavigate } from "react-router-dom";
+import ReactStarsRating from 'react-awesome-stars-rating';
 import {MoneyContext} from '../../Contexts'
 import './productCard.css'
 
@@ -8,7 +8,7 @@ const currencies = require('../../currencies.json');
 
 export const ProductCard = ({product, renderRating = true, renderStock = true, isClickable=true, onImageError = () => {}}) =>{
   const {currency, exchangeRates} = useContext(MoneyContext);
-  const [supplier, setSupplier] = useState('');
+  const [supplier, setSupplier] = useState(product.supplierName);
   const [productRate, setProductRate] = useState(0);
   const navigate = useNavigate();
   
@@ -22,7 +22,9 @@ export const ProductCard = ({product, renderRating = true, renderStock = true, i
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({id: product.supplier})
-    }).then((res)=>res.json()).then((res)=>{setSupplier(res.fullName)});
+    }).then((res)=>res.json()).then((res)=>{
+      setSupplier(res.fullName);
+    });
   }
 
   if(renderRating && product.rating){
@@ -37,7 +39,7 @@ export const ProductCard = ({product, renderRating = true, renderStock = true, i
     }).then((res)=>res.json()).then((res)=>{setProductRate(Math.floor(res*2)/2);
     });
   }
-  }, []);
+  }, [product, renderRating]);
 
     return <div className='productCard' onClick={isClickable?() => {navigate(`/product/${product._id}`)}:undefined}>
     <img alt='           ' className='productImg' src={product.photo} onError={(e) =>{e.currentTarget.src = require('../../images/defaultProduct.jpg');onImageError(e);}}/>
@@ -51,18 +53,18 @@ export const ProductCard = ({product, renderRating = true, renderStock = true, i
             :
             <></>
           }
-          { renderRating?
-            <Rating
-            readonly={true}
-            initialValue={productRate}
-            allowFraction={true}
-            size={35}
-            id='productRating'
-            />
-            :
-            <></>
-          }
-          </footer>
+        { renderRating?
+          <ReactStarsRating 
+            value={productRate} 
+            isEdit={false}
+            secondaryColor="#cccccc"
+            primaryColor="#ffbc0b"
+            size={33}
+            id={product._id}
+          /> 
+          :
+          <></>
+        }
       </section>
       <section className='productTextRight'>
         <h4 className='productPrice'>{isNaN(product.price)?product.price:currencies[currency].symbol + Math.floor(product.price*exchangeRates[currency]*100)/100}</h4>

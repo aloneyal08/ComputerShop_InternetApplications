@@ -41,7 +41,11 @@ const Product = new Schema({
   date:{
     type: Date,
     default: Date.now
-  }
+  },
+  discount: {
+    type: Number,
+    default: 0
+  },
 });
 
 module.exports = mongoose.model('Product', Product);

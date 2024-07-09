@@ -86,7 +86,7 @@
 	line-height: 147.6%;
   padding: 0px;
 	padding-top: 0.825rem;
-	padding-bottom: 0.5rem;
+	padding-bottom: 0.2rem;
   font-family: stdFont;
   background-color: transparent;
 }
@@ -163,6 +163,8 @@
 }
 .userPhoto{
   border-radius: 50%;
+  width: 150px;
+  height: 150px;
 }
 .scrollBar1{
   padding-bottom: 7px;
@@ -329,4 +331,67 @@
 .hover.scrollBar2:hover::-webkit-scrollbar-track, .hover.scrollBar2:hover::-webkit-scrollbar-thumb{
   transition: 0.3s;
   visibility: visible;
+}
+
+.select1 {
+  background-color: white;
+  border: thin solid black;
+  border-radius: 4px;
+  display: inline-block;
+  font: inherit;
+  line-height: 1.5em;
+  padding: 0.3em 3.5em 0.3em 1em;
+  margin: 0;      
+  appearance: none;
+}
+
+select.select1 {
+  background-image:
+    linear-gradient(45deg, transparent 50%, gray 50%),
+    linear-gradient(135deg, gray 50%, transparent 50%),
+    linear-gradient(to right, #ccc, #ccc);
+  background-position:
+    calc(100% - 20px) calc(1em + 2px),
+    calc(100% - 15px) calc(1em + 2px),
+    calc(100% - 2.5em) 0.5em;
+  background-size:
+    5px 5px,
+    5px 5px,
+    1px 1.5em;
+  background-repeat: no-repeat;
+}
+
+select.select1:focus {
+  background-image:
+    linear-gradient(45deg, gray 50%, transparent 50%),
+    linear-gradient(135deg, transparent 50%, gray 50%),
+    linear-gradient(to right, #ccc, #ccc);
+  background-position:
+    calc(100% - 14px) 1em,
+    calc(100% - 20px) 1em,
+    calc(100% - 2.5em) 0.5em;
+  background-size:
+    6px 6px,
+    6px 6px,
+    1px 1.5em;
+  background-repeat: no-repeat;
+  border-color: gray;
+  outline: 0;
+}
+
+
+select:-moz-focusring {
+  color: transparent;
+  text-shadow: 0 0 0 #000;
+}
+
+.range1 .range-slider__thumb {
+  background: rgb(173, 173, 173) !important;
+}
+.range1 .range-slider__range {
+  background: rgb(151, 151, 151) !important;
+}
+
+.select-search-container {
+  width: 100%;
 }
