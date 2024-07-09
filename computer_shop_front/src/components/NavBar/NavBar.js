@@ -132,7 +132,7 @@ export const NavBar = () => {
           type='text' className='searchBox' onChange={onSearchChange} 
           placeholder='Search...' value={search} onKeyDown={onKeyDown}
           onFocus={()=>{setFocused(true);setSelectIndex(-1)}} 
-          onBlur={()=>setFocused(false)}
+          onBlur={()=>setFocused(false)} style={{zIndex: "999"}}
         />
         <div className={'autoCompletes roundBorderBottom ' + (isFocused ? 'fullScaleComplete' : '')}>
           {

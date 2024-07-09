@@ -1,7 +1,6 @@
 import React, {useState, useEffect, useContext, useRef} from 'react'
 import {MoneyContext, TagsContext, UserContext} from '../../Contexts'
 import { useParams, useNavigate } from 'react-router-dom';
-import { Rating } from 'react-simple-star-rating';
 import { Editor } from "react-draft-wysiwyg";
 import { convertToRaw, EditorState, ContentState } from "draft-js";
 import htmlToDraft from 'html-to-draftjs';
@@ -9,6 +8,7 @@ import draftToHtmlPuri from "draftjs-to-html";
 import './reviewCard.css'
 import './productPage.css';
 import { ReviewCard } from './reviewCard';
+import ReactStarsRating from 'react-awesome-stars-rating';
 
 const currencies = require('../../currencies.json');
 
@@ -170,13 +170,14 @@ const ProductPage = () => {
             <div className='productInfo'>
                 <div id='ratingWrapper'>
                     <h2>{rating}</h2>
-                    <Rating
-                    readonly={true}
-                    initialValue={rating}
-                    allowFraction={true}
-                    size={35}
-                    id='productRating'
-                    />
+                    <ReactStarsRating 
+						value={rating} 
+						isEdit={false}
+						secondaryColor="#cccccc"
+						primaryColor="#ffbc0b"
+						size={33}
+						id={product._id}
+					/> 
                     <a href='#' onClick={() => {reviewList.current.scrollIntoView();return false;}}>{`${reviews.length} ratings`}</a>
                 </div>
                 <h1 id='productName'>{product.name}</h1>
@@ -241,13 +242,15 @@ const ProductPage = () => {
                             </div>
                         </header>
                         <div id='revTitleWrapper'>
-                            <Rating
-                            onClick={(rate) => {setReviewRating(rate);setChangedReview(true);}}
-                            initialValue={reviewRating}
-                            allowFraction={true}
-                            size={35}
-                            id='productRating'
-                            />
+							<ReactStarsRating 
+								value={reviewRating} 
+								secondaryColor="#cccccc"
+								primaryColor="#ffbc0b"
+								onChange={(rate) => {setReviewRating(rate);setChangedReview(true);}}
+								size={33}
+								id={"Review"}
+								className='addReview'
+							/> 
                             <div id='revTitle' className="input1">
                                 <label>
                                 <input required type='text' onChange={(e) => {setReviewTitle(e.currentTarget.value);}}/>

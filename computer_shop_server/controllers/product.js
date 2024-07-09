@@ -157,7 +157,7 @@ const search = async (req, res) => {
 		let rating = 0;
 		reviews.forEach((rev) => {rating += rev.rating});
 		if(reviews.length > 0){rating /= reviews.length;}
-		else rating = 2.5;
+		else rating = 0.5;
 
 		return {...product, match, rating};
 	}).map(p=>({...p._doc, match:p.match, rating: p.rating})).filter(p=>p.match>0);

@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import { Rating } from 'react-simple-star-rating';
+import ReactStarsRating from 'react-awesome-stars-rating';
 import './reviewCard.css';
 
 export const ReviewCard = ({review}) => {
@@ -12,7 +12,7 @@ export const ReviewCard = ({review}) => {
             },
             body: JSON.stringify({id: review.user})
         }).then((res)=>res.json()).then((res)=>{setUser(res);});
-    }, []);
+    }, [review.user]);
     return (
         <div className='reviewCard'>
             <header className='reviewTop'>
@@ -26,16 +26,17 @@ export const ReviewCard = ({review}) => {
                     </div>
                 </div>
             </header>
-            <h2 className='reviewTitle'>
-                <Rating
-                readonly={true}
-                initialValue={review.rating}
-                allowFraction={true}
-                size={35}
-                id='productRating'
-                />
-                {'     ' + review.title}
-            </h2>
+            <div id='revTitleWrapper'>
+                <ReactStarsRating 
+                    value={review.rating} 
+                    secondaryColor="#cccccc"
+                    primaryColor="#ffbc0b"
+                    isEdit={false}
+                    size={33}
+                    id={review._id}
+                /> 
+                <h2 className='reviewTitle'>{review.title}</h2>
+            </div>
             {review.text === '<p></p>\n'?
                 <></>
                 :

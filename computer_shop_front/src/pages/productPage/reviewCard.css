@@ -43,9 +43,10 @@
     row-gap: 0px;
 }
 .reviewTitle{
-    width: fit-content;
-    margin: 0;
-    margin-bottom: 10px;
-    max-width: 30vw;
-    line-break: anywhere;
+    position: relative;
+    top: 2px
+}
+
+.addReview {
+    width: 260px;
 }

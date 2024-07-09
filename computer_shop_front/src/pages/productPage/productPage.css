@@ -110,7 +110,8 @@ font-size: 14px;
 }
 #ratingInfo{
     margin-top: 30px;
-    margin-right: 50px;  
+    margin-right: 50px;
+    position: absolute;
 }
 .ratePercentage{
     display: flex;
@@ -166,6 +167,8 @@ font-size: 14px;
 }
 #revTitle{
     width: 100%;
+    position: relative;
+    top: 10px;
 }
 @keyframes enlarge {
     from {max-width: 0;}
