@@ -39,12 +39,12 @@ const createRequest = async (req, res) => {
   const cancelObj = Buffer.from(encrypt(JSON.stringify({id: request._id, password})), 'utf8').toString('base64');
   sendEmail('admins', 'Supplier Request', `Hello, ${fullName} sent a request to be a supplier.`, description, `
     <div style="margin: auto;display: flex;justify-content: center;padding: auto;">
-      <a href="http://localhost:88/supplier/request/accept?obj=${obj}"><button style='display: inline-block;padding: 15px 25px;font-size: 24px;cursor: pointer;text-align: center;text-decoration: none;outline: none;color: #fff;background-color: #04AA6D;border: none;border-radius: 15px;box-shadow: 0 9px #999;margin: 10px;'>Accept</button></a>
-      <a href="http://localhost:88/supplier/request/reject?obj=${obj}"><button style='display: inline-block;padding: 15px 25px;font-size: 24px;cursor: pointer;text-align: center;text-decoration: none;outline: none;color: #fff;background-color: rgb(190, 58, 58);border: none;border-radius: 15px;box-shadow: 0 9px #999;margin: 10px;'>Reject</button></a>
+      <a href="${process.env.SERVER_URL}/supplier/request/accept?obj=${obj}"><button style='display: inline-block;padding: 15px 25px;font-size: 24px;cursor: pointer;text-align: center;text-decoration: none;outline: none;color: #fff;background-color: #04AA6D;border: none;border-radius: 15px;box-shadow: 0 9px #999;margin: 10px;'>Accept</button></a>
+      <a href="${process.env.SERVER_URL}/supplier/request/reject?obj=${obj}"><button style='display: inline-block;padding: 15px 25px;font-size: 24px;cursor: pointer;text-align: center;text-decoration: none;outline: none;color: #fff;background-color: rgb(190, 58, 58);border: none;border-radius: 15px;box-shadow: 0 9px #999;margin: 10px;'>Reject</button></a>
     </div>
   `)
   sendEmail(email, 'Supplier Request', 'Hello, you sent a request to become a supplier for our shop!',
-    `if you did not make the request or wish to cancel it, press the link: <a href='http://localhost:88/supplier/request/cancel?obj=${cancelObj}'>cancel</a>`
+    `if you did not make the request or wish to cancel it, press the link: <a href='${process.env.SERVER_URL}/supplier/request/cancel?obj=${cancelObj}'>cancel</a>`
   )
   res.status(201).json(request);
 }

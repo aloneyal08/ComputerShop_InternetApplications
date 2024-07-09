@@ -20,7 +20,7 @@ const CreateMessage = ({reload}) => {
     const contentState = ContentState.createFromBlockArray(contentBlocks, entityMap);
     const editorState = EditorState.createWithContent(contentState);
     setContent(editorState);
-    fetch('http://localhost:88/user/emails').then((res) => res.json()).then((res) =>{
+    fetch(`${process.env.REACT_APP_SERVER_URL}/user/emails`).then((res) => res.json()).then((res) =>{
       setEmails(['all', 'users', 'suppliers', 'admins'].concat(res));
     });
   }, []);
@@ -44,7 +44,7 @@ const CreateMessage = ({reload}) => {
     if(content === '')
       return alert('Please enter a message');
 
-    fetch(`http://localhost:88/message/create`, {
+    fetch(`${process.env.REACT_APP_SERVER_URL}/message/create`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'

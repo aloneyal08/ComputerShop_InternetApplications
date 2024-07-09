@@ -16,7 +16,7 @@ export const ProductCard = ({product, renderRating = true, renderStock = true, i
     if(product.supplierName){
       setSupplier(product.supplierName);
     }else{
-      fetch('http://localhost:88/user/id-get',{
+      fetch(`${process.env.REACT_APP_SERVER_URL}/user/id-get`,{
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -30,7 +30,7 @@ export const ProductCard = ({product, renderRating = true, renderStock = true, i
   if(renderRating && product.rating){
     setProductRate(product.rating)
   }else{
-    fetch('http://localhost:88/review/get-rating',{
+    fetch(`${process.env.REACT_APP_SERVER_URL}/review/get-rating`,{
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'

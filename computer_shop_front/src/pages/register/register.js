@@ -6,7 +6,7 @@ import { useGoogleLogin } from '@react-oauth/google';
 import './register.css';
 
 export const googleRegister = (user, setUser, navigate) => {
-  fetch('http://localhost:88/user/register', {
+  fetch(`${process.env.REACT_APP_SERVER_URL}/user/register`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
@@ -117,7 +117,7 @@ const Register = () => {
     }
     
     
-    fetch(`http://localhost:88/${isSupplier ? 'supplier/request/create' : 'user/register'}`, {
+    fetch(`${process.env.REACT_APP_SERVER_URL}/${isSupplier ? 'supplier/request/create' : 'user/register'}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'

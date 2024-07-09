@@ -68,7 +68,7 @@ const UserSettings = () => {
       return;
     }
 
-    fetch('http://localhost:88/user/update/profile', {
+    fetch(`${process.env.REACT_APP_SERVER_URL}/user/update/profile`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json'
@@ -95,7 +95,7 @@ const UserSettings = () => {
       return;
     }
 
-    fetch('http://localhost:88/user/update/password', {
+    fetch(`${process.env.REACT_APP_SERVER_URL}/user/update/password`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json'
@@ -122,7 +122,7 @@ const UserSettings = () => {
       return;
     }
 
-    fetch('http://localhost:88/user/update/username', {
+    fetch(`${process.env.REACT_APP_SERVER_URL}/user/update/username`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json'
@@ -142,7 +142,7 @@ const UserSettings = () => {
   }
 
   const onBackgroundSubmit = () => {
-    fetch('http://localhost:88/user/update/background', {
+    fetch(`${process.env.REACT_APP_SERVER_URL}/user/update/background`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json'
@@ -161,7 +161,7 @@ const UserSettings = () => {
   }
 
   const deleteUser = () => {
-    fetch('http://localhost:88/user/delete', {
+    fetch(`${process.env.REACT_APP_SERVER_URL}/user/delete`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json'

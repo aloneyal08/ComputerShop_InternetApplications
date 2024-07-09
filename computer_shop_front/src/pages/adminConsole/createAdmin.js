@@ -10,7 +10,7 @@ const CreateAdmin = ({reload}) => {
   const [emails, setEmails] = useState([]);
 
   useEffect(()=>{
-    fetch('http://localhost:88/user/emails?onlyUser=1').then((res) => res.json()).then((res) =>{
+    fetch(`${process.env.REACT_APP_SERVER_URL}/user/emails?onlyUser=1`).then((res) => res.json()).then((res) =>{
       setEmails(res);
     });
   }, [])
@@ -18,7 +18,7 @@ const CreateAdmin = ({reload}) => {
   const onEmailChange = (e) => setEmail(e);
 
   const onSubmit = () => {
-    fetch(`http://localhost:88/user/admin/add`, {
+    fetch(`${process.env.REACT_APP_SERVER_URL}/user/admin/add`, {
       method: "post",
       headers: {
         'Content-Type': 'application/json'

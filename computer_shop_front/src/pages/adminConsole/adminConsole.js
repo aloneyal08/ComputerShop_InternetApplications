@@ -17,19 +17,19 @@ const AdminConsole = () => {
   const [tags, setTags] = useState([]);
 
   useEffect(() => {
-    fetch(`http://localhost:88/supplier/request`).then(res=>res.json()).then(req=>{
+    fetch(`${process.env.REACT_APP_SERVER_URL}/supplier/request`).then(res=>res.json()).then(req=>{
       setRequests(req);
     });
-    fetch(`http://localhost:88/user/suppliers`).then(res=>res.json()).then(s=>{
+    fetch(`${process.env.REACT_APP_SERVER_URL}/user/suppliers`).then(res=>res.json()).then(s=>{
       setSuppliers(s);
     });
-    fetch(`http://localhost:88/message/`).then(res=>res.json()).then(m=>{
+    fetch(`${process.env.REACT_APP_SERVER_URL}/message/`).then(res=>res.json()).then(m=>{
       setMessages(m);
     });
-    fetch(`http://localhost:88/user/admins`).then(res=>res.json()).then(a=>{
+    fetch(`${process.env.REACT_APP_SERVER_URL}/user/admins`).then(res=>res.json()).then(a=>{
       setAdmins(a);
     });
-    fetch(`http://localhost:88/tag/get`).then(res=>res.json()).then(t=>{
+    fetch(`${process.env.REACT_APP_SERVER_URL}/tag/get`).then(res=>res.json()).then(t=>{
       setTags(t);
     });
   }, [force])

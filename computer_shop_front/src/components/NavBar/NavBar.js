@@ -27,7 +27,10 @@ export const NavBar = () => {
   const {currency, setCurrency} = useContext(MoneyContext);
   const tags = useContext(TagsContext);
   const navigate = useNavigate();
+  
+  const [searchValue, setSearchValue] = useState('');
   const [search, setSearch] = useState('');
+
   const location = useLocation();
   const arrowRef = useRef(null);
 
@@ -38,7 +41,7 @@ export const NavBar = () => {
   const [autoCompletes, setAutoCompletes] = useState([]);
 
   const getAutoCompletes = (search) => {
-    fetch('http://localhost:88/product/autocomplete', {
+    fetch(`${process.env.REACT_APP_SERVER_URL}/product/autocomplete`, {
       method: 'GET',
       headers: {
         key: search.toLowerCase()
@@ -48,6 +51,7 @@ export const NavBar = () => {
 
   const onSearchChange = (e) => {
     setSearch(e.target.value);
+    setSearchValue(e.target.value);
     getAutoCompletes(e.target.value);
   }
   const logOut = () => {
@@ -98,9 +102,12 @@ export const NavBar = () => {
   }
 
   useEffect(()=> {
-    if(selectIndex===-1) return;
+    if(selectIndex===-1) {
+      setSearch(searchValue);
+      return;
+    }
     setSearch(autoCompletes[selectIndex]);
-  }, [autoCompletes, selectIndex])
+  }, [autoCompletes, searchValue, selectIndex])
 
   const onKeyDown = (e) => {
     if (e.key === "Enter") {
@@ -108,8 +115,8 @@ export const NavBar = () => {
     }
     else if (e.key === "ArrowDown") {
       setSelectIndex(selectIndex+1);
-      if(selectIndex > autoCompletes)
-        setSelectIndex(0);
+      if(selectIndex >= autoCompletes.length-1)
+        setSelectIndex(-1);
     }
     else if (e.key === "ArrowUp") {
       setSelectIndex(selectIndex-1);
@@ -134,7 +141,7 @@ export const NavBar = () => {
           onFocus={()=>{setFocused(true);setSelectIndex(-1)}} 
           onBlur={()=>setFocused(false)} style={{zIndex: "999"}}
         />
-        <div className={'autoCompletes roundBorderBottom ' + (isFocused ? 'fullScaleComplete' : '')}>
+        {autoCompletes.length&&<div className={'autoCompletes roundBorderBottom ' + (isFocused ? 'fullScaleComplete' : '')}>
           {
             autoCompletes.map((complete, i)=>(
               <div className={'autoCompleteItem ' + (i===autoCompletes.length-1 ? 'roundBorderBottom' : '')} 
@@ -145,7 +152,7 @@ export const NavBar = () => {
               </div>
             ))
           }
-        </div>
+        </div>}
       </div>}
       <div className='navBarOthers'>
         <div className='nbImageContainer' onMouseEnter={()=>setAccountPopupOpen(true)} onMouseLeave={leaveAccountIcon}>

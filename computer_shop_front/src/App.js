@@ -32,7 +32,7 @@ const App = () => {
       return;
     }
 
-    fetch('http://localhost:88/user/login', {
+    fetch(`${process.env.REACT_APP_SERVER_URL}/user/login`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -59,7 +59,7 @@ const App = () => {
     //   console.log(JSON.stringify(data.data))
     // }); TODO: change to actual data
     setExchangeRates(JSON.parse(`{"AUD":1.4813102151,"BGN":1.8009502854,"BRL":5.4574210894,"CAD":1.3639101385,"CHF":0.8953201338,"CNY":7.2620912501,"CZK":23.184832423,"DKK":6.8825011939,"EUR":0.9223501077,"GBP":0.7803700842,"HKD":7.8118514857,"HRK":6.6061807982,"HUF":362.8148426166,"IDR":16255.104380651,"ILS":3.6872503779,"INR":83.4515723513,"ISK":138.1419768938,"JPY":160.7413785363,"KRW":1375.2236080902,"MXN":18.0672732397,"MYR":4.709680858,"NOK":10.5429012047,"NZD":1.6266203052,"PHP":58.4587913451,"PLN":3.9476305555,"RON":4.5891105702,"RUB":88.0057837104,"SEK":10.4740714929,"SGD":1.3475802572,"THB":36.5403351143,"TRY":32.6427958961,"USD":1,"ZAR":18.2080529644}`))
-    fetch('http://localhost:88/tag/get').then((res) => res.json()).then((res) =>{
+    fetch(`${process.env.REACT_APP_SERVER_URL}/tag/get`).then((res) => res.json()).then((res) =>{
       setTags(res);
     });
   }, []);

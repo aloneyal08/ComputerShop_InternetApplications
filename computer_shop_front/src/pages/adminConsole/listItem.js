@@ -1,4 +1,4 @@
-import React, {useState, useContext, useRef} from 'react'
+import React, {useState, useContext} from 'react'
 import { formatPhoneNumber, sleep, validateUsername } from '../../utils';
 import { UserContext } from '../../Contexts'
 
@@ -23,7 +23,7 @@ export const RequestListItem = ({request, reload}) => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
 
   const acceptRequest = () => {
-    fetch(`http://localhost:88/supplier/request/accept`, {
+    fetch(`${process.env.REACT_APP_SERVER_URL}/supplier/request/accept`, {
       method: 'POST',
       body: JSON.stringify({id: request._id, username: user.username, password: user.password}),
       headers: {
@@ -40,7 +40,7 @@ export const RequestListItem = ({request, reload}) => {
   }
 
   const rejectRequest = () => {
-    fetch(`http://localhost:88/supplier/request/reject`, {
+    fetch(`${process.env.REACT_APP_SERVER_URL}/supplier/request/reject`, {
       method: 'POST',
       body: JSON.stringify({id: request._id, username: user.username, password: user.password}),
       headers: {
@@ -89,7 +89,7 @@ export const SupplierListItem = ({supplier, reload}) => {
 
   const changeUserStatus = () =>{
     if(window.confirm(`Are you sure you want to preform this action?`)) {
-      fetch(`http://localhost:88/user/${supplier.suspended ? "restore" : "suspend"}`,{
+      fetch(`${process.env.REACT_APP_SERVER_URL}/user/${supplier.suspended ? "restore" : "suspend"}`,{
         method: 'PUT',
         body: JSON.stringify({email: supplier.email}),
         headers: {
@@ -153,7 +153,7 @@ export const AdminListItem = ({admin, reload}) => {
 
   const deleteAdmin = () => {
     if(window.confirm(`Are you sure you want to delete ${admin.fullName}?`)) {
-      fetch(`http://localhost:88/user/delete`, {
+      fetch(`${process.env.REACT_APP_SERVER_URL}/user/delete`, {
         method: 'DELETE',
         body: JSON.stringify({email: admin.email}),
         headers: {
@@ -185,7 +185,7 @@ export const AdminListItem = ({admin, reload}) => {
       return;
     }
 
-    fetch('http://localhost:88/user/update/username', {
+    fetch(`${process.env.REACT_APP_SERVER_URL}/user/update/username`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json'
@@ -198,7 +198,7 @@ export const AdminListItem = ({admin, reload}) => {
       if(res.error) {
         alert(res.error);
       } else {
-        fetch('http://localhost:88/user/update/password', {
+        fetch(`${process.env.REACT_APP_SERVER_URL}/user/update/password`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json'
@@ -266,7 +266,7 @@ export const TagListItem = ({tag, reload}) => {
   const deleteTag = () => {
     if(!window.confirm(`Are you sure you want to delete ${tag.text}?`))
       return;
-    fetch(`http://localhost:88/tag/delete`, {
+    fetch(`${process.env.REACT_APP_SERVER_URL}/tag/delete`, {
       method: 'DELETE',
       body: JSON.stringify({_id: tag._id}),
       headers: {
@@ -282,7 +282,7 @@ export const TagListItem = ({tag, reload}) => {
   }
 
   const onSubmit = () => {
-    fetch(`http://localhost:88/tag/edit`, {
+    fetch(`${process.env.REACT_APP_SERVER_URL}/tag/edit`, {
       method: 'PUT',
       body: JSON.stringify({_id: tag._id, text, background}),
       headers: {

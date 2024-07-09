@@ -56,7 +56,7 @@ const SearchScreen = () => {
 
   const getProducts = useCallback(() => {
     if(!exchangeRates[currency]) return;
-    fetch(`http://localhost:88/product/search`, {
+    fetch(`${process.env.REACT_APP_SERVER_URL}/product/search`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -166,7 +166,7 @@ const SearchScreen = () => {
       setSort(sort > 5 ? 1 : sort)
     }
 
-    fetch(`http://localhost:88/spell`, {
+    fetch(`${process.env.REACT_APP_SERVER_URL}/spell`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',

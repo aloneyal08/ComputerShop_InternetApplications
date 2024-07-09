@@ -25,7 +25,7 @@ const Login = () => {
   }, [navigate, user])
 
   const onSubmit = () => {
-    fetch('http://localhost:88/user/login', {
+    fetch(`${process.env.REACT_APP_SERVER_URL}/user/login`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -61,7 +61,7 @@ const Login = () => {
           }
         );
         const user = await response.json();
-        fetch('http://localhost:88/user/login', {
+        fetch(`${process.env.REACT_APP_SERVER_URL}/user/login`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'

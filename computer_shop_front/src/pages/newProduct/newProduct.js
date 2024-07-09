@@ -76,7 +76,7 @@ const NewProduct = () => {
       alert('A product picture must be entered!');
       return;
     }
-    fetch('http://localhost:88/product/add', {
+    fetch(`${process.env.REACT_APP_SERVER_URL}/product/add`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -99,9 +99,6 @@ const NewProduct = () => {
     })
   };
   if(Object.keys(user).length === 0){
-    return;
-  }
-  if(tagOptions.length === 0){
     return;
   }
   return <div style={{paddingBottom: "500px"}}>

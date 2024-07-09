@@ -20,21 +20,21 @@ const SupplierPage = () => {
 
 
   useEffect(() => {
-    fetch(`http://localhost:88/user/supplier?id=${supplierId}`).then(res => res.json()).then(data => {
+    fetch(`${process.env.REACT_APP_SERVER_URL}/user/supplier?id=${supplierId}`).then(res => res.json()).then(data => {
       if(data.error) {
         navigate('/')
         return;
       }
       setSupplier(data.supplier);
       setTags(data.tags);
-      fetch(`http://localhost:88/product/get?supplier=${supplierId}`).then((res)=>res.json()).then((res) => {setRecProducts(res.map(p=>({...p, supplierName: data.supplier.fullName})))});
-      fetch(`http://localhost:88/product/get-popular`).then((res)=>res.json()).then((res) => {setPopProducts(res.map(p=>({...p, supplierName: data.supplier.fullName})))});
-      fetch(`http://localhost:88/product/get-new`).then((res)=>res.json()).then((res) => {setNewProducts(res.map(p=>({...p, supplierName: data.supplier.fullName})))});
+      fetch(`${process.env.REACT_APP_SERVER_URL}/product/get?supplier=${supplierId}`).then((res)=>res.json()).then((res) => {setRecProducts(res.map(p=>({...p, supplierName: data.supplier.fullName})))});
+      fetch(`${process.env.REACT_APP_SERVER_URL}/product/get-popular`).then((res)=>res.json()).then((res) => {setPopProducts(res.map(p=>({...p, supplierName: data.supplier.fullName})))});
+      fetch(`${process.env.REACT_APP_SERVER_URL}/product/get-new`).then((res)=>res.json()).then((res) => {setNewProducts(res.map(p=>({...p, supplierName: data.supplier.fullName})))});
     })
   }, [navigate, supplier.name, supplierId])
 
   useEffect(() => {
-    fetch(`http://localhost:88/product/search/exact`, {
+    fetch(`${process.env.REACT_APP_SERVER_URL}/product/search/exact`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
