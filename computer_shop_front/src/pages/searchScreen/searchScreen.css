@@ -10,7 +10,7 @@
   flex-direction: row;
   flex-wrap: wrap;
   align-self: flex-start;
-  justify-content: center;
+  justify-content: flex-start;
   grid-area: main;
   gap: 35px;
 }
@@ -65,4 +65,8 @@
   justify-content: center;
   gap: 5px;
   height: 90px;
+}
+
+.select-search-container {
+  width: 100%;
 }

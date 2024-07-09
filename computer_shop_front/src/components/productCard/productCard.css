@@ -53,3 +53,15 @@
 .hidden{
   visibility: hidden;
 }
+
+.productSupplier {
+  height: 20px;
+}
+
+.productCard {
+  cursor: pointer;
+}
+
+.productCard:hover h3 {
+  text-decoration: underline;
+}

@@ -10,6 +10,7 @@ router.post('/login', UserController.login);
 router.put('/update/profile', UserController.updateUserProfile);
 router.put('/update/username', UserController.updateUsername);
 router.put('/update/password', UserController.updatePassword);
+router.put('/update/background', UserController.updateBackground);
 router.delete('/delete', UserController.deleteUser);
 router.get('/suppliers', UserController.getSuppliers);
 router.get('/admins', UserController.getAdmins);
@@ -17,5 +18,6 @@ router.put('/suspend', UserController.suspendAccount);
 router.put('/restore', UserController.restoreAccount);
 router.get('/emails', UserController.getAllEmails);
 router.post('/admin/add', UserController.addAdmin);
+router.get('/supplier', UserController.getSupplier);
 
 module.exports = router;

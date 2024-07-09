@@ -34,17 +34,32 @@ const addProduct = async (req, res) => {
 };
 
 const getProducts = async (req, res) => {
-	const products = await Product.find();
+	const {supplier, amount} = req.query;
+	const obj = {};
+	if(supplier)
+		obj.supplier = supplier;
+
+	const products = await Product.find(obj).limit(amount||50);
 	res.json(products);
 };
 
 const getNewProducts = async (req, res) => {
-	const products = await Product.find().sort({$natural:-1});
+	const {supplier, amount} = req.query;
+	const obj = {};
+	if(supplier)
+		obj.supplier = supplier;
+
+	const products = await Product.find(obj).limit(amount||50).sort({$natural:-1});
 	res.json(products);
 };
 
 const getPopularProducts = async (req, res) => {
-	const products = await Product.find();
+	const {supplier, amount} = req.query;
+	const obj = {};
+	if(supplier)
+		obj.supplier = supplier;
+
+	const products = await Product.find(obj).limit(amount||50);
 	res.json(products);
 };
 
@@ -177,7 +192,7 @@ const search = async (req, res) => {
 		if(!flag && filters.tags.length>0) 
 			return false;
 
-		if(p.price < filters.prices[0] || p.price > filters.prices[1])
+		if(filters.prices && (p.price < filters.prices[0] || p.price > filters.prices[1]))
 			return false;
 
 		if(p.rating < filters.rating)
@@ -216,6 +231,18 @@ const search = async (req, res) => {
 
 }
 
+const exactSearch = async (req, res) => {
+	const { key, tag, supplier } = req.headers;
+	const products = await Product.find();
+	
+
+	let searchedProducts = products.filter(product=>{
+		return product.name.toLowerCase().includes(key.toLowerCase())&&product.tags.includes(tag)&&product.supplier.toString()===supplier;
+	});
+
+	res.json(searchedProducts.slice(0, 50));
+}
+
 const getAutoCompletes = async (req, res) => {
 	const {key} = req.headers;
 	const products = await Product.find({});
@@ -235,5 +262,6 @@ module.exports = {
 	editProduct,
 	deleteProduct,
 	search,
+	exactSearch,
 	getAutoCompletes
 };
