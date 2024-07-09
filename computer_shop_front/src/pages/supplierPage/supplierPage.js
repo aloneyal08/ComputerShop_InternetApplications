@@ -26,11 +26,11 @@ const SupplierPage = () => {
       }
       setSupplier(data.supplier);
       setTags(data.tags);
-      fetch(`http://localhost:88/product/get?supplier=${supplierId}`).then((res)=>res.json()).then((res) => {setRecProducts(res)});
-      fetch(`http://localhost:88/product/get-popular`).then((res)=>res.json()).then((res) => {setPopProducts(res)});
-      fetch(`http://localhost:88/product/get-new`).then((res)=>res.json()).then((res) => {setNewProducts(res)});
+      fetch(`http://localhost:88/product/get?supplier=${supplierId}`).then((res)=>res.json()).then((res) => {setRecProducts(res.map(p=>({...p, supplierName: data.supplier.fullName})))});
+      fetch(`http://localhost:88/product/get-popular`).then((res)=>res.json()).then((res) => {setPopProducts(res.map(p=>({...p, supplierName: data.supplier.fullName})))});
+      fetch(`http://localhost:88/product/get-new`).then((res)=>res.json()).then((res) => {setNewProducts(res.map(p=>({...p, supplierName: data.supplier.fullName})))});
     })
-  }, [navigate, supplierId])
+  }, [navigate, supplier.name, supplierId])
 
   useEffect(() => {
     fetch(`http://localhost:88/product/search`, {
@@ -83,7 +83,7 @@ const SupplierPage = () => {
   if(tab === 'Popular') arr = popProducts;
   if(tab === 'New') arr = newProducts;
 
-  console.log(supplier);
+  const tabTag = tags.find(t=>t._id===tab);
 
   return <div>
     <div className='supplierHeaderCon'>
@@ -110,14 +110,16 @@ const SupplierPage = () => {
       </table>
     </div>
     <div className='supplierTabs'>
-      {
-        mainTabs.concat(tags).map(tag=>(
-          <button 
-            key={tag._id||tag.text} className={tab===(tag._id||tag.text) ? 'active' : ''}
-            onClick={()=>setTab(tag._id||tag.text)}
-          >{tag.text}</button>
-        ))
-      }
+      <div className='tabsCon'>
+        {
+          mainTabs.concat(tags).map(tag=>(
+            <button 
+              key={tag._id||tag.text} className={tab===(tag._id||tag.text) ? 'active' : ''}
+              onClick={()=>setTab(tag._id||tag.text)}
+            >{tag.text}</button>
+          ))
+        }
+      </div>
     </div>
 
     <div className='supplierMainArea'>
@@ -154,9 +156,12 @@ const SupplierPage = () => {
             </button>
           </div>     
         </>
-        : <div className='supplierProducts'>
-          {arr.map((product)=> <ProductCard product={product} key={product._id}/>)}
-        </div>
+        : <>
+          <h1 className='title'>{tabTag ? tabTag.text : tab}</h1>
+          <div className='supplierProducts'>
+            {arr.map((product)=> <ProductCard product={product} key={product._id}/>)}
+          </div>
+        </>
       } 
     </div>
 

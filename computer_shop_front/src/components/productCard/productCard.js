@@ -7,7 +7,7 @@ const currencies = require('../../currencies.json');
 
 export const ProductCard = ({product, renderRating = true, renderStock = true}) =>{
   const {currency, exchangeRates} = useContext(MoneyContext);
-  const [supplier, setSupplier] = useState('');
+  const [supplier, setSupplier] = useState(product.supplierName);
   const [productRate, setProductRate] = useState(0);
   
   useEffect(()=>{
@@ -42,7 +42,7 @@ export const ProductCard = ({product, renderRating = true, renderStock = true}) 
       setProductRate(Math.floor((rating / res.length)*2)/2);
     });
   }
-  }, [product, product._id, product.rating, product.supplier, product.supplierName, renderRating]);
+  }, [product, renderRating]);
 
   return <div className='productCard'>
     <img alt='           ' className='productImg' src={product.photo} onError={(e) =>{e.currentTarget.src = require('../../images/defaultProduct.jpg')}}/>

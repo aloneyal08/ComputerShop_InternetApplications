@@ -93,3 +93,11 @@
     margin: 15px;
     font-size: 23px;
 }
+
+.userCard {
+    cursor: pointer;
+}
+
+.userCard:hover {
+    text-decoration: underline;
+}
