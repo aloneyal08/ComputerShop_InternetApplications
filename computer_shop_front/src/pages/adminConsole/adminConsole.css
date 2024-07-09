@@ -163,3 +163,6 @@
 .tagEditPopup .arrowUp {
   left: 87%;
 }
+.messageWrapperEditor{
+  width: 100% !important;
+}

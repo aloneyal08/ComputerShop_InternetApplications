@@ -1,0 +1,51 @@
+.reviewCard{
+    display: flex;
+    flex-direction: column;
+    border:  2px solid gainsboro;
+    border-radius: 10px;
+    width: fit-content;
+    max-width: 40vw;
+    padding: 20px;
+}
+.reviewDesc{
+    max-width: 40vw;
+    max-height: 10.5vh;
+    overflow-y: auto;
+    margin-bottom: 15px;
+}
+.reviewDesc > p{
+    display: inline-block;
+    line-break: anywhere;
+    margin: 0;
+}
+.reviewBottom{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+.reviewUser > img {
+    border-radius: 50%;
+    width: 45px;
+    height: 45px;
+}
+.userName{
+    margin: 0;
+    margin-top: -8px;
+    margin-left: 8px;
+    text-align: left;
+}
+.reviewDate{
+    margin: 0;
+    margin-top: -8px;
+}
+.reviewUnderText{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+.reviewTitle{
+    margin: 0;
+    margin-bottom: 10px;
+    max-width: 30vw;
+    line-break: anywhere;
+}

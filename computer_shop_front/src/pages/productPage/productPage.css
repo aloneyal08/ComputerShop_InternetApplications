@@ -1,7 +1,7 @@
 #productWrapper{
     display: flex;
     flex-direction: row;
-    justify-content: center;
+    justify-content: space-evenly;
     column-gap: 50px;
     margin-top: 50px;
 }
@@ -20,8 +20,10 @@ margin: 0;
 font-size: 14px;
 }
 #productPhoto{
+    display: block;
     width: 500px;
-    height: 400px;
+    height: auto;
+    border-radius: 10px;
 }
 .productInfo{
     display: flex;
@@ -50,15 +52,7 @@ font-size: 14px;
 }
 #reviewWrapper{
     display: flex;
-    flex-direction: column;
-    align-items: end;
-    padding: 50px;
-}
-#reviewPopup{
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    row-gap: 20px;
+    flex-direction: row;
 }
 #buttonContainer{
     display: flex;
@@ -66,9 +60,82 @@ font-size: 14px;
     justify-content: space-evenly;
 }
 .wrapperClassName{
-    width: 39.1vw;
+    width: 35vw;
     background-color: white;
 }
-.public-DraftEditor-content{
-    height: 18vh;
+.public-DraftEditor-content, .DraftEditor-editorContainer, .DraftEditor-root{
+    height:fit-content;
+}
+.DraftEditor-root{
+    margin-left: 10px;
+}
+.reviewDescEditable{
+    max-width: 35vw;
+    height: 10.5vh;
+    overflow: auto;
+    margin-bottom: 15px;
+}
+#reviewBtn{
+    margin-top: 10px;
+    width: fit-content;
+    align-self: center;
+}
+#ratingWrapper{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    column-gap: 10px;
+}
+#ratingWrapper > h2{
+    text-align: center;
+}
+#reviewList{
+    display: flex;
+    flex-direction: column;
+    align-items: left;
+    justify-content: start;
+    padding: 50px;
+    padding-top: 40px;
+    row-gap: 30px;
+    margin: auto;
+}
+#buyInfo{
+    display: flex;
+    flex-direction: column;
+}
+#buyInfo > .button1{
+    margin-top: 20px;
+    width: fit-content;
+    align-self: center;
+}
+#ratingInfo{
+    margin-top: 30px;
+    margin-left: 50px;
+}
+.ratePercentage{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    column-gap: 20px;
+}
+.ratePercentage > .emptyBar{
+    border: 2px solid rgb(161, 161, 161);
+    border-radius: 10px;
+    background-color: gainsboro;
+    width: 150px;
+    height: 20px;
+}
+.ratePercentage > .emptyBar > .fullBar{
+    animation: enlarge 1s;
+    border-radius: 10px;
+    border-bottom-left-radius: 10px;
+    background-color: rgb(255, 188, 11);
+    margin-left: -0.5px;
+    width: auto;
+    max-width: var(--max-width);
+    height: 20px;
+}
+@keyframes enlarge {
+    from {max-width: 0;}
+    to {max-width: var(--max-width);}
 }

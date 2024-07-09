@@ -38,7 +38,7 @@ export const NavBar = () => {
   const logOut = () => {
     localStorage.removeItem("username");
     localStorage.removeItem("password");
-    window.open("/", "_self")
+    navigate(0);
   }
   const isNoUser = Object.keys(user).length === 0 || user.loggedOut;
 

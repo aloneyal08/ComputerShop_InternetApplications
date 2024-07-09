@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useContext} from 'react'
+import React, {useState, useEffect, useContext, useRef} from 'react'
 import {MoneyContext, TagsContext, UserContext} from '../../Contexts'
 import { useParams, useNavigate } from 'react-router-dom';
 import { Rating } from 'react-simple-star-rating';
@@ -6,6 +6,7 @@ import { Editor } from "react-draft-wysiwyg";
 import { convertToRaw, EditorState, ContentState } from "draft-js";
 import htmlToDraft from 'html-to-draftjs';
 import draftToHtmlPuri from "draftjs-to-html";
+import './reviewCard.css'
 import './productPage.css';
 import { ReviewCard } from './reviewCard';
 
@@ -19,11 +20,13 @@ const ProductPage = () => {
     const tags = useContext(TagsContext);
     const [product, setProduct] = useState({});
     const [rating, setRating] = useState(0);
-    const [isPopupOpen, setIsPopupOpen] = useState(false);
+    const [reviewTitle, setReviewTitle] = useState('');
     const [reviewRating, setReviewRating] = useState(0);
     const [changedReview, setChangedReview] = useState(false);
     const [reviewDescription, setReviewDescription] = useState('');
     const [reviews, setReviews] = useState([]);
+    const [ratingPercentages, setRatingPercentages] = useState([]);
+    const reviewList = useRef(null);
     
     const onTextChange = (state) => {
         setReviewDescription(state);
@@ -32,10 +35,14 @@ const ProductPage = () => {
     const sendReview = (e) =>{
         if(!changedReview){
             alert('You have to set your Rating');
-            setIsPopupOpen(false);
+            return;
+        }
+        if(reviewTitle === ''){
+            alert('You have to set your Title');
             return;
         }
         let review = {
+            title: reviewTitle,
             product: productId,
             user: user._id,
             text: draftToHtmlPuri(convertToRaw(reviewDescription.getCurrentContent())),
@@ -48,9 +55,9 @@ const ProductPage = () => {
             },
             body: JSON.stringify(review)
         });
-        setIsPopupOpen(false);
         setReviewRating(0);
         setChangedReview(false);
+        navigate(0);
     };
 
     useEffect(() => {
@@ -86,7 +93,14 @@ const ProductPage = () => {
         'Content-Type': 'application/json'
     },
     body: JSON.stringify({product: productId})
-}).then((res)=>res.json()).then((res)=>{setReviews(res);});
+}).then((res)=>res.json()).then((res)=>{
+    setReviews(res);
+    let percentages = [0, 0, 0, 0, 0];
+    res.forEach((rev) => {
+        percentages[Math.floor(rev.rating - 0.5)] += 1/res.length;
+    })
+    setRatingPercentages(percentages);
+});
 
     }, [productId, tags])
 
@@ -95,13 +109,17 @@ const ProductPage = () => {
         <div id='productWrapper'>
             <img alt='           ' id='productPhoto' src={product.photo} />
             <div className='productInfo'>
-                <Rating
-                readonly={true}
-                initialValue={rating}
-                allowFraction={true}
-                size={35}
-                id='productRating'
-                />
+                <div id='ratingWrapper'>
+                    <h2>{rating}</h2>
+                    <Rating
+                    readonly={true}
+                    initialValue={rating}
+                    allowFraction={true}
+                    size={35}
+                    id='productRating'
+                    />
+                    <a href='#' onClick={() => {reviewList.current.scrollIntoView();return false;}}>{`${reviews.length} ratings`}</a>
+                </div>
                 <h1 id='productName'>{product.name}</h1>
                 <hr className='separator'/>
                 <div id='productDesc' dangerouslySetInnerHTML={{__html: product.description}}>
@@ -115,31 +133,52 @@ const ProductPage = () => {
                     <></>
                 }
                 <hr className='separator'/>
+            </div>
+            <div id='buyInfo'>
+                { user.loggedOut?
+                    <h2>You need to login in order to buy stuff</h2>
+                    :
+                    <></>
+                }
                 <h3 id='productPrice'>{currencies[currency].symbol + Math.floor(product.price*exchangeRates[currency]*100)/100}</h3>
-                <h6 id='productStock' style={{color: product.stock > 0?'black':'red'}}>Currently {product.stock > 0?product.stock + ' in':'out of'} stock</h6>
-                <button id='cartBtn' className='button1'>Add To Cart</button>
+                <hr className='separator' />
+                <h3 id='productStock' style={{color: product.stock > 0?'black':'red'}}>Currently {product.stock > 0?product.stock + ' in':'out of'} stock</h3>
+                <hr className='separator' />
+                {product.stock > 0 && !user.loggedOut?
+                    <input type='number'></input>
+                    :
+                    <></>
+                }
+                <button disabled={product.stock <= 0 || user.loggedOut} id='cartBtn' className='button1'>Add To Cart</button>
+                <button disabled={product.stock <= 0 || user.loggedOut} id='buyBtn' className='button1'>Buy Now</button>
             </div>
         </div>
-        <div id='reviewWrapper'>
-            {!user.loggedOut?
-                <>
-                    <button id='addReviewBtn' className='button1' onClick={(e) => {setIsPopupOpen(true);e.currentTarget.parentElement.children[1].scrollIntoView();}}>Add a Review</button>
-                    <div id='reviewPopup' className={'popup ' + (isPopupOpen?'scale1':'')} >
-                        <Rating
-                        onClick={(rate) => {setReviewRating(rate);setChangedReview(true);}}
-                        initialValue={reviewRating}
-                        allowFraction={true}
-                        size={35}
-                        id='productRating'
-                        />
-                        
+        <div ref={reviewList} id='reviewWrapper'>
+            <div id='ratingInfo'>
+                {
+                    ratingPercentages.map((rate, index) => <div key={index} className='ratePercentage'>
+                        <h3>{index + 0.5} - {index + 1}</h3>
+                        <div className='emptyBar'><div className='fullBar' style={{'--max-width': `${rate*101}%`}} ></div></div>
+                        <h3>{Math.round(rate*100)}%</h3>
+                    </div>)
+                }
+            </div>
+            <div id='reviewList'>
+                {!user.loggedOut?
+                    <div className='reviewCard'>
+                        <div className="input1">
+                            <label>
+                            <input required type='text' onChange={(e) => {setReviewTitle(e.currentTarget.value);}}/>
+                            <span>Review Title*</span>
+                            </label>
+                        </div>
                         <Editor
                         editorState={reviewDescription}
                         toolbarClassName="toolbarClassName"
                         wrapperClassName="wrapperClassName"
-                        editorClassName="editorClassName"
+                        editorClassName="reviewDescEditable scrollBar2"
                         spellCheck={true}
-                        editorStyle={{minHeight: '15vh', border: '1px solid gainsboro', fontSize: '14px', lineHeight: '15px'}}
+                        editorStyle={{border: '1px solid gainsboro', fontSize: '14px', lineHeight: '15px'}}
                         toolbar={{
                             options: ['inline', 'fontSize', 'list', 'textAlign'],
                             list: {inDropdown: true}
@@ -147,18 +186,35 @@ const ProductPage = () => {
                         onEditorStateChange={onTextChange}
                         placeholder='Write what you think about the product'
                         />
-                        <div id='buttonContainer'>
-                            <button className='button1' id='reviewCancel' onClick={()=>setIsPopupOpen(false)}>Cancel</button>
-                            <button className='button1' id='reviewSubmit' onClick={sendReview}>Submit</button>
-                        </div>
+                        <footer className='reviewBottom'>
+                            <div className='reviewUser'>
+                                <img alt='           ' src={user.profilePhoto} onError={(e) =>{e.currentTarget.src = require('../../images/userDefault.png')}} />
+                            </div>
+                            <div>
+                                <Rating
+                                onClick={(rate) => {setReviewRating(rate);setChangedReview(true);}}
+                                initialValue={reviewRating}
+                                allowFraction={true}
+                                size={35}
+                                id='productRating'
+                                />
+                                <div className='reviewUnderText'>
+                                    <h5 className='userName'>{user.fullName}</h5>
+                                    <h5 className='reviewDate'>{new Date().toLocaleDateString()}</h5>
+                                </div>
+                            </div>
+                        </footer>
+                        <button className='button1' id='reviewBtn' onClick={sendReview}>Send Review</button>
                     </div>
-                </>
-                :
-                <></>
-            }
-            {
-                reviews.map((rev)=> <ReviewCard review={rev} />)
-            }
+                    :
+                    <div>
+                        To write a review please login
+                    </div>
+                }
+                {
+                    reviews.map((rev, index)=> <ReviewCard key={index} review={rev} />)
+                }
+            </div>
         </div>
     </div>
 }
