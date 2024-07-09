@@ -90,7 +90,7 @@ const ProductPage = () => {
           if(res.error) {
             alert(res.error);
           } else {
-            navigate(0);
+            navigate('/cart');
           }
         })
     };
@@ -114,7 +114,7 @@ const ProductPage = () => {
             if(res.error) {
                 alert(res.error);
             } else {
-                navigate(0);
+                navigate('/');
             }
         })
     };
