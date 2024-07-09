@@ -36,7 +36,7 @@ export const ProductCard = ({product, renderRating = true, renderStock = true, i
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({product: product._id})
-    }).then((res)=>res.json()).then((res)=>{setProductRate(Math.floor(res*2)/2);
+    }).then((res)=>res.json()).then((res)=>{setProductRate(Math.max(0.5, Math.floor(res*2)/2));
     });
   }
   }, [product, renderRating]);
