@@ -169,15 +169,17 @@ export const NavBar = () => {
         </div>
       </div>
     </div>
-    {location.pathname === "/" && user.level !== 1 && user.level !== 2 && <nav className='specialSearch'>
-      {
-        searchOptions.concat(tagOptions).map(option=>(
-          <button className={'searchOption ' + (option.special ? 'optionSpecial' : '')} onClick={()=>window.open(`/search?key=${option.searchKey}`, '_self')} key={option.text}>
-            {option.text}
-          </button>
-        ))
-      }
-    </nav>}
+    {location.pathname === "/" && user.level !== 1 && user.level !== 2 && <div className='specialSearchCon'>
+          <nav className='specialSearch'>
+          {
+            searchOptions.concat(tagOptions).map(option=>(
+              <button className={'searchOption ' + (option.special ? 'optionSpecial' : '')} onClick={()=>window.open(`/search?key=${option.searchKey}`, '_self')} key={option.text}>
+                {option.text}
+              </button>
+            ))
+          }
+        </nav>
+      </div>}
     <div 
       className={'popup navBarPopup ' + (isAccountPopupOpen ? 'scale1' : '')}
       onMouseEnter={()=>clearTimeout(timeoutId)} onMouseLeave={()=>setAccountPopupOpen(false)}
