@@ -211,6 +211,13 @@ const getSupplier = async (req, res) => {
   }
 }
 
+const getSupplierProducts = async (req, res) => {
+  const { id } = req.query;
+
+  const products = await Product.find({supplier: id}, {name: 1, price: 1, photo: 1});
+  res.json(products);
+}
+
 module.exports = {
   getUserById,
   getSuppliers,
@@ -227,5 +234,6 @@ module.exports = {
   restoreAccount,
   getAllEmails,
   addAdmin,
-  getSupplier
+  getSupplier,
+  getSupplierProducts
 }

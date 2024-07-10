@@ -122,13 +122,14 @@ export const SupplierListItem = ({supplier, reload}) => {
   </tr>
 }
 
-export const MessageListItem = ({message}) => {
+export const MessageListItem = ({message, isTo=true}) => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
 
   return <tr className='dashboardListItem' onClick={()=>setIsPopupOpen(true)} onMouseLeave={()=>setIsPopupOpen(false)}>
-    <td style={{width: "300px"}}>
+    
+    {isTo&&<td style={{width: "300px"}}>
       {message.to}
-    </td>
+    </td>}
     <td>
       {message.subject}
     </td>

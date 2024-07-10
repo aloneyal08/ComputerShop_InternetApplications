@@ -1,11 +1,13 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import { Editor } from "react-draft-wysiwyg";
 import { convertToRaw, EditorState, ContentState } from "draft-js";
 import htmlToDraft from 'html-to-draftjs';
 import draftToHtmlPuri from "draftjs-to-html";
 import SelectSearch from 'react-select-search';
+import { UserContext } from '../../Contexts';
 
 const CreateMessage = ({reload}) => {
+  const {user} = useContext(UserContext);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
  
   const [emails, setEmails] = useState([]);
@@ -14,15 +16,22 @@ const CreateMessage = ({reload}) => {
   const [header, setHeader] = useState('');
   const [content, setContent] = useState('');
   
+  useEffect(()=>{
+    if(user.level===1){
+      setTo('admins');
+      return;
+    }
+    fetch(`${process.env.REACT_APP_SERVER_URL}/user/emails`).then((res) => res.json()).then((res) =>{
+      setEmails(['all', 'users', 'suppliers', 'admins'].concat(res));
+    });
+  }, [user])
+
   useEffect(() => {
     const blocksFromHtml = htmlToDraft("");
     const { contentBlocks, entityMap } = blocksFromHtml;
     const contentState = ContentState.createFromBlockArray(contentBlocks, entityMap);
     const editorState = EditorState.createWithContent(contentState);
     setContent(editorState);
-    fetch(`${process.env.REACT_APP_SERVER_URL}/user/emails`).then((res) => res.json()).then((res) =>{
-      setEmails(['all', 'users', 'suppliers', 'admins'].concat(res));
-    });
   }, []);
 
   const onSubjectChange = (e) => setSubject(e.target.value);
@@ -49,7 +58,7 @@ const CreateMessage = ({reload}) => {
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({to, subject, header, content: c}),
+      body: JSON.stringify({to, subject, header, content: c, from: user.email, level: user.level}),
     }).then(res=>res.json()).then(res=>{
       if(res.error) {
         alert(res.error);
@@ -99,11 +108,11 @@ const CreateMessage = ({reload}) => {
       <Editor 
         editorState={content}
         toolbarClassName="toolbarClassName"
-        wrapperClassName="wrapperClassName messageWrapperEditor"
+        wrapperClassName="messageWrapperEditor"
         editorClassName="richTextInput1 scrollBar2"
         spellCheck={true}
         toolbarStyle={{backgroundColor: "transparent", border: "none"}}
-        editorStyle={{overflowX: 'auto', marginLeft: "10px", maxHeight: '10.5vh', fontSize: '14px', lineHeight: '15px', borderBottom: "0.125rem solid rgba(19, 19, 21, 0.6)"}}
+        editorStyle={{overflowX: 'auto', marginLeft: "10px", fontSize: '14px', lineHeight: '15px', borderBottom: "0.125rem solid rgba(19, 19, 21, 0.6)"}}
         toolbar={{
           options: ['inline', 'fontSize', 'list', 'textAlign'],
           list: {inDropdown: true}

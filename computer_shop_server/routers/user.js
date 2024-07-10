@@ -20,5 +20,6 @@ router.put('/restore', UserController.restoreAccount);
 router.get('/emails', UserController.getAllEmails);
 router.post('/admin/add', UserController.addAdmin);
 router.get('/supplier', UserController.getSupplier);
+router.get('/supplier/products', UserController.getSupplierProducts);
 
 module.exports = router;

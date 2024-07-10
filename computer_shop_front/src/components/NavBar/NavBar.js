@@ -213,7 +213,7 @@ export const NavBar = () => {
             <button className='accountButton' onClick={()=>open("/settings")}>Settings</button>
             {user.level === 1
              ?<>
-              <button className='accountButton' onClick={()=>open("/products")}>Products</button>
+              <button className='accountButton' onClick={()=>open("/products")}>Your Page</button>
               <button className='accountButton' onClick={()=>open("/statistics")}>Statistics</button>
              </>
              :user.level === 0
