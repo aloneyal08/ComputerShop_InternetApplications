@@ -1,16 +1,20 @@
 import React, {useContext, useState, useEffect} from 'react'
-import {UserContext} from '../../Contexts'
+import {UserContext, MoneyContext} from '../../Contexts'
 import {useNavigate} from 'react-router-dom';
 import CartItem from './cartItem';
 import './cart.css'
 
+const currencies = require('../../currencies.json');
+
 const Cart = () => {
   const {user, setUser} = useContext(UserContext);
+  const {currency} = useContext(MoneyContext);
 
   const [itemsChanged, setItemsChanged] = useState([]);
   const [itemsDeleted, setItemsDeleted] = useState([]);
   const [changed, setChanged] = useState(false)
   const [newCart, setNewCart] = useState([]);
+  const [prices, setPrices] = useState([]);
 
   const navigate = useNavigate();
   
@@ -46,6 +50,14 @@ const Cart = () => {
 		})
     
   };
+
+  const getPrice = () =>{
+    let sum = 0;
+    prices.forEach((price) => {
+      sum += price;
+    });
+    return sum;
+  }
 
   const changedFunction = (num, value, amount) => {
     let temp = newCart;
@@ -96,8 +108,13 @@ const Cart = () => {
       });
       setItemsDeleted(temp);
       setItemsChanged(temp);
+      setPrices(temp.map(()=>0));
     }
   }, [user]);
+
+  useEffect(() => {
+  }, [`${prices}`])
+  
   if(Object.keys(user).length <= 0){return}
   return <div>
     {user.cart.length > 0?
@@ -105,9 +122,10 @@ const Cart = () => {
       <h1>{`You have ${user.cart.length} Items in your Cart:`}</h1>
       <table id='itemWrapper'>
         {
-          user.cart.map((item, index) => <CartItem index={index} key={item.productId} retrieveFunc={(e) => {retrieveRow(item.productId, index)}} changedFunc={changedFunction} deleteFunc={(e) => {deleteRow(item.productId, index)}} cartItem={item} />)
+          user.cart.map((item, index) => <CartItem onLoad={(num) => {let temp = prices;temp[index] = num;setPrices(temp);console.log(temp)}} index={index} key={item.productId} retrieveFunc={(e) => {retrieveRow(item.productId, index)}} changedFunc={changedFunction} deleteFunc={(e) => {deleteRow(item.productId, index)}} cartItem={item} />)
         }
       </table>
+      <h3>Overall Price: {currencies[currency].symbol + getPrice()}</h3>
       <button onClick={changed?saveCart:buyCart} className='button1'>{changed?'Save Changes':'Buy Cart'}</button>
       </>
       :

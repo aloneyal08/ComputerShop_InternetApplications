@@ -3,7 +3,7 @@ import {MoneyContext} from '../../Contexts';
 
 const currencies = require('../../currencies.json');
 
-const CartItem = ({cartItem, index, changedFunc = () => {}, deleteFunc = () => {}, retrieveFunc = () => {}}) => {
+const CartItem = ({cartItem, index, onLoad = () => {},  changedFunc = () => {}, deleteFunc = () => {}, retrieveFunc = () => {}}) => {
 	const {currency, exchangeRates} = useContext(MoneyContext); 
 
 	const [amount, setAmount] = useState(cartItem.quantity);
@@ -32,9 +32,6 @@ const CartItem = ({cartItem, index, changedFunc = () => {}, deleteFunc = () => {
 		retrieveFunc(index);
 	}
 
-	useEffect(()=>{
-		console.log(1)
-	}, [cartItem.quantity])
 
 	useEffect(()=>{
 		fetch(`${process.env.REACT_APP_SERVER_URL}/product/get-id`,{
@@ -46,9 +43,11 @@ const CartItem = ({cartItem, index, changedFunc = () => {}, deleteFunc = () => {
 		}).then((res)=>res.json()).then(res=>setProduct(res));
 	}, [cartItem.productId])
 
-	useEffect(() => {
-			console.log(1)
-	}, [cartItem])
+	useEffect(()=>{
+		if(product.price){
+			onLoad(amount*product.price);
+		}
+	}, [amount, product.price])
 
 	if(Object.keys(cartItem).length <= 0){return;}
 	return <tr className={`cartItemContainer ${deleted?'deleted':''}`}>
