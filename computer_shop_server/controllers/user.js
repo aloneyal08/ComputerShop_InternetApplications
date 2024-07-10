@@ -116,6 +116,12 @@ const updatePassword = async (req, res) => {
   res.json(user);
 }
 
+const updateCart = async (req, res) => {
+  const {email, cart} = req.body;
+  const u = await User.findOneAndUpdate({email}, {cart});
+  res.json(u);
+};
+
 const addToCart = async (req, res) => {
   const {email, addition} = req.body;
   let cart = (await User.findOne({email})).cart;
@@ -219,6 +225,7 @@ module.exports = {
   updateUserProfile,
   updateUsername,
   updatePassword,
+  updateCart,
   addToCart,
   updateBackground,
   deleteUser,

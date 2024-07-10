@@ -166,7 +166,7 @@ export const NavBar = () => {
         {user.level === 1
           ? <button className='addProduct' onClick={()=>navigate("/product/new")}/>
           : <div className='cart' onClick={()=>navigate("/cart")}>
-          <div className='shopCartNumber'>0</div>
+          <div className='shopCartNumber'>{user.cart?user.cart.length:0}</div>
           <img src={require("../../images/cart.png")} className='navBarPhoto' alt='  '/>
         </div>
         }

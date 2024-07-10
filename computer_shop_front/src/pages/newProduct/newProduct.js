@@ -102,7 +102,6 @@ const NewProduct = () => {
     return;
   }
   return <div style={{paddingBottom: "500px"}}>
-    {user.level === 1?
       <div id='newProductContainer'>
         <h1 id='title'>Add New Product</h1>
         <div id='divider'>
@@ -170,13 +169,6 @@ const NewProduct = () => {
           </section>
         </div>
       </div>
-      :
-      <div style={{display:'flex',flexDirection:'column'}}>
-        <h1>{'You are not permitted to be here >:('}</h1>
-        <img src='https://thumbs.dreamstime.com/z/very-angry-boy-12560031.jpg' alt=' '/>
-        <button className='button1' onClick={() => {navigate('/')}}>Return back to home page</button>
-      </div>
-    }
   </div>
 
 }

@@ -41,6 +41,20 @@ font-size: 14px;
 #productName, #productDesc > p, #productPrice, #cartBtn{
     margin: 0;
 }
+#productName, #productSupplier{
+    align-self: flex-start;
+    text-align: left;
+}
+#productSupplier{
+    display: flex;
+    margin: 0;
+    font-size: 18px;
+    font-weight: 900;
+    color: rgb(30, 30, 30);
+}
+#productSupplier:hover{
+    color: black;
+}
 #productStock{
     margin: 0;
     margin-top: 7px;

@@ -11,6 +11,7 @@ const SupplierPage = () => {
   const [tags, setTags] = useState([]);
   const [tab, setTab] = useState('Home');
   const [search, setSearch] = useState('');
+  const [sRating, setSRating] = useState(0);
 
 
   const [recProducts, setRecProducts] = useState([]);
@@ -18,6 +19,10 @@ const SupplierPage = () => {
   const [newProducts, setNewProducts] = useState([]);
   const [tagProducts, setTagProducts] = useState([]);
 
+
+  useEffect(()=>{
+    fetch(`${process.env.REACT_APP_SERVER_URL}/review/get-rating-supplier?supplier=${supplierId}`).then((res) => res.json()).then((res) => {setSRating(res)});
+  }, [supplierId]);
 
   useEffect(() => {
     fetch(`${process.env.REACT_APP_SERVER_URL}/user/supplier?id=${supplierId}`).then(res => res.json()).then(data => {
@@ -28,8 +33,8 @@ const SupplierPage = () => {
       setSupplier(data.supplier);
       setTags(data.tags);
       fetch(`${process.env.REACT_APP_SERVER_URL}/product/get?supplier=${supplierId}`).then((res)=>res.json()).then((res) => {setRecProducts(res.map(p=>({...p, supplierName: data.supplier.fullName})))});
-      fetch(`${process.env.REACT_APP_SERVER_URL}/product/get-popular`).then((res)=>res.json()).then((res) => {setPopProducts(res.map(p=>({...p, supplierName: data.supplier.fullName})))});
-      fetch(`${process.env.REACT_APP_SERVER_URL}/product/get-new`).then((res)=>res.json()).then((res) => {setNewProducts(res.map(p=>({...p, supplierName: data.supplier.fullName})))});
+      fetch(`${process.env.REACT_APP_SERVER_URL}/product/get-popular?supplier=${supplierId}`).then((res)=>res.json()).then((res) => {setPopProducts(res.map(p=>({...p, supplierName: data.supplier.fullName})))});
+      fetch(`${process.env.REACT_APP_SERVER_URL}/product/get-new?supplier=${supplierId}`).then((res)=>res.json()).then((res) => {setNewProducts(res.map(p=>({...p, supplierName: data.supplier.fullName})))});
     })
   }, [navigate, supplier.name, supplierId])
 
@@ -94,7 +99,7 @@ const SupplierPage = () => {
       <img alt='  ' src={supplier.background} className='supplierBackground'/>
       <h1 style={{fontSize: "40px"}}>{supplier.fullName}</h1>
       <ReactStarsRating 
-        value={5} 
+        value={sRating} 
         isEdit={false}
         secondaryColor="#cccccc"
         primaryColor="#ffbc0b"

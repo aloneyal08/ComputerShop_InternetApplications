@@ -63,7 +63,6 @@ const App = () => {
       setTags(res);
     });
   }, []);
-
   var MainPage = Storefront;
   if(user.level === 1) MainPage = SupplierDashboard;
   if(user.level === 2) MainPage = AdminConsole;
@@ -79,7 +78,7 @@ const App = () => {
                   <Route path="/" element={<MainPage />} />
                   <Route path="/login" element={<Login/>} />
                   <Route path="/register" element={<Register />} />
-                  <Route path="/product/new" element={<NewProduct />} />
+                  {user.level===1&&<Route path="/product/new" element={<NewProduct />} />}
                   <Route path='/product/:productId' element={<ProductPage />} />
                   <Route path="/settings" element={<UserSettings />} />
                   <Route path="/cart" element={<Cart />} />
