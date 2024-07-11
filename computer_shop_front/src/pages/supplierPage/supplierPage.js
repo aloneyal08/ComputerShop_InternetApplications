@@ -28,8 +28,8 @@ const SupplierPage = () => {
       setSupplier(data.supplier);
       setTags(data.tags);
       fetch(`${process.env.REACT_APP_SERVER_URL}/product/get?supplier=${supplierId}`).then((res)=>res.json()).then((res) => {setRecProducts(res.map(p=>({...p, supplierName: data.supplier.fullName})))});
-      fetch(`${process.env.REACT_APP_SERVER_URL}/product/get-popular`).then((res)=>res.json()).then((res) => {setPopProducts(res.map(p=>({...p, supplierName: data.supplier.fullName})))});
-      fetch(`${process.env.REACT_APP_SERVER_URL}/product/get-new`).then((res)=>res.json()).then((res) => {setNewProducts(res.map(p=>({...p, supplierName: data.supplier.fullName})))});
+      fetch(`${process.env.REACT_APP_SERVER_URL}/product/get-popular?supplier=${supplierId}`).then((res)=>res.json()).then((res) => {setPopProducts(res.map(p=>({...p, supplierName: data.supplier.fullName})))});
+      fetch(`${process.env.REACT_APP_SERVER_URL}/product/get-new?supplier=${supplierId}`).then((res)=>res.json()).then((res) => {setNewProducts(res.map(p=>({...p, supplierName: data.supplier.fullName})))});
     })
   }, [navigate, supplier.name, supplierId])
 
