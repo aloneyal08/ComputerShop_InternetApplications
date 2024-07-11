@@ -3,17 +3,18 @@ const Purchase = require('../models/purchase');
 
 const makePurchase = async (req, res) => {
 	const { user, product, quantity } = req.body;
-	const stock = (await Product.findOne({_id: product})).stock;
-	if(stock < quantity){
+	const p = await Product.findOne({_id: product});
+	if(p.stock < quantity){
 		return res.status(400).json({error: 'Product Out of Stock'});
 	}
 	const purchase = new Purchase({
 		user,
 		product,
-		quantity
+		quantity,
+		price: p.price*(1-p.discount)
 	});
 	await purchase.save();
-	const _product = await Product.findByIdAndUpdate(product, {stock: stock - quantity});
+	const _product = await Product.findByIdAndUpdate(product, {stock: p.stock - quantity});
 	res.json(purchase);
 };
 

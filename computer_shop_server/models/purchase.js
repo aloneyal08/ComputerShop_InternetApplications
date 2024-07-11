@@ -18,6 +18,10 @@ const Purchase = new Schema({
     type: Date,
     default: Date.now
   },
+  price: {
+    type: Number,
+    required: true
+  }
 });
 
 module.exports = mongoose.model('Purchase', Purchase);
