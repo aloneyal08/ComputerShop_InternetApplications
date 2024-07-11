@@ -65,8 +65,11 @@ const App = () => {
   }, []);
 
   var MainPage = Storefront;
-  if(user.level === 1) MainPage = SupplierDashboard;
-  if(user.level === 2) MainPage = AdminConsole;
+
+  if(user.level === 0||user.loggedOut) MainPage = Storefront;
+  else if(user.level === 1) MainPage = SupplierDashboard;
+  else if(user.level === 2) MainPage = AdminConsole;
+  else MainPage = ()=>null;
 
   return (
       <UserContext.Provider value={{user, setUser}}>

@@ -39,7 +39,7 @@ const Login = () => {
         alert(data.error);
       } else {
         setUser(data);
-        navigate('/');
+        navigate(sessionStorage.getItem("lastUrl")||'/');
         localStorage.setItem("email", data.email);
         localStorage.setItem("password", data.password)
       }
@@ -76,7 +76,7 @@ const Login = () => {
             googleRegister(user, setUser, navigate);
           } else {
             setUser(data);
-            navigate('/');
+            navigate(sessionStorage.getItem("lastUrl")||'/');
             localStorage.setItem("email", data.email);
             localStorage.setItem("password", data.password)
           }
