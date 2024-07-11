@@ -46,7 +46,7 @@ const sendEmail = async (to, subject, header, content, buttons='') => {
             <h1 style="font-size:40px;text-align:center;">${header}</h1><br/><br/>
             <div style="text-align: center;font-size: 20px;font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;margin: 30px;padding:30px;">
               ${content}
-              Thank You For Using Our  <a href="http://localhost:3000/">site</a>
+              <br> Thank You For Using Our  <a href="http://localhost:3000/">site</a>
 
             </div>
             ${buttons}
