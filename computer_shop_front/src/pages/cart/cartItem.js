@@ -14,7 +14,6 @@ const CartItem = ({cartItem, index, onLoad = () => {},  changedFunc = () => {}, 
 	const navigate = useNavigate();
 
 	const changeQuantity = (e) => {
-		console.log(1)
 		e.value = Math.max(1, Math.min(e.value, product.stock));
 		setAmount(e.value);
 		changedFunc(index, e.value !== cartItem.quantity, e.value)

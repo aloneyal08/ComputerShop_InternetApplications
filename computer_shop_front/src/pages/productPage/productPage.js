@@ -171,7 +171,6 @@ const ProductPage = () => {
 			},
 			body: JSON.stringify({product: product._id})
 		}).then((res)=>res.json()).then((res)=>{setRating(res)});
-		}
 		fetch(`${process.env.REACT_APP_SERVER_URL}/user/id-get`,{
 			method: 'POST',
 		  	headers: {
@@ -181,6 +180,7 @@ const ProductPage = () => {
 	  	}).then((res)=>res.json()).then((res)=>{
 			setSupplierName(res.fullName);
 	  	});
+		}
 	}, [product])
 
 	if(Object.keys(product).length === 0){return}

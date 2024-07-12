@@ -15,6 +15,7 @@ import SupplierDashboard from './pages/supplierDashboard/supplierDashboard';
 import AdminConsole from './pages/adminConsole/adminConsole';
 import ProductPage from './pages/productPage/productPage';
 import SupplierPage from './pages/supplierPage/supplierPage';
+import ConfirmPurchase from './confirmPurchase/confirmPurchase';
 
 const App = () => {
   const [user, setUser] = useState({});
@@ -85,6 +86,7 @@ const App = () => {
                   <Route path="/history" element={<History />} />
                   <Route path="/search" element={<SearchScreen />} />
                   <Route path="/supplier/:supplierId" element={<SupplierPage />} />
+                  <Route path='/purchase/confirm' element={<ConfirmPurchase />} />
                   <Route path="*" element={<h1>Not Found</h1>} />
                 </Routes>
               </div>
