@@ -4,6 +4,7 @@ const Product = require('../models/product');
 const Review = require('../models/review');
 const Purchase = require('../models/purchase');
 const View = require('../models/view');
+const Login = require('../models/login');
 
 const { encrypt, decrypt } = require('../utils');
 
@@ -67,6 +68,13 @@ const login = async (req, res) => {
   if(user && ((req.body.encrypted && user.password === password) || (decrypt(user.password) === password))){
     if(user.suspended) {
       return res.status(400).json({ error: 'Your account is suspended. if you need more details, please contact our admins at: computer.shop.colman@gmail.com' });
+    }
+    const d = new Date();
+    d.setHours(0,0,0,0);
+    const logins = await Login.find({user: user._id}).sort({date: -1}).limit(1)
+    if(logins[0].date < d) {
+      const l = new Login({user: user._id});
+      await l.save();
     }
     return res.json(user);
   }
@@ -254,9 +262,11 @@ const getDateJump = (timeFrame, d) => {
 const supplierRatingOverTime = async (req, res) => {
   const {id, startDate, endDate, timeFrame, product} = req.body;
   const obj = {};
+  if(id)
+    obj.supplier = id;
   if(product)
     obj._id = product;
-  const products = await Product.find({supplier: id, ...obj});
+  const products = await Product.find({...obj});
   const reviews = await Review.find({product: {$in: products.map(p=>p._id)}});
   var arr = [];
   
@@ -280,10 +290,12 @@ const supplierRatingOverTime = async (req, res) => {
 const supplierPurchasesOverTime = async (req, res) => {
   const {id, startDate, endDate, timeFrame, product, type} = req.body;
   const obj = {};
+  if(id)
+    obj.supplier = id;
   if(product)
     obj._id = product;
-  const products = await Product.find({supplier: id, ...obj});
-  const purchases = await Purchase.find({product: {$in: products.map(p=>p._id)}});
+  const products = await Product.find({...obj});
+  const purchases = await Purchase.find({product: {$in: products.map(p=>p._id)}, date: {$gte: new Date(startDate), $lt: new Date(endDate)}});
   var arr = [];
   
   for(var date = new Date(startDate); date <= new Date(endDate);) {
@@ -305,10 +317,12 @@ const supplierPurchasesOverTime = async (req, res) => {
 const supplierViewsOverTime = async (req, res) => {
   const {id, startDate, endDate, timeFrame, product} = req.body;
   const obj = {};
+  if(id)
+    obj.supplier = id;
   if(product)
     obj._id = product;
-  const products = await Product.find({supplier: id, ...obj});
-  const views = await View.find({product: {$in: products.map(p=>p._id)}});
+  const products = await Product.find({...obj});
+  const views = await View.find({product: {$in: products.map(p=>p._id)}, date: {$gte: new Date(startDate), $lt: new Date(endDate)}});
   var arr = [];
   
   for(var date = new Date(startDate); date <= new Date(endDate);) {
@@ -324,11 +338,13 @@ const supplierViewsOverTime = async (req, res) => {
 const supplierPurchasesToViewRatioOverTime = async (req, res) => {
   const {id, startDate, endDate, timeFrame, product, type} = req.body;
   const obj = {};
+  if(id)
+    obj.supplier = id;
   if(product)
     obj._id = product;
-  const products = await Product.find({supplier: id, ...obj});
-  const purchases = await Purchase.find({product: {$in: products.map(p=>p._id)}});
-  const views = await View.find({product: {$in: products.map(p=>p._id)}});
+  const products = await Product.find({...obj});
+  const purchases = await Purchase.find({product: {$in: products.map(p=>p._id)}, date: {$gte: new Date(startDate), $lt: new Date(endDate)}});
+  const views = await View.find({product: {$in: products.map(p=>p._id)}, date: {$gte: new Date(startDate), $lt: new Date(endDate)}});
   var arr = [];
   
   for(var date = new Date(startDate); date <= new Date(endDate);) {
@@ -346,6 +362,32 @@ const supplierPurchasesToViewRatioOverTime = async (req, res) => {
 
 
     arr.push([new Date(date), myViews.length===0 ? 0 : sum/myViews.length])
+
+    date = nextDate;
+  }
+  res.json(arr);
+}
+
+const getUserNumbers = async (req, res) => {
+  const users = await User.find({});
+  
+  res.json([
+    {name: 'Admins', value: users.filter(u=>u.level===2).length},
+    {name: 'Suppliers', value: users.filter(u=>u.level===1).length},
+    {name: 'Google Users', value: users.filter(u=>u.google&&u.level===0).length},
+    {name: 'Users', value: users.filter(u=>!u.google&&u.level===0).length}
+  ])
+};
+
+const getLoginsOverTime = async (req, res) => {
+  const {startDate, endDate, timeFrame, product} = req.body;
+  const logins = await Login.find({date: {$gte: new Date(startDate), $lt: new Date(endDate)}});
+  var arr = [];
+  
+  for(var date = new Date(startDate); date <= new Date(endDate);) {
+    const nextDate = getDateJump(timeFrame, date);
+    const myLogins = logins.filter(r=>new Date(r.date) >= date && new Date(r.date) < nextDate);
+    arr.push([new Date(date), myLogins.length])
 
     date = nextDate;
   }
@@ -373,5 +415,7 @@ module.exports = {
   supplierRatingOverTime,
   supplierPurchasesOverTime,
   supplierViewsOverTime,
-  supplierPurchasesToViewRatioOverTime
+  supplierPurchasesToViewRatioOverTime,
+  getUserNumbers,
+  getLoginsOverTime
 }

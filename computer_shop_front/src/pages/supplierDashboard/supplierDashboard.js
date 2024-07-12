@@ -12,7 +12,7 @@ import SelectSearch from 'react-select-search';
 
 const currencies = require('../../currencies.json');
 
-const getTimeData = (timeFrame) => {
+export const getTimeData = (timeFrame) => {
 	const now = new Date();
 	if(timeFrame === "year") {
 		const startDate = new Date();

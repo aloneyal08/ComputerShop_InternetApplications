@@ -1,12 +1,20 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState, useEffect, useContext} from 'react'
 import './adminConsole.css'
 import {AdminListItem, MessageListItem, RequestListItem, SupplierListItem, TagListItem} from './listItem';
 import CreateMessage from './createMessage';
 import CreateAdmin from './createAdmin';
 import CreateTag from './createTag';
+import PieChart from '../../components/graphs/pieChart';
+import { getTimeData } from '../supplierDashboard/supplierDashboard';
+import BarGraph from '../../components/graphs/barGraph';
+import { nFormatter } from '../../utils';
+import { MoneyContext } from '../../Contexts';
 
+const currencies = require('../../currencies.json');
 
 const AdminConsole = () => {
+	const {exchangeRates, currency} = useContext(MoneyContext);
+
   const [requests, setRequests] = useState([]);
   const [force,update] = useState(0);
   const reload = () => update(Math.random());
@@ -15,6 +23,19 @@ const AdminConsole = () => {
   const [messages, setMessages] = useState([]);
   const [admins, setAdmins] = useState([]);
   const [tags, setTags] = useState([]);
+
+  const [purchaseData, setPurchaseData] = useState(getTimeData('year'));
+	const [purchases, setPurchases] = useState([]);
+	const [purchaseYAxis, setPurchaseYAxis] = useState('money');
+
+  const [loginData, setLoginData] = useState(getTimeData('year'));
+  const [logins, setLogins] = useState([]);
+
+
+  const [userNumberData, setUserNumberData] = useState([]);
+
+  const changePurchaseTimeFrame = (e) => setPurchaseData(getTimeData(e.target.value));
+  const changeLoginTimeFrame = (e) => setLoginData(getTimeData(e.target.value));
 
   useEffect(() => {
     fetch(`${process.env.REACT_APP_SERVER_URL}/supplier/request`).then(res=>res.json()).then(req=>{
@@ -32,7 +53,37 @@ const AdminConsole = () => {
     fetch(`${process.env.REACT_APP_SERVER_URL}/tag/get`).then(res=>res.json()).then(t=>{
       setTags(t);
     });
+
+    fetch(`${process.env.REACT_APP_SERVER_URL}/user/numbers`).then(res=>res.json()).then(data=>{
+      console.log(data);
+      setUserNumberData(data);
+    });
   }, [force])
+
+  useEffect(()=>{
+		fetch(`${process.env.REACT_APP_SERVER_URL}/user/supplier/purchases/time`,{
+			method: 'POST',
+			headers: {'Content-Type': 'application/json'},
+			body: JSON.stringify({
+				type: purchaseYAxis,
+				...purchaseData
+			})
+		}).then(res=>res.json()).then(data=>{
+			setPurchases(data);
+		});
+	}, [purchaseData, purchaseYAxis, force])
+
+  useEffect(()=>{
+    fetch(`${process.env.REACT_APP_SERVER_URL}/user/logins/time`,{
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+				...loginData
+			})
+    }).then(res=>res.json()).then(data=>{
+      setLogins(data);
+    });
+  }, [loginData, force])
 
   return <div>
     <h1>Admin Console</h1>
@@ -140,6 +191,51 @@ const AdminConsole = () => {
           </table>
         </div>
       </div>
+    </div>
+    <h2>Statistics</h2>
+    <div className='dashboard'>
+      <div className='dashboardContainer'>
+        <h2 className='dashboardHeader'>User Type Ratio</h2>
+        <PieChart data={userNumberData}  height={540} margin={5}/>
+      </div>
+      <div className='dashboardContainer'>
+				<div className='dashboardHeaderContainer' style={{position: "relative"}}>
+					<h2 className='dashboardHeader'>Purchases Over Time</h2>
+					<div style={{display: "flex", gap: "10px"}}>
+						<select onChange={(e)=>setPurchaseYAxis(e.target.value)} value={purchaseYAxis} className='select1'>
+							<option value="money">Income</option>
+							<option value="amount">Amount</option>
+						</select>
+						<select onChange={changePurchaseTimeFrame} value={purchaseData.timeFrame} className='select1'>
+							<option value="year">Last Year</option>
+							<option value="month">Last Month</option>
+							<option value="week">Last week</option>
+						</select>
+					</div>
+				</div>
+				<BarGraph 
+					height={520} data={purchases} 
+					timeFrame={purchaseData.timeFrame} color={purchaseYAxis==='money' ?'#4dab66' : '#518194'}
+					yAxisTickFormat={d=>{
+						return purchaseYAxis==='money' ?  nFormatter(d*exchangeRates[currency]) + currencies[currency].symbol : (Math.floor(d)===d ? nFormatter(d) : '')
+					}}
+				/>
+			</div>
+      <div className='dashboardContainer'>
+				<div className='dashboardHeaderContainer' style={{position: "relative"}}>
+					<h2 className='dashboardHeader'>Logins Over Time</h2>
+          <select onChange={changeLoginTimeFrame} value={loginData.timeFrame} className='select1'>
+            <option value="year">Last Year</option>
+            <option value="month">Last Month</option>
+            <option value="week">Last week</option>
+          </select>
+				</div>
+				<BarGraph 
+					height={520} data={logins} 
+					timeFrame={loginData.timeFrame} color={'#518194'}
+					yAxisTickFormat={d=>(Math.floor(d)===d ? nFormatter(d) : '')}
+				/>
+			</div>
     </div>
   </div>
 }
