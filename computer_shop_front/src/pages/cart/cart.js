@@ -165,7 +165,7 @@ const Cart = () => {
 				<table id='itemWrapper'>
 					<tbody>
 					{
-						user.cart.map((item, index) => <CartItem onLoad={(num) => {let temp = prices.slice();temp[index] = num;setPrices(temp);console.log(temp);}} index={index} key={item.productId} retrieveFunc={(e) => {retrieveRow(item.productId, index)}} changedFunc={changedFunction} deleteFunc={(e) => {deleteRow(item.productId, index)}} cartItem={item} />)
+						user.cart.map((item, index) => <CartItem onLoad={(num) => {setPrices(prev=>prev.map((p,i)=>i===index?num:p));}} index={index} key={item.productId} retrieveFunc={(e) => {retrieveRow(item.productId, index)}} changedFunc={changedFunction} deleteFunc={(e) => {deleteRow(item.productId, index)}} cartItem={item} />)
 					}
 					</tbody> 
 				</table>
