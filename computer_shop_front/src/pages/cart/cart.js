@@ -26,28 +26,27 @@ const Cart = () => {
 				save.push(item);
 			}
 		});
-		sessionStorage.setItem("purchase", JSON.stringify(save));
-		sessionStorage.setItem("total", total.toString());
-		navigate('/purchase/confirm');
-		// fetch(`${process.env.REACT_APP_SERVER_URL}/purchase/buy-multiple`, {
-		// 	method: 'POST',
-		// 	headers: {
-		// 	'Content-Type': 'application/json'
-		// 	},
-		// 	body: JSON.stringify({
-		// 		user: user._id,
-		// 		list: save
-		// 	})
-		// }).then((res) => res.json()).then((res) => {
-		// 	if(res.error) {
-		// 		alert(res.error);
-		// 	} else {
-		// 		let tempUser = user;
-		// 		tempUser.cart = [];
-		// 		setUser(tempUser);
-		// 		navigate('/');
-		// 	}
-		// })
+		fetch(`${process.env.REACT_APP_SERVER_URL}/user/update/cart`, {
+			method: 'PUT',
+			headers: {
+			'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({
+				email: user.email,
+				cart: save
+			})
+		}).then((res) => res.json()).then((res) => {
+			if(res.error) {
+				alert(res.error);
+			} else {
+				sessionStorage.setItem("purchase", JSON.stringify(save));
+				sessionStorage.setItem("total", total.toString());
+				let tempUser = user;
+				tempUser.cart = save;
+				setUser(tempUser);
+				navigate('/purchase/confirm');
+			}
+		})
 	};
 
 	const saveCart = () => {
@@ -69,7 +68,7 @@ const Cart = () => {
 				})
 			}).then((res) => res.json()).then((res) => {
 				if(res.error) {
-				alert(res.error);
+					alert(res.error);
 				} else {
 					let tempUser = user;
 					tempUser.cart = save;
@@ -84,8 +83,6 @@ const Cart = () => {
 	};
 
 	const getTotal = () =>{
-		console.log(newCart);
-		console.log(prices)
 		let sum = 0;
 		prices.forEach((price, i) => {
 			if(!newCart[i].deleted){
@@ -149,6 +146,7 @@ const Cart = () => {
 	}, [user]);
 
 	useEffect(() => {
+		console.log(1)
 		getTotal();
 	}, [prices, newCart])
 
@@ -167,7 +165,7 @@ const Cart = () => {
 				<table id='itemWrapper'>
 					<tbody>
 					{
-						user.cart.map((item, index) => <CartItem onLoad={(num) => {let temp = prices.slice();temp[index] = num;setPrices(temp);}} index={index} key={item.productId} retrieveFunc={(e) => {retrieveRow(item.productId, index)}} changedFunc={changedFunction} deleteFunc={(e) => {deleteRow(item.productId, index)}} cartItem={item} />)
+						user.cart.map((item, index) => <CartItem onLoad={(num) => {let temp = prices.slice();temp[index] = num;setPrices(temp);console.log(temp);}} index={index} key={item.productId} retrieveFunc={(e) => {retrieveRow(item.productId, index)}} changedFunc={changedFunction} deleteFunc={(e) => {deleteRow(item.productId, index)}} cartItem={item} />)
 					}
 					</tbody> 
 				</table>

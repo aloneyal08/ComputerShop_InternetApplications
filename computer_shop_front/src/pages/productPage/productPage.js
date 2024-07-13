@@ -104,23 +104,9 @@ const ProductPage = () => {
 			alert('Enter Quantity of Product');
 			return;
 		}
-		fetch(`${process.env.REACT_APP_SERVER_URL}/purchase/buy-one`, {
-			method: 'POST',
-			headers: {
-			'Content-Type': 'application/json'
-			},
-			body: JSON.stringify({
-				product: productId,
-				user: user._id,
-				quantity
-			})
-		}).then((res) => res.json()).then((res) => {
-			if(res.error) {
-				alert(res.error);
-			} else {
-				navigate('/');
-			}
-		})
+		sessionStorage.setItem("purchase", JSON.stringify([{productId: product._id, quantity: quantity}]));
+		sessionStorage.setItem("total", product.price*quantity);
+		navigate('/purchase/confirm');
 	};
 
 	useEffect(() => {
