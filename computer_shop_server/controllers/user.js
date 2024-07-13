@@ -299,7 +299,6 @@ const supplierPurchasesOverTime = async (req, res) => {
 
 
   const data = await Promise.all(s.map(async (supplierId, i)=>{
-    console.log(supplierId)
     const obj = {}
     if(product)
       obj._id = product;
