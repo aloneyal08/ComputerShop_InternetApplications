@@ -122,7 +122,7 @@ const Storefront = () => {
       </button>
       {recSupplier.map((supplier)=>
       <div className='userCard' key={supplier._id} onClick={()=>navigate(`/supplier/${supplier._id}`)}>
-        <img alt='           ' className='userPhoto' src={supplier.profilePhoto} onError={(e) =>{e.currentTarget.src = require('../../images/userDefault.png')}} />
+        <img alt='           ' className='userPhoto' src={supplier.profilePhoto||require('../../images/userDefault.png')} onError={(e) =>{e.currentTarget.src = require('../../images/userDefault.png')}} />
         <h4 className='supplierName'>{supplier.fullName}</h4>
       </div>)}
         <button className='moveRight' onClick={(e) => {moveSide(e, 1)}}>

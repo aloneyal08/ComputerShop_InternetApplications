@@ -72,7 +72,7 @@ const login = async (req, res) => {
     const d = new Date();
     d.setHours(0,0,0,0);
     const logins = await Login.find({user: user._id}).sort({date: -1}).limit(1)
-    if(logins[0].date < d) {
+    if(logins.length===0 || logins[0].date < d) {
       const l = new Login({user: user._id});
       await l.save();
     }
@@ -289,29 +289,42 @@ const supplierRatingOverTime = async (req, res) => {
 
 const supplierPurchasesOverTime = async (req, res) => {
   const {id, startDate, endDate, timeFrame, product, type} = req.body;
-  const obj = {};
-  if(id)
-    obj.supplier = id;
-  if(product)
-    obj._id = product;
-  const products = await Product.find({...obj});
-  const purchases = await Purchase.find({product: {$in: products.map(p=>p._id)}, date: {$gte: new Date(startDate), $lt: new Date(endDate)}});
-  var arr = [];
-  
-  for(var date = new Date(startDate); date <= new Date(endDate);) {
-    const nextDate = getDateJump(timeFrame, date);
-    const myPurchases = purchases.filter(r=>new Date(r.date) >= date && new Date(r.date) < nextDate);
-    
-    let sum = 0;
-    if(type === 'money')
-      myPurchases.forEach((p) => {sum += p.quantity*p.price});
-    else
-      myPurchases.forEach((p) => {sum += p.quantity});
-    arr.push([new Date(date), sum])
 
-    date = nextDate;
-  }
-  res.json(arr);
+  const suppliers = await User.find({level: 1});
+  var s = [];
+  if(id)
+    s = [id]
+  else
+    s = suppliers.map(s=>s._id);
+
+
+  const data = await Promise.all(s.map(async (supplierId, i)=>{
+    console.log(supplierId)
+    const obj = {}
+    if(product)
+      obj._id = product;
+    const products = await Product.find({...obj, supplier: supplierId});
+    const purchases = await Purchase.find({product: {$in: products.map(p=>p._id)}, date: {$gte: new Date(startDate), $lt: new Date(endDate)}});
+    var arr = [];
+    
+    for(var date = new Date(startDate); date <= new Date(endDate);) {
+      const nextDate = getDateJump(timeFrame, date);
+      const myPurchases = purchases.filter(r=>new Date(r.date) >= date && new Date(r.date) < nextDate);
+      
+      let sum = 0;
+      if(type === 'money')
+        myPurchases.forEach((p) => {sum += p.quantity*p.price});
+      else
+        myPurchases.forEach((p) => {sum += p.quantity});
+      arr.push([new Date(date), sum, supplierId])
+  
+      date = nextDate;
+    }
+
+    return arr;
+  }))
+  res.json(data.flat(1));
+
 }
 
 const supplierViewsOverTime = async (req, res) => {

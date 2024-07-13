@@ -28,7 +28,7 @@ const AdminConsole = () => {
 	const [purchases, setPurchases] = useState([]);
 	const [purchaseYAxis, setPurchaseYAxis] = useState('money');
 
-  const [loginData, setLoginData] = useState(getTimeData('year'));
+  const [loginData, setLoginData] = useState(getTimeData('week'));
   const [logins, setLogins] = useState([]);
 
 
@@ -55,7 +55,6 @@ const AdminConsole = () => {
     });
 
     fetch(`${process.env.REACT_APP_SERVER_URL}/user/numbers`).then(res=>res.json()).then(data=>{
-      console.log(data);
       setUserNumberData(data);
     });
   }, [force])
@@ -69,7 +68,12 @@ const AdminConsole = () => {
 				...purchaseData
 			})
 		}).then(res=>res.json()).then(data=>{
-			setPurchases(data);
+      const dates = [...new Set(data.map(d=>d[0]))];
+			setPurchases(
+        dates.map(date=>{
+          return [date, data.filter(d=>d[0]===date).map(d=>[d[1],d[2]]).sort((a,b)=>b[0]-a[0])]
+        })
+      );
 		});
 	}, [purchaseData, purchaseYAxis, force])
 
@@ -84,7 +88,6 @@ const AdminConsole = () => {
       setLogins(data);
     });
   }, [loginData, force])
-
   return <div>
     <h1>Admin Console</h1>
     <div className='dashboard'>
@@ -214,7 +217,7 @@ const AdminConsole = () => {
 					</div>
 				</div>
 				<BarGraph 
-					height={520} data={purchases} 
+					height={520} content={purchases} 
 					timeFrame={purchaseData.timeFrame} color={purchaseYAxis==='money' ?'#4dab66' : '#518194'}
 					yAxisTickFormat={d=>{
 						return purchaseYAxis==='money' ?  nFormatter(d*exchangeRates[currency]) + currencies[currency].symbol : (Math.floor(d)===d ? nFormatter(d) : '')
@@ -231,7 +234,7 @@ const AdminConsole = () => {
           </select>
 				</div>
 				<BarGraph 
-					height={520} data={logins} 
+					height={520} content={logins} 
 					timeFrame={loginData.timeFrame} color={'#518194'}
 					yAxisTickFormat={d=>(Math.floor(d)===d ? nFormatter(d) : '')}
 				/>
