@@ -404,3 +404,33 @@ select:-moz-focusring {
   height: 180px !important;
   max-height: 180px !important;
 }
+
+.supplierNames {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  overflow-x: auto;
+  gap: 20px;
+  height: 30px;
+}
+
+.supplierColor {
+  height: 15px;
+  width: 15px;
+  border: 1px solid black;
+}
+
+.supplierBarName {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.supplierBarButton {
+  border-radius: 50px;
+  padding-left: 10px;
+  padding-right: 10px;
+  height: 20px;
+  position: relative;
+  background-color: lightgray;
+}

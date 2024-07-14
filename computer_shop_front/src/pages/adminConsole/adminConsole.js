@@ -27,6 +27,8 @@ const AdminConsole = () => {
   const [purchaseData, setPurchaseData] = useState(getTimeData('year'));
 	const [purchases, setPurchases] = useState([]);
 	const [purchaseYAxis, setPurchaseYAxis] = useState('money');
+  const [isSum, setIsSum] = useState('sum');
+  const [isSupplierPopup, setIsSupplierPopup] = useState(false);
 
   const [loginData, setLoginData] = useState(getTimeData('week'));
   const [logins, setLogins] = useState([]);
@@ -42,7 +44,7 @@ const AdminConsole = () => {
       setRequests(req);
     });
     fetch(`${process.env.REACT_APP_SERVER_URL}/user/suppliers`).then(res=>res.json()).then(s=>{
-      setSuppliers(s);
+      setSuppliers(s.map(s=>({...s, checked: true})));
     });
     fetch(`${process.env.REACT_APP_SERVER_URL}/message/`).then(res=>res.json()).then(m=>{
       setMessages(m);
@@ -71,11 +73,14 @@ const AdminConsole = () => {
       const dates = [...new Set(data.map(d=>d[0]))];
 			setPurchases(
         dates.map(date=>{
-          return [date, data.filter(d=>d[0]===date).map(d=>[d[1],d[2]]).sort((a,b)=>b[0]-a[0])]
+          const dateData = data.filter(d=>d[0]===date).map(d=>[d[1],d[2],d[3]]).sort((a,b)=>b[0]-a[0]).filter((d,i)=>{
+            return suppliers.length&&suppliers.find(s=>s._id===d[1]).checked
+          });
+          return [date, isSum==='sum' ? dateData.map(d=>d[0]).reduce((partialSum, a) => partialSum + a, 0) : dateData]
         })
       );
 		});
-	}, [purchaseData, purchaseYAxis, force])
+	}, [purchaseData, purchaseYAxis, force, isSum, suppliers])
 
   useEffect(()=>{
     fetch(`${process.env.REACT_APP_SERVER_URL}/user/logins/time`,{
@@ -88,6 +93,12 @@ const AdminConsole = () => {
       setLogins(data);
     });
   }, [loginData, force])
+
+  const checkSupplier = (id) => {
+    console.log(id);
+    setSuppliers(suppliers.map(s=>({...s, checked: (s._id === id ? !s.checked : s.checked)})))
+  }
+
   return <div>
     <h1>Admin Console</h1>
     <div className='dashboard'>
@@ -203,8 +214,12 @@ const AdminConsole = () => {
       </div>
       <div className='dashboardContainer'>
 				<div className='dashboardHeaderContainer' style={{position: "relative"}}>
-					<h2 className='dashboardHeader'>Purchases Over Time</h2>
+					<h2 className='dashboardHeader'>Purchases</h2>
 					<div style={{display: "flex", gap: "10px"}}>
+            <select onChange={(e)=>setIsSum(e.target.value)} value={isSum} className='select1'>
+							<option value='sum'>Sum</option>
+							<option value='relation'>Relation</option>
+						</select>
 						<select onChange={(e)=>setPurchaseYAxis(e.target.value)} value={purchaseYAxis} className='select1'>
 							<option value="money">Income</option>
 							<option value="amount">Amount</option>
@@ -215,13 +230,37 @@ const AdminConsole = () => {
 							<option value="week">Last week</option>
 						</select>
 					</div>
+          <div className={'popup requestPopup supplierPopup ' + (isSupplierPopup ? 'scale1' : '')}>
+            <div className='arrowUp centerAbsolute'/>
+            <h2>Suppliers</h2>
+            <table style={{margin: "auto"}}>
+              <tbody>
+                {
+                suppliers.map((supplier, i)=>(
+                  <tr key={i} style={{display: "flex"}}>
+                    <td className="checkbox1">
+                      <input checked={supplier.checked} id={'supplierCheck_' + supplier._id} className="substituted" type="checkbox" aria-hidden="true" 
+                        onChange={()=>checkSupplier(supplier._id)}/>
+                      <label htmlFor={'supplierCheck_' + supplier._id}></label>
+                    </td>
+                    <td>
+                      <label>{supplier.fullName}</label>
+                    </td>
+                  </tr>
+                ))
+              }
+              </tbody>
+            </table>
+          </div>
+          {isSupplierPopup&&<div className='allScreen' onClick={()=>setIsSupplierPopup(false)}/>}
 				</div>
 				<BarGraph 
 					height={520} content={purchases} 
-					timeFrame={purchaseData.timeFrame} color={purchaseYAxis==='money' ?'#4dab66' : '#518194'}
+					timeFrame={purchaseData.timeFrame} color={isSum==='sum' ? (purchaseYAxis==='money' ?'#4dab66' : '#518194') : null}
 					yAxisTickFormat={d=>{
 						return purchaseYAxis==='money' ?  nFormatter(d*exchangeRates[currency]) + currencies[currency].symbol : (Math.floor(d)===d ? nFormatter(d) : '')
-					}}
+					}} namesButtonText='+ suppliers'
+          onTagClick={()=>setIsSupplierPopup(true)}
 				/>
 			</div>
       <div className='dashboardContainer'>

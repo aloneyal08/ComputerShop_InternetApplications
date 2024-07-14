@@ -166,3 +166,11 @@
 .messageWrapperEditor{
   width: 100% !important;
 }
+
+.supplierPopup {
+  top: 80px;
+}
+
+.supplierPopup h2 {
+  margin: 5px;
+}

@@ -315,7 +315,7 @@ const supplierPurchasesOverTime = async (req, res) => {
         myPurchases.forEach((p) => {sum += p.quantity*p.price});
       else
         myPurchases.forEach((p) => {sum += p.quantity});
-      arr.push([new Date(date), sum, supplierId])
+      arr.push([new Date(date), sum, supplierId, suppliers.find(s=>s._id.equals(supplierId)).fullName])
   
       date = nextDate;
     }
