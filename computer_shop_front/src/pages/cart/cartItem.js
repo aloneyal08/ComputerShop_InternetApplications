@@ -4,7 +4,7 @@ import {useNavigate} from 'react-router-dom';
 
 const currencies = require('../../currencies.json');
 
-const CartItem = ({cartItem, index, onLoad = () => {},  changedFunc = () => {}, deleteFunc = () => {}, retrieveFunc = () => {}}) => {
+const CartItem = ({cartItem, index, setPrices = () => {},  changedFunc = () => {}, deleteFunc = () => {}, retrieveFunc = () => {}}) => {
 	const {currency, exchangeRates} = useContext(MoneyContext); 
 
 	const [amount, setAmount] = useState(cartItem.quantity);
@@ -14,8 +14,7 @@ const CartItem = ({cartItem, index, onLoad = () => {},  changedFunc = () => {}, 
 	const navigate = useNavigate();
 
 	const changeQuantity = (e) => {
-		e.value = Math.max(1, Math.min(e.value, product.stock));
-		setAmount(e.value);
+		setAmount(Math.max(1, Math.min(e.value, product.stock)));
 		changedFunc(index, e.value !== cartItem.quantity, e.value)
 	}
 
@@ -50,14 +49,14 @@ const CartItem = ({cartItem, index, onLoad = () => {},  changedFunc = () => {}, 
 
 	useEffect(()=>{
 		if(product.price){
-			onLoad(amount*product.price);
+			setPrices(prev=>prev.map((p,i)=>i===index?amount*product.price:p));
 		}
-	}, [amount, product.price])
+	}, [amount, product.price, setPrices, index])
 
 	if(Object.keys(cartItem).length <= 0){return;}
-	return <tr onClick={()=>navigate(`/product/${product._id}`)} onLoad={(e) => {changeQuantity(e.currentTarget.children[3].children[0].children[1])}} className={`cartItemContainer ${deleted?'deleted':''}`}>
+	return <tr onClick={()=>navigate(`/product/${product._id}`)} className={`cartItemContainer ${deleted?'deleted':''}`}>
 		<td className='cartItemTd'><button onClick={deleted?retrieveItem:deleteItem} className={`cartItemDelete ${deleted?'deleted':''}`}>{deleted?'⟳':'✕'}</button></td>
-		<td className='cartItemTd'><img className='cartItemImg' src={product.photo} /></td>
+		<td className='cartItemTd'><img alt='         ' className='cartItemImg' src={product.photo} /></td>
 		<td className='cartItemTd'><h2 className='cartItemName' style={{textDecoration: deleted?'line-through':'none'}}>{product.name}</h2></td>
 		<td onClick={(e)=>e.stopPropagation()} className='cartItemTd'><div className='cartItemQuantityWrapper'>
 			<button disabled={deleted} className='button1' onClick={(e) => addQuantity(e, -1)}>-</button>

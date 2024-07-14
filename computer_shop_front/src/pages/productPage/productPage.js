@@ -184,7 +184,7 @@ const ProductPage = () => {
 			size={33}
 			id={product._id}
 		  />
-					<a href='#' onClick={() => {reviewList.current.scrollIntoView();return false;}}>{`${reviews.length} ratings`}</a>
+					<a href='#rating' onClick={() => {reviewList.current.scrollIntoView();return false;}}>{`${reviews.length} ratings`}</a>
 				</div>
 				<h1 id='productName'>{product.name}</h1>
 				<a id='productSupplier' href={`/supplier/${product.supplier}`}>{supplierName}</a>
