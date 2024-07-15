@@ -20,7 +20,7 @@ const CartItem = ({cartItem, index, setPrices = () => {},  changedFunc = () => {
 
 	const addQuantity = (e, num) => {
 		let input = e.currentTarget.parentElement.children[1];
-		input.value = Number(input.value) + num;
+		input.value = Math.max(1, Math.min(Number(input.value) + num, product.stock));
 		changeQuantity(input);
 	}
 

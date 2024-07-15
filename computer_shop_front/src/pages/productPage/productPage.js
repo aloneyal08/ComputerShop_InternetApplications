@@ -26,7 +26,7 @@ const ProductPage = () => {
 	const [reviewDescription, setReviewDescription] = useState('');
 	const [reviews, setReviews] = useState([]);
 	const [ratingPercentages, setRatingPercentages] = useState([]);
-	const [quantity, setQuantity] = useState('');
+	const [quantity, setQuantity] = useState(1);
 	const [supplierName, setSupplierName] = useState('');
 
 	const reviewList = useRef(null);
@@ -63,21 +63,15 @@ const ProductPage = () => {
 		navigate(0);
 	};
 	const onChangeQuantity = (e) => {
-		e.value = Math.max(1, Math.min(e.value, product.stock));
-		setQuantity(e.value);
+		setQuantity(Math.max(1, Math.min(e.value, product.stock)));
 	};
 	const changeQuantity = (e, num) => {
 		let input = e.currentTarget.parentElement.children[1];
-		input.value = input.value===''?0:input.value;
-		input.value = Number(input.value) + num;
+		input.value = Math.max(1, Math.min(Number(input.value) + num, product.stock));
 		onChangeQuantity(input)
 	};
 
 	const addToCart = () =>{
-		if(quantity === ''){
-			alert('Enter Quantity of Product');
-			return;
-		}
 		fetch(`${process.env.REACT_APP_SERVER_URL}/user/update/cart-add`, {
 		  method: 'PUT',
 		  headers: {
@@ -100,10 +94,6 @@ const ProductPage = () => {
 	};
 
 	const buyNow = () =>{
-		if(quantity === ''){
-			alert('Enter Quantity of Product');
-			return;
-		}
 		sessionStorage.setItem("purchase", JSON.stringify([{productId: product._id, quantity: quantity}]));
 		sessionStorage.setItem("total", product.price*quantity);
 		navigate('/purchase/confirm');
@@ -214,7 +204,7 @@ const ProductPage = () => {
 				{product.stock > 0 && !user.loggedOut?
 					<div id='quantityWrapper'>
 						<button className='quantityBtn button1' onClick={(e) => changeQuantity(e, -1)}>-</button>
-						<input onChange={(e) => {onChangeQuantity(e.currentTarget)}} type='number'></input>
+						<input value={quantity} onChange={(e) => {onChangeQuantity(e.currentTarget)}} type='number'></input>
 						<button className='quantityBtn button1' onClick={(e) => changeQuantity(e, 1)}>+</button>
 					</div>
 					:
@@ -248,7 +238,7 @@ const ProductPage = () => {
 								</div>
 							</div>
 						</header>
-						<div id='revTitleWrapper'>
+						<div className='revTitleWrapper'>
 			  <ReactStarsRating
 				value={reviewRating}
 				secondaryColor="#cccccc"

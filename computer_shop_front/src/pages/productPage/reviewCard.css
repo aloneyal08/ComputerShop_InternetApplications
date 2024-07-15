@@ -44,6 +44,8 @@
 }
 .reviewTitle{
     position: relative;
+    line-break: anywhere;
+    width: calc(100%-175px);
     top: 2px
 }
 

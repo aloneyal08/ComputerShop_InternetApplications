@@ -26,7 +26,7 @@ export const ReviewCard = ({review}) => {
 					</div>
 				</div>
 			</header>
-			<div id='revTitleWrapper'>
+			<div className='revTitleWrapper'>
 				<ReactStarsRating 
 					value={review.rating} 
 					secondaryColor="#cccccc"
