@@ -15,6 +15,7 @@ import SupplierDashboard from './pages/supplierDashboard/supplierDashboard';
 import AdminConsole from './pages/adminConsole/adminConsole';
 import ProductPage from './pages/productPage/productPage';
 import SupplierPage from './pages/supplierPage/supplierPage';
+import ConfirmPurchase from './confirmPurchase/confirmPurchase';
 
 const App = () => {
   const [user, setUser] = useState({});
@@ -63,7 +64,6 @@ const App = () => {
       setTags(res);
     });
   }, []);
-
   var MainPage = Storefront;
 
   if(user.level === 0||user.loggedOut) MainPage = Storefront;
@@ -82,13 +82,14 @@ const App = () => {
                   <Route path="/" element={<MainPage />} />
                   <Route path="/login" element={<Login/>} />
                   <Route path="/register" element={<Register />} />
-                  <Route path="/product/new" element={<NewProduct />} />
+                  {user.level===1&&<Route path="/product/new" element={<NewProduct />} />}
                   <Route path='/product/:productId' element={<ProductPage />} />
                   <Route path="/settings" element={<UserSettings />} />
                   <Route path="/cart" element={<Cart />} />
                   <Route path="/history" element={<History />} />
                   <Route path="/search" element={<SearchScreen />} />
                   <Route path="/supplier/:supplierId" element={<SupplierPage />} />
+                  <Route path='/purchase/confirm' element={<ConfirmPurchase />} />
                   <Route path="*" element={<h1>Not Found</h1>} />
                 </Routes>
               </div>

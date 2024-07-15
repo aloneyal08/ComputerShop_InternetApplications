@@ -16,7 +16,7 @@ const ProductPage = () => {
 	const {productId} = useParams();
 	const navigate = useNavigate();
 	const {currency, exchangeRates} = useContext(MoneyContext);
-	const {user} = useContext(UserContext);
+	const {user, setUser} = useContext(UserContext);
 	const tags = useContext(TagsContext);
 	const [product, setProduct] = useState({});
 	const [rating, setRating] = useState(0);
@@ -26,7 +26,8 @@ const ProductPage = () => {
 	const [reviewDescription, setReviewDescription] = useState('');
 	const [reviews, setReviews] = useState([]);
 	const [ratingPercentages, setRatingPercentages] = useState([]);
-	const [quantity, setQuantity] = useState('');
+	const [quantity, setQuantity] = useState(1);
+	const [supplierName, setSupplierName] = useState('');
 
 	const reviewList = useRef(null);
 
@@ -62,21 +63,15 @@ const ProductPage = () => {
 		navigate(0);
 	};
 	const onChangeQuantity = (e) => {
-		e.value = Math.max(1, Math.min(e.value, product.stock));
-		setQuantity(e.value);
+		setQuantity(Math.max(1, Math.min(e.value, product.stock)));
 	};
 	const changeQuantity = (e, num) => {
 		let input = e.currentTarget.parentElement.children[1];
-		input.value = input.value===''?0:input.value;
-		input.value = Number(input.value) + num;
+		input.value = Math.max(1, Math.min(Number(input.value) + num, product.stock));
 		onChangeQuantity(input)
 	};
 
 	const addToCart = () =>{
-		if(quantity === ''){
-			alert('Enter Quantity of Product');
-			return;
-		}
 		fetch(`${process.env.REACT_APP_SERVER_URL}/user/update/cart-add`, {
 		  method: 'PUT',
 		  headers: {
@@ -90,33 +85,18 @@ const ProductPage = () => {
 		  if(res.error) {
 			alert(res.error);
 		  } else {
+			let tempUser = user;
+			tempUser.cart.push({productId, quantity});
+			setUser(tempUser);
 			navigate('/cart');
 		  }
 		})
 	};
 
 	const buyNow = () =>{
-		if(quantity === ''){
-			alert('Enter Quantity of Product');
-			return;
-		}
-		fetch(`${process.env.REACT_APP_SERVER_URL}/purchase/buy-one`, {
-			method: 'POST',
-			headers: {
-			'Content-Type': 'application/json'
-			},
-			body: JSON.stringify({
-				product: productId,
-				user: user._id,
-				quantity
-			})
-		}).then((res) => res.json()).then((res) => {
-			if(res.error) {
-				alert(res.error);
-			} else {
-				navigate('/');
-			}
-		})
+		sessionStorage.setItem("purchase", JSON.stringify([{productId: product._id, quantity: quantity}]));
+		sessionStorage.setItem("total", product.price*quantity);
+		navigate('/purchase/confirm');
 	};
 
 	useEffect(() => {
@@ -143,33 +123,49 @@ const ProductPage = () => {
 			},
 			body: JSON.stringify({id: productId})
 		}).then((res)=>res.json()).then((res)=>{
-		if(res.tags && tags.length > 0){
-			res.tags = res.tags.map((tag) => tags.find(t => t._id === tag).text).filter(tag => tag);
+			if(res.error){
+				navigate('/not-found');
+			}
+			if(res.tags && tags.length > 0){
+				res.tags = res.tags.map((tag) => tags.find(t => t._id === tag).text).filter(tag => tag);
 		}
 		setProduct(res)});
-		fetch(`${process.env.REACT_APP_SERVER_URL}/review/get-rating`,{
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json'
-		},
-		body: JSON.stringify({product: productId})
-	}).then((res)=>res.json()).then((res)=>{setRating(res)});
-	fetch(`${process.env.REACT_APP_SERVER_URL}/review/get`,{
-	method: 'POST',
-	headers: {
-		'Content-Type': 'application/json'
-	},
-	body: JSON.stringify({product: productId})
-}).then((res)=>res.json()).then((res)=>{
-	setReviews(res);
-	let percentages = [0, 0, 0, 0, 0];
-	res.forEach((rev) => {
-		percentages[Math.floor(rev.rating - 0.5)] += 1/res.length;
-	})
-	setRatingPercentages(percentages);
-});
+	}, [productId, tags, navigate])
 
-	}, [productId, tags])
+	useEffect(() => {
+		if(Object.keys(product).length > 0){
+			fetch(`${process.env.REACT_APP_SERVER_URL}/review/get`,{
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({product: product._id})
+			}).then((res)=>res.json()).then((res)=>{
+				setReviews(res);
+				let percentages = [0, 0, 0, 0, 0];
+				res.forEach((rev) => {
+					percentages[Math.floor(rev.rating - 0.5)] += 1/res.length;
+				})
+				setRatingPercentages(percentages);
+			});
+			fetch(`${process.env.REACT_APP_SERVER_URL}/review/get-rating`,{
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({product: product._id})
+		}).then((res)=>res.json()).then((res)=>{setRating(res)});
+		fetch(`${process.env.REACT_APP_SERVER_URL}/user/id-get`,{
+			method: 'POST',
+		  	headers: {
+				'Content-Type': 'application/json'
+		  	},
+		  	body: JSON.stringify({id: product.supplier})
+	  	}).then((res)=>res.json()).then((res)=>{
+			setSupplierName(res.fullName);
+	  	});
+		}
+	}, [product])
 
 	if(Object.keys(product).length === 0){return}
 	return <div>
@@ -186,9 +182,10 @@ const ProductPage = () => {
 			size={33}
 			id={product._id}
 		  />
-					<a href='#' onClick={() => {reviewList.current.scrollIntoView();return false;}}>{`${reviews.length} ratings`}</a>
+					<a href='#rating' onClick={() => {reviewList.current.scrollIntoView();return false;}}>{`${reviews.length} ratings`}</a>
 				</div>
 				<h1 id='productName'>{product.name}</h1>
+				<a id='productSupplier' href={`/supplier/${product.supplier}`}>{supplierName}</a>
 				<hr className='separator'/>
 				<div id='productDesc' dangerouslySetInnerHTML={{__html: product.description}}>
 				</div>
@@ -215,7 +212,7 @@ const ProductPage = () => {
 				{product.stock > 0 && !user.loggedOut?
 					<div id='quantityWrapper'>
 						<button className='quantityBtn button1' onClick={(e) => changeQuantity(e, -1)}>-</button>
-						<input onChange={(e) => {onChangeQuantity(e.currentTarget)}} type='number'></input>
+						<input value={quantity} onChange={(e) => {onChangeQuantity(e.currentTarget)}} type='number'></input>
 						<button className='quantityBtn button1' onClick={(e) => changeQuantity(e, 1)}>+</button>
 					</div>
 					:
@@ -249,7 +246,7 @@ const ProductPage = () => {
 								</div>
 							</div>
 						</header>
-						<div id='revTitleWrapper'>
+						<div className='revTitleWrapper'>
 			  <ReactStarsRating
 				value={reviewRating}
 				secondaryColor="#cccccc"

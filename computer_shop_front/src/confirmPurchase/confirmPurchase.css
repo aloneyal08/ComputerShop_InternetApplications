@@ -1,0 +1,8 @@
+#confirmContainer{
+  display: flex;
+  flex-direction: row;
+  column-gap: 30px;
+}
+#confirmContainer > .button1{
+  width: 150px;
+}

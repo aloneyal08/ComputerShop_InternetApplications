@@ -41,6 +41,20 @@ font-size: 14px;
 #productName, #productDesc > p, #productPrice, #cartBtn{
     margin: 0;
 }
+#productName, #productSupplier{
+    align-self: flex-start;
+    text-align: left;
+}
+#productSupplier{
+    display: flex;
+    margin: 0;
+    font-size: 18px;
+    font-weight: 900;
+    color: rgb(30, 30, 30);
+}
+#productSupplier:hover{
+    color: black;
+}
 #productStock{
     margin: 0;
     margin-top: 7px;
@@ -109,6 +123,8 @@ font-size: 14px;
     align-self: center;
 }
 #ratingInfo{
+    display: flex;
+    flex-direction: column-reverse;
     margin-top: 30px;
     margin-right: 50px;
     position: absolute;
@@ -159,11 +175,17 @@ font-size: 14px;
     border-radius: 0;
     ;
 }
-#revTitleWrapper{
+.revTitleWrapper{
     max-width: 35vw;
     display: flex;
     flex-direction: row;
     align-items: center;
+    column-gap: 10px;
+}
+.revTitleWrapper > span{
+    display: flex;
+    flex-direction: row;
+    width: 165px;
 }
 #revTitle{
     width: 100%;

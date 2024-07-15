@@ -1,5 +1,6 @@
 const Product = require('../models/product');
 const Purchase = require('../models/purchase');
+const User = require('../models/user');
 
 const makePurchase = async (req, res) => {
 	const { user, product, quantity } = req.body;
@@ -14,8 +15,27 @@ const makePurchase = async (req, res) => {
 		price: p.price*(1-p.discount)
 	});
 	await purchase.save();
-	const _product = await Product.findByIdAndUpdate(product, {stock: p.stock - quantity});
+	await Product.findByIdAndUpdate(product, {stock: stock - quantity});
 	res.json(purchase);
+};
+
+const makePurchases = async (req, res) => {
+	const { user, list } = req.body;
+	let cart = [], stocks = [];
+	for(let i = 0;i < list.length;++i){
+		const stock = (await Product.findOne({_id: list[i].productId})).stock;
+		if(stock < list[i].quantity){
+			return res.status(400).json({error: 'Product Out of Stock'});
+		}
+		stocks[i] = stock;
+		cart.push({user, product: list[i].productId, quantity: list[i].quantity});
+	}
+	const purchases = await Purchase.insertMany(cart);
+	for(let i = 0; i < cart.length;++i){
+		await Product.findByIdAndUpdate(cart[i].product, {stock: stocks[i] - cart[i].quantity});
+	}
+	const u = await User.findByIdAndUpdate(user, {cart: []});
+	res.json(purchases);
 };
 
 const getPurchases = async (req, res) => {
@@ -39,6 +59,7 @@ const deletePurchase = async (req, res) => {
 
 module.exports = {
 	makePurchase,
+	makePurchases,
 	getPurchases,
 	deletePurchase
 };

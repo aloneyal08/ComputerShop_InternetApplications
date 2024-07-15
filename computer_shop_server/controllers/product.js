@@ -35,8 +35,15 @@ const addProduct = async (req, res) => {
 
 const getProductById = async (req, res) => {
 	const {id} = req.body;
-	const product = await Product.findById(id);
-	res.json(product);
+	try {
+		const product = await Product.findById(id);
+		if(!product){
+			return res.status(404).json({error: 'Product not found'});
+		}
+		res.json(product);
+	} catch(err) {
+		return res.status(404).json({error: "couldn't get product"});
+	}
 };
 
 const getProducts = async (req, res) => {
