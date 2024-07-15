@@ -54,7 +54,7 @@ const ConfirmPurchase = () =>{
     setTotal(sessionStorage.getItem("total"));
     sessionStorage.removeItem("purchase");
     sessionStorage.removeItem("total");
-  }, [])
+  }, [navigate])
   useEffect(()=>{
 
   }, [purchase])
