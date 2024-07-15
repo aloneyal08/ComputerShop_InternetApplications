@@ -433,4 +433,5 @@ select:-moz-focusring {
   height: 20px;
   position: relative;
   background-color: lightgray;
+  cursor: pointer;
 }

@@ -75,7 +75,7 @@ const BarGraph = ({
 
 
   return <>
-  <div className='supplierNames' onClick={onTagClick}>
+  <div className='supplierNames'>
     {data.length&&(data[0][1].length>1||!color)&&
       data[0][1].map((d, i)=>{
         return <div className='supplierBarName' key={i}>
@@ -84,7 +84,7 @@ const BarGraph = ({
         </div>
       })
     }
-    {namesButtonText&&<div className='supplierBarButton'>{namesButtonText}</div>}
+    {namesButtonText&&<div className='supplierBarButton' onClick={onTagClick}>{namesButtonText}</div>}
   </div>
   <svg ref={ref} fontSize={10} preserveAspectRatio="none" width={width||"100%"} height={height||"100%"}>
     <g ref={gy} transform={`translate(${marginLeft},0)`} />

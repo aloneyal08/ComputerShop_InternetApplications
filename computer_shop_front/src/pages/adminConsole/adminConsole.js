@@ -95,7 +95,9 @@ const AdminConsole = () => {
   }, [loginData, force])
 
   const checkSupplier = (id) => {
-    console.log(id);
+    const amountChecked = suppliers.reduce((amount, s)=>s.checked?amount+1:amount, 0);
+    if(amountChecked===1&&suppliers.find(s=>s._id===id).checked)
+      return;
     setSuppliers(suppliers.map(s=>({...s, checked: (s._id === id ? !s.checked : s.checked)})))
   }
 
