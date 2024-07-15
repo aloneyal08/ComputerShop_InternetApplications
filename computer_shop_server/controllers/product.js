@@ -2,8 +2,7 @@ const Review = require('../models/review');
 const Product = require('../models/product');
 const Purchase = require('../models/purchase');
 const Tag = require('../models/tag');
-const { connect } = require('mongoose');
-const { getKeywords, removeHTMLTags } = require('../utils');
+const { getKeywords, removeHTMLTags, dateDiff } = require('../utils');
 const User = require('../models/user');
 
 const addProduct = async (req, res) => {
@@ -72,8 +71,23 @@ const getPopularProducts = async (req, res) => {
 	if(supplier)
 		obj.supplier = supplier;
 
-	const products = await Product.find(obj).limit(amount||50);
-	res.json(products);
+	const products = await Product.find(obj);
+	const purchases = await Purchase.find({product: {$in: products.map(p=>p._id)}});
+
+	const popularProducts = products.map(p=>{
+		var score = 0;
+		const myPurchases = purchases.filter(pur=>p._id.equals(pur.product));
+
+		myPurchases.forEach(pur=>{
+			const date = new Date(pur.date);
+			const dayDiff = dateDiff(date, new Date());
+			score += pur.quantity/(dayDiff+1);
+		});
+
+		return {...p._doc, score};
+	}).sort((a,b)=>b.score-a.score);
+	
+	res.json(popularProducts.slice(0,amount||50));
 };
 
 const getFlashProducts = async (req, res) => {

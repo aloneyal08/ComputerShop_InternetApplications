@@ -72,10 +72,15 @@ const removeHTMLTags = (html) => {
   return html.replace(regX, "");
 }
 
+const dateDiff = (first, second) => {        
+  return Math.round((second - first) / (1000 * 60 * 60 * 24));
+}
+
 module.exports = {
   encrypt,
   decrypt,
   sendEmail,
   getKeywords,
   removeHTMLTags,
+  dateDiff
 }
