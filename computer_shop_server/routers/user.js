@@ -21,5 +21,10 @@ router.put('/restore', UserController.restoreAccount);
 router.get('/emails', UserController.getAllEmails);
 router.post('/admin/add', UserController.addAdmin);
 router.get('/supplier', UserController.getSupplier);
+router.get('/supplier/products', UserController.getSupplierProducts);
+router.post('/supplier/rating/time', UserController.supplierRatingOverTime);
+router.post('/supplier/purchases/time', UserController.supplierPurchasesOverTime);
+router.post('/supplier/views/time', UserController.supplierViewsOverTime);
+router.post('/supplier/ratio/time', UserController.supplierPurchasesToViewRatioOverTime);
 
 module.exports = router;

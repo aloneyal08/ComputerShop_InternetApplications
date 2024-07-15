@@ -107,6 +107,14 @@ const ProductPage = () => {
 		setReviewDescription(editorState);
 	}, []);
 
+	useEffect(()=>{
+		fetch(`${process.env.REACT_APP_SERVER_URL}/view/add`,{
+			method: 'POST',
+			headers: { 'Content-type': 'application/json' },
+			body: JSON.stringify({user: user._id ? user._id : null, product: productId})
+		}).then((res)=>res.json()).then((res)=>{});
+	}, [])
+
 	useEffect(() => {
 		fetch(`${process.env.REACT_APP_SERVER_URL}/product/get-id`,{
 			method: 'POST',

@@ -395,3 +395,12 @@ select:-moz-focusring {
 .select-search-container {
   width: 100%;
 }
+
+.rdw-dropdown-wrapper {
+  z-index: 1;
+}
+
+.richTextInput1 {
+  height: 180px !important;
+  max-height: 180px !important;
+}

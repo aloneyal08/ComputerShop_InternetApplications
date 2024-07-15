@@ -1,6 +1,10 @@
 const User = require('../models/user');
 const Tag = require('../models/tag');
 const Product = require('../models/product');
+const Review = require('../models/review');
+const Purchase = require('../models/purchase');
+const View = require('../models/view');
+
 const { encrypt, decrypt } = require('../utils');
 
 
@@ -217,6 +221,143 @@ const getSupplier = async (req, res) => {
   }
 }
 
+const getSupplierProducts = async (req, res) => {
+  const { id, sort } = req.query;
+
+  let products = await Product.find({supplier: id}, {name: 1, price: 1, photo: 1});
+  const purchases = await Purchase.find({product: {$in: products.map(p=>p._id)}});
+
+  let result = products.map(p=>{
+    amount = 0;
+    const ps = purchases.filter(pur=>p._id.equals(pur.product));
+    ps.forEach(p2=>amount+=p2.quantity);
+    return {...p._doc, purchases: amount};
+  })
+  
+  result.sort((a,b)=>{
+    if(Number(sort)===1) {
+      return b.purchases - a.purchases;
+    } else if (Number(sort) === 3)
+      return a.price - b.price;
+    
+    return a.name.localeCompare(b.name); 
+  })
+
+  res.json(result);
+}
+
+const getDateJump = (timeFrame, d) => {
+  var date = new Date(d);
+  if(timeFrame==="year")
+    date.setMonth(date.getMonth() + 1);
+  else if(timeFrame==="month")
+    date.setDate(date.getDate() + 7);
+  else if(timeFrame==="week")
+    date.setDate(date.getDate() + 1);
+  return date;
+}
+
+const supplierRatingOverTime = async (req, res) => {
+  const {id, startDate, endDate, timeFrame, product} = req.body;
+  const obj = {};
+  if(product)
+    obj._id = product;
+  const products = await Product.find({supplier: id, ...obj});
+  const reviews = await Review.find({product: {$in: products.map(p=>p._id)}});
+  var arr = [];
+  
+  for(var date = new Date(startDate); date <= new Date(endDate);) {
+    const myReviews = reviews.filter(r=>new Date(r.date) <= date);
+    if(myReviews.length === 0) {
+      arr.push([new Date(date), 0]);
+    } else {
+      let rating = 0;
+      myReviews.forEach((rev) => {rating += rev.rating});
+      rating /= myReviews.length;
+      arr.push([new Date(date), rating])
+    }
+    
+    date = getDateJump(timeFrame, date);
+  }
+
+  res.json(arr);
+}
+
+const supplierPurchasesOverTime = async (req, res) => {
+  const {id, startDate, endDate, timeFrame, product, type} = req.body;
+  const obj = {};
+  if(product)
+    obj._id = product;
+  const products = await Product.find({supplier: id, ...obj});
+  const purchases = await Purchase.find({product: {$in: products.map(p=>p._id)}});
+  var arr = [];
+  
+  for(var date = new Date(startDate); date <= new Date(endDate);) {
+    const nextDate = getDateJump(timeFrame, date);
+    const myPurchases = purchases.filter(r=>new Date(r.date) >= date && new Date(r.date) < nextDate);
+    
+    let sum = 0;
+    if(type === 'money')
+      myPurchases.forEach((p) => {sum += p.quantity*p.price});
+    else
+      myPurchases.forEach((p) => {sum += p.quantity});
+    arr.push([new Date(date), sum])
+
+    date = nextDate;
+  }
+  res.json(arr);
+}
+
+const supplierViewsOverTime = async (req, res) => {
+  const {id, startDate, endDate, timeFrame, product} = req.body;
+  const obj = {};
+  if(product)
+    obj._id = product;
+  const products = await Product.find({supplier: id, ...obj});
+  const views = await View.find({product: {$in: products.map(p=>p._id)}});
+  var arr = [];
+  
+  for(var date = new Date(startDate); date <= new Date(endDate);) {
+    const nextDate = getDateJump(timeFrame, date);
+    const myViews = views.filter(r=>new Date(r.date) >= date && new Date(r.date) < nextDate);
+    arr.push([new Date(date), myViews.length])
+
+    date = nextDate;
+  }
+  res.json(arr);
+}
+
+const supplierPurchasesToViewRatioOverTime = async (req, res) => {
+  const {id, startDate, endDate, timeFrame, product, type} = req.body;
+  const obj = {};
+  if(product)
+    obj._id = product;
+  const products = await Product.find({supplier: id, ...obj});
+  const purchases = await Purchase.find({product: {$in: products.map(p=>p._id)}});
+  const views = await View.find({product: {$in: products.map(p=>p._id)}});
+  var arr = [];
+  
+  for(var date = new Date(startDate); date <= new Date(endDate);) {
+    const nextDate = getDateJump(timeFrame, date);
+    const myPurchases = purchases.filter(r=>new Date(r.date) >= date && new Date(r.date) < nextDate);
+    const myViews = views.filter(r=>new Date(r.date) >= date && new Date(r.date) < nextDate);
+
+    let sum = 0;
+
+    if(type === 'money')
+      myPurchases.forEach((p) => {sum += p.quantity*p.price});
+    else
+      myPurchases.forEach((p) => {sum += p.quantity});
+
+
+
+    arr.push([new Date(date), myViews.length===0 ? 0 : sum/myViews.length])
+
+    date = nextDate;
+  }
+  res.json(arr);
+}
+
 module.exports = {
   getUserById,
   getSuppliers,
@@ -234,5 +375,10 @@ module.exports = {
   restoreAccount,
   getAllEmails,
   addAdmin,
-  getSupplier
+  getSupplier,
+  getSupplierProducts,
+  supplierRatingOverTime,
+  supplierPurchasesOverTime,
+  supplierViewsOverTime,
+  supplierPurchasesToViewRatioOverTime
 }
