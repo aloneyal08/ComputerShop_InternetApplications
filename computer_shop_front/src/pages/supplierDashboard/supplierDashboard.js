@@ -12,7 +12,7 @@ import SelectSearch from 'react-select-search';
 
 const currencies = require('../../currencies.json');
 
-const getTimeData = (timeFrame) => {
+export const getTimeData = (timeFrame) => {
 	const now = new Date();
 	if(timeFrame === "year") {
 		const startDate = new Date();
@@ -250,7 +250,7 @@ const SupplierDashboard = () => {
 					</div>
 				</div>
 				<BarGraph 
-					height={520} data={supplierPurchases} 
+					height={520} content={supplierPurchases} 
 					timeFrame={purchaseData.timeFrame} color={purchaseYAxis==='money' ?'#4dab66' : '#518194'}
 					yAxisTickFormat={d=>{
 						return purchaseYAxis==='money' ?  nFormatter(d*exchangeRates[currency]) + currencies[currency].symbol : (Math.floor(d)===d ? nFormatter(d) : '')
@@ -267,7 +267,7 @@ const SupplierDashboard = () => {
 					</select>
 				</div>
 				<BarGraph 
-					height={520} data={supplierViews} 
+					height={520} content={supplierViews} 
 					timeFrame={viewData.timeFrame}
 					yAxisTickFormat={d=>nFormatter(d)}
 				/>

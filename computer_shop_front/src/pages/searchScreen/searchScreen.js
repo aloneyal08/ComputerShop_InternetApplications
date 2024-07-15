@@ -182,6 +182,8 @@ const SearchScreen = () => {
   }, [navigate, tags])
   
   const checkSupplier = (id) => {
+    const amountChecked = suppliers.filter(s=>s.checked).length;
+    if(amountChecked === 1 && suppliers.find(s=>s.id===id).checked) return;
     setSuppliers(suppliers.map(s=>({...s, checked: (s.id === id ? !s.checked : s.checked)})))
   }
 
@@ -272,17 +274,24 @@ const SearchScreen = () => {
         <section>
           <label>Suppliers: </label>
           <div style={{marginTop: "20px"}}>
-            {
-              suppliers.map((supplier, i)=>{
-                return <div key={i}>
-                  <div className="checkbox1">
-                    <input checked={supplier.checked} id="supplierCheck" className="substituted" type="checkbox" aria-hidden="true" 
-                      onChange={()=>checkSupplier(supplier.id)}/>
-                    <label htmlFor="supplierCheck">{supplier.name}</label>
-                  </div>
-                </div>
-              })
-            }
+            <table style={{margin: "auto"}}>
+              <tbody>
+                {
+                suppliers.map((supplier, i)=>{
+                  return <tr key={i}>
+                    <td className="checkbox1">
+                      <input checked={supplier.checked} id={'supplierCheck_' + supplier.id} className="substituted" type="checkbox" aria-hidden="true" 
+                        onChange={()=>checkSupplier(supplier.id)}/>
+                        <label htmlFor={'supplierCheck_' + supplier.id}></label>
+                    </td>
+                    <td>
+                      <label >{supplier.name}</label>
+                    </td>
+                  </tr>
+                })
+              }
+              </tbody>
+            </table>
           </div>
         </section>
       </div>

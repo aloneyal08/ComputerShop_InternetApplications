@@ -1,12 +1,20 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState, useEffect, useContext} from 'react'
 import './adminConsole.css'
 import {AdminListItem, MessageListItem, RequestListItem, SupplierListItem, TagListItem} from './listItem';
 import CreateMessage from './createMessage';
 import CreateAdmin from './createAdmin';
 import CreateTag from './createTag';
+import PieChart from '../../components/graphs/pieChart';
+import { getTimeData } from '../supplierDashboard/supplierDashboard';
+import BarGraph from '../../components/graphs/barGraph';
+import { nFormatter } from '../../utils';
+import { MoneyContext } from '../../Contexts';
 
+const currencies = require('../../currencies.json');
 
 const AdminConsole = () => {
+	const {exchangeRates, currency} = useContext(MoneyContext);
+
   const [requests, setRequests] = useState([]);
   const [force,update] = useState(0);
   const reload = () => update(Math.random());
@@ -16,12 +24,27 @@ const AdminConsole = () => {
   const [admins, setAdmins] = useState([]);
   const [tags, setTags] = useState([]);
 
+  const [purchaseData, setPurchaseData] = useState(getTimeData('year'));
+	const [purchases, setPurchases] = useState([]);
+	const [purchaseYAxis, setPurchaseYAxis] = useState('money');
+  const [isSum, setIsSum] = useState('sum');
+  const [isSupplierPopup, setIsSupplierPopup] = useState(false);
+
+  const [loginData, setLoginData] = useState(getTimeData('week'));
+  const [logins, setLogins] = useState([]);
+
+
+  const [userNumberData, setUserNumberData] = useState([]);
+
+  const changePurchaseTimeFrame = (e) => setPurchaseData(getTimeData(e.target.value));
+  const changeLoginTimeFrame = (e) => setLoginData(getTimeData(e.target.value));
+
   useEffect(() => {
     fetch(`${process.env.REACT_APP_SERVER_URL}/supplier/request`).then(res=>res.json()).then(req=>{
       setRequests(req);
     });
     fetch(`${process.env.REACT_APP_SERVER_URL}/user/suppliers`).then(res=>res.json()).then(s=>{
-      setSuppliers(s);
+      setSuppliers(s.map(s=>({...s, checked: true})));
     });
     fetch(`${process.env.REACT_APP_SERVER_URL}/message/`).then(res=>res.json()).then(m=>{
       setMessages(m);
@@ -32,7 +55,49 @@ const AdminConsole = () => {
     fetch(`${process.env.REACT_APP_SERVER_URL}/tag/get`).then(res=>res.json()).then(t=>{
       setTags(t);
     });
+
+    fetch(`${process.env.REACT_APP_SERVER_URL}/user/numbers`).then(res=>res.json()).then(data=>{
+      setUserNumberData(data);
+    });
   }, [force])
+
+  useEffect(()=>{
+		fetch(`${process.env.REACT_APP_SERVER_URL}/user/supplier/purchases/time`,{
+			method: 'POST',
+			headers: {'Content-Type': 'application/json'},
+			body: JSON.stringify({
+				type: purchaseYAxis,
+				...purchaseData
+			})
+		}).then(res=>res.json()).then(data=>{
+      const dates = [...new Set(data.map(d=>d[0]))];
+			setPurchases(
+        dates.map(date=>{
+          const dateData = data.filter(d=>d[0]===date).map(d=>[d[1],d[2],d[3]]).sort((a,b)=>b[0]-a[0]).filter((d,i)=>{
+            return suppliers.length&&suppliers.find(s=>s._id===d[1]).checked
+          });
+          return [date, isSum==='sum' ? dateData.map(d=>d[0]).reduce((partialSum, a) => partialSum + a, 0) : dateData]
+        })
+      );
+		});
+	}, [purchaseData, purchaseYAxis, force, isSum, suppliers])
+
+  useEffect(()=>{
+    fetch(`${process.env.REACT_APP_SERVER_URL}/user/logins/time`,{
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+				...loginData
+			})
+    }).then(res=>res.json()).then(data=>{
+      setLogins(data);
+    });
+  }, [loginData, force])
+
+  const checkSupplier = (id) => {
+    console.log(id);
+    setSuppliers(suppliers.map(s=>({...s, checked: (s._id === id ? !s.checked : s.checked)})))
+  }
 
   return <div>
     <h1>Admin Console</h1>
@@ -140,6 +205,79 @@ const AdminConsole = () => {
           </table>
         </div>
       </div>
+    </div>
+    <h2>Statistics</h2>
+    <div className='dashboard'>
+      <div className='dashboardContainer'>
+        <h2 className='dashboardHeader'>User Type Ratio</h2>
+        <PieChart data={userNumberData}  height={540} margin={5}/>
+      </div>
+      <div className='dashboardContainer'>
+				<div className='dashboardHeaderContainer' style={{position: "relative"}}>
+					<h2 className='dashboardHeader'>Purchases</h2>
+					<div style={{display: "flex", gap: "10px"}}>
+            <select onChange={(e)=>setIsSum(e.target.value)} value={isSum} className='select1'>
+							<option value='sum'>Sum</option>
+							<option value='relation'>Relation</option>
+						</select>
+						<select onChange={(e)=>setPurchaseYAxis(e.target.value)} value={purchaseYAxis} className='select1'>
+							<option value="money">Income</option>
+							<option value="amount">Amount</option>
+						</select>
+						<select onChange={changePurchaseTimeFrame} value={purchaseData.timeFrame} className='select1'>
+							<option value="year">Last Year</option>
+							<option value="month">Last Month</option>
+							<option value="week">Last week</option>
+						</select>
+					</div>
+          <div className={'popup requestPopup supplierPopup ' + (isSupplierPopup ? 'scale1' : '')}>
+            <div className='arrowUp centerAbsolute'/>
+            <h2>Suppliers</h2>
+            <table style={{margin: "auto"}}>
+              <tbody>
+                {
+                suppliers.map((supplier, i)=>(
+                  <tr key={i} style={{display: "flex"}}>
+                    <td className="checkbox1">
+                      <input checked={supplier.checked} id={'supplierCheck_' + supplier._id} className="substituted" type="checkbox" aria-hidden="true" 
+                        onChange={()=>checkSupplier(supplier._id)}/>
+                      <label htmlFor={'supplierCheck_' + supplier._id}></label>
+                    </td>
+                    <td>
+                      <label>{supplier.fullName}</label>
+                    </td>
+                  </tr>
+                ))
+              }
+              </tbody>
+            </table>
+          </div>
+          {isSupplierPopup&&<div className='allScreen' onClick={()=>setIsSupplierPopup(false)}/>}
+				</div>
+				<BarGraph 
+					height={520} content={purchases} 
+					timeFrame={purchaseData.timeFrame} color={isSum==='sum' ? (purchaseYAxis==='money' ?'#4dab66' : '#518194') : null}
+					yAxisTickFormat={d=>{
+						return purchaseYAxis==='money' ?  nFormatter(d*exchangeRates[currency]) + currencies[currency].symbol : (Math.floor(d)===d ? nFormatter(d) : '')
+					}} namesButtonText='+ suppliers'
+          onTagClick={()=>setIsSupplierPopup(true)}
+				/>
+			</div>
+      <div className='dashboardContainer'>
+				<div className='dashboardHeaderContainer' style={{position: "relative"}}>
+					<h2 className='dashboardHeader'>Logins Over Time</h2>
+          <select onChange={changeLoginTimeFrame} value={loginData.timeFrame} className='select1'>
+            <option value="year">Last Year</option>
+            <option value="month">Last Month</option>
+            <option value="week">Last week</option>
+          </select>
+				</div>
+				<BarGraph 
+					height={520} content={logins} 
+					timeFrame={loginData.timeFrame} color={'#518194'}
+					yAxisTickFormat={d=>(Math.floor(d)===d ? nFormatter(d) : '')}
+				/>
+			</div>
     </div>
   </div>
 }
