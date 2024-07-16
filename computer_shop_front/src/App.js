@@ -15,7 +15,7 @@ import SupplierDashboard from './pages/supplierDashboard/supplierDashboard';
 import AdminConsole from './pages/adminConsole/adminConsole';
 import ProductPage from './pages/productPage/productPage';
 import SupplierPage from './pages/supplierPage/supplierPage';
-import ConfirmPurchase from './confirmPurchase/confirmPurchase';
+import ConfirmPurchase from './pages/confirmPurchase/confirmPurchase';
 
 const App = () => {
   const [user, setUser] = useState({});
@@ -70,6 +70,8 @@ const App = () => {
   else if(user.level === 1) MainPage = SupplierDashboard;
   else if(user.level === 2) MainPage = AdminConsole;
   else MainPage = ()=>null;
+
+  if(Object.keys(user).length === 0){return;}
 
   return (
       <UserContext.Provider value={{user, setUser}}>

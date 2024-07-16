@@ -23,6 +23,9 @@ const NewProduct = () => {
   const [photo, setPhoto] = useState('');
   const [chosenTags, setChosenTags] = useState([]);
   const [validPhoto, setValidPhoto] = useState(false);
+  const [stats, setStats] = useState({});
+  const [statTitle, setStatTitle] = useState('');
+  const [statValue, setStatValue] = useState('');
   
   useEffect(() => {
     const blocksFromHtml = htmlToDraft("");
@@ -31,10 +34,6 @@ const NewProduct = () => {
     const editorState = EditorState.createWithContent(contentState);
     setDescription(editorState);
   }, []);
-
-  useEffect(()=>{
-    console.log(validPhoto)
-  }, [validPhoto])
 
   const onTextChange = (state) => {
     setDescription(state);
@@ -50,7 +49,24 @@ const NewProduct = () => {
     let pr = e.target.value === ''? '' : Math.floor(e.target.value*100)/100
     e.target.value = pr;
     setPrice(pr/exchangeRates[currency]);
-  }
+  };
+
+  const addStat = () => {
+    if(Object.keys(stats).length >= 10){
+      return;
+    }
+    let temp = {...stats};
+    temp[statTitle] = statValue;
+    setStats(temp);
+    setStatTitle('');
+    setStatValue('');
+  };
+
+  const removeStat = (key) => {
+    let temp = {...stats};
+    delete temp[key];
+    setStats(temp);
+  };
 
   const addProduct = async (e) => {
     let value = draftToHtmlPuri(
@@ -98,6 +114,7 @@ const NewProduct = () => {
       }
     })
   };
+
   if(Object.keys(user).length === 0){
     return;
   }
@@ -161,6 +178,54 @@ const NewProduct = () => {
             <h3 className='inputTitle'>Tags</h3>
             <section className='inputContainer' id='tagsContainer'>
               <TagSelect value={chosenTags} onChange={setChosenTags}/>
+            </section>
+            <hr className='separator' />
+            <h3 className='inputTitle'>Stats</h3>
+            <section className='inputContainer'>
+              <table>
+                <tbody>
+                  {
+                    Object.keys(stats).map(key=><tr className='statsRow' key={key}>
+                      <td className='statTitle'>{key}</td>
+                      <td>-</td>
+                      <td className='statValue'>{stats[key]}</td>
+                      <td><button className='button1' onClick={() => removeStat(key)}>✕</button></td>
+                    </tr>)
+                    }
+                  <tr className='statsRow'>
+                    <td>
+                      <div className="input1 input2">
+                        <label>
+                          <input value={statTitle} required type='text' onChange={e=>setStatTitle(e.currentTarget.value)}/>
+                          <span>Stat Name</span>
+                        </label>
+                      </div>
+                    </td>
+                    <td>-</td>
+                    <td>
+                      <div className="input1 input2">
+                        <label>
+                          <input value={statValue} required type='text' onChange={e=>setStatValue(e.currentTarget.value)}/>
+                          <span>Stat Value</span>
+                        </label>
+                      </div>
+                    </td>
+                    <td>
+                      <button disabled={Object.keys(stats).length>=10} className='button1' onClick={addStat}>+</button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+                      {Object.keys(stats).length>=10?
+                      <p id='statsError'>No more than 10 stats</p>
+                      :
+                      <></>
+                      }
+            </section>
+            <hr className='separator' />
+            <h3 className='inputTitle'>Choose the Product's "Parent"</h3>
+            <section className='inputContainer'>
+              
             </section>
           </section>
           <section id='preview'>

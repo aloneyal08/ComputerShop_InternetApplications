@@ -1,6 +1,9 @@
 *{
     scroll-behavior: smooth;
 }
+#title{
+    padding: 25px;
+}
 #newProductContainer{
     display: flex;
     flex-direction: column;
@@ -12,11 +15,13 @@
 #divider{
     display: flex;
     flex-direction: row;
+    column-gap: 20px;
 }
 #inputs{
     border: 2px solid gainsboro;
     border-radius: 15px;
     padding: 10px 15px;
+    width: 38vw;
 }
 #preview{
     display: flex;
@@ -136,4 +141,15 @@ input[type=number] {
 }
 #tagsContainer {
     padding: 5px;
+}
+.statsRow > td > .input2{
+    margin-left: 30px;
+}
+.statsRow > td > .button1{
+    padding: 3px;
+    padding-bottom: 6px;
+    width: 25px;
+    height: 25px;
+    background-image: none;
+    background-color: rgb(162, 162, 162);
 }

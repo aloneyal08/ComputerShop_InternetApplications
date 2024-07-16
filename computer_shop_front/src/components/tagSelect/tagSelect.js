@@ -31,7 +31,7 @@ const TagSelect = ({onChange, value, isAll=false}) => {
   }
 
   return <>
-  <div className='productTags'>
+  <div className='productTags scrollBar1'>
     {value.map(tag=>(<div className='productTag' key={tag.name}><p className='productTagName'>{tag.name}</p><span id={tag.value} onClick={removeTag}>x</span></div>))}
     {isAll&&value.length===0&&<div className='productTag' style={{width: "50px"}}><p className='productTagName'>All</p></div>}
   </div>

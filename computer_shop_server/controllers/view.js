@@ -3,9 +3,13 @@ const Product = require('../models/product');
 
 const AddView = async (req, res) => {
   const { user, product } = req.body;
-  const p = await Product.findById(product);
-  if(!p)
-    return res.status(400).json({error: 'Product not found'});
+  try{
+    const p = await Product.findById(product);
+    if(!p)
+      return res.status(400).json({error: 'Product not found'});
+  } catch (err) {
+    return res.status(400).json(err);
+  }
 
 
   const view = new View({ user, product });

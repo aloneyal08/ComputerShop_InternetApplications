@@ -112,7 +112,11 @@ const ProductPage = () => {
 			method: 'POST',
 			headers: { 'Content-type': 'application/json' },
 			body: JSON.stringify({user: user._id ? user._id : null, product: productId})
-		}).then((res)=>res.json()).then((res)=>{});
+		}).then((res)=>res.json()).then((res)=>{
+			if(res.error){
+				navigate('/not-found');
+			}
+		});
 	}, [])
 
 	useEffect(() => {
