@@ -25,7 +25,7 @@ const Login = () => {
   }, [navigate, user])
 
   const onSubmit = () => {
-    fetch('http://localhost:88/user/login', {
+    fetch(`${process.env.REACT_APP_SERVER_URL}/user/login`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -39,7 +39,7 @@ const Login = () => {
         alert(data.error);
       } else {
         setUser(data);
-        navigate('/');
+        navigate(sessionStorage.getItem("lastUrl")||'/');
         localStorage.setItem("email", data.email);
         localStorage.setItem("password", data.password)
       }
@@ -61,7 +61,7 @@ const Login = () => {
           }
         );
         const user = await response.json();
-        fetch('http://localhost:88/user/login', {
+        fetch(`${process.env.REACT_APP_SERVER_URL}/user/login`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -76,7 +76,7 @@ const Login = () => {
             googleRegister(user, setUser, navigate);
           } else {
             setUser(data);
-            navigate('/');
+            navigate(sessionStorage.getItem("lastUrl")||'/');
             localStorage.setItem("email", data.email);
             localStorage.setItem("password", data.password)
           }

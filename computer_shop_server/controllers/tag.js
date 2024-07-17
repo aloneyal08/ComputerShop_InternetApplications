@@ -34,7 +34,7 @@ const editTag = async (req, res) => {
 	res.json(tag);
 }
 module.exports = {
-  getTags,
+	getTags,
 	addTag,
 	deleteTag,
 	editTag

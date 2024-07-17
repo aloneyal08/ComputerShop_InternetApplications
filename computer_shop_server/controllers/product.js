@@ -2,8 +2,8 @@ const Review = require('../models/review');
 const Product = require('../models/product');
 const Purchase = require('../models/purchase');
 const Tag = require('../models/tag');
-const { connect } = require('mongoose');
-const { getKeywords, removeHTMLTags } = require('../utils');
+const View = require('../models/view');
+const { getKeywords, removeHTMLTags, dateDiff } = require('../utils');
 const User = require('../models/user');
 
 const addProduct = async (req, res) => {
@@ -33,19 +33,133 @@ const addProduct = async (req, res) => {
 	res.json(product);
 };
 
+const getProductById = async (req, res) => {
+	const {id} = req.body;
+	try {
+		const product = await Product.findById(id);
+		if(!product){
+			return res.status(404).json({error: 'Product not found'});
+		}
+		res.json(product);
+	} catch(err) {
+		return res.status(404).json({error: "couldn't get product"});
+	}
+};
+
 const getProducts = async (req, res) => {
-	const products = await Product.find();
-	res.json(products);
+	const {supplier, amount, userId} = req.query;
+	const obj = {};
+	if(supplier)
+		obj.supplier = supplier;
+
+	const obj2 = {}
+	if(userId != 'undefined')
+		obj2.user = userId;
+
+	const allSuppliers = await User.find({level: 1});
+	const products = await Product.find(obj);
+	const purchases = await Purchase.find({product: {$in: products.map(p=>p._id)}, ...obj2});
+	const views = await View.find({product: {$in: products.map(p=>p._id)}, ...obj2});
+	const allReviews = await Review.find({product: {$in: products.map(p=>p._id)}});
+	const allTags = await Tag.find({});
+
+	const viewsWith = views.map(view=>{
+		const product = products.find(p=>p._id.equals(view.product));
+
+		return {...view._doc, tags: product.tags, supplier: product.supplier};
+	})
+
+	const purchasesWith = purchases.map(purchase=>{
+		const product = products.find(p=>p._id.equals(purchase.product));
+		return {...purchase._doc, tags: product.tags, supplier: product.supplier};
+	})
+
+	const tags = allTags.map(tag=>{
+		let score = 0;
+		score += viewsWith.filter(view=>view.tags.includes(tag._id.toString())).length * 0.7;
+		score += purchasesWith.filter(pur=>pur.tags.includes(tag._id.toString())).reduce((acc, curr)=>acc+curr.quantity, 0);
+		return {...tag._doc, score};
+	})
+	let totalTagScore = tags.reduce((acc, curr)=>acc+curr.score, 0);
+
+	const suppliers = allSuppliers.map(supplier=>{
+		let score = 0;
+		score += viewsWith.filter(view=>view.supplier.equals(supplier._id)).length * 0.7;
+		score += purchasesWith.filter(pur=>pur.supplier.equals(supplier._id)).reduce((acc, curr)=>acc+curr.quantity, 0);
+		return {...supplier._doc, score};
+	});
+	let totalSupplierScore = suppliers.reduce((acc, curr)=>acc+curr.score, 0);
+	
+
+	const recommendedProducts = products.map(product=>{
+		const reviews = allReviews.filter(rev=>rev.product.equals(product._id));
+		let rating = 0;
+		reviews.forEach((rev) => {rating += rev.rating});
+		if(reviews.length > 0){rating /= reviews.length;}
+		else rating = 0.5;
+
+		const myPurchases = purchases.filter(pur=>product._id.equals(pur.product));
+		const myViews = views.filter(view=>product._id.equals(view.product));
+		const purchaseToViewRatio = myViews.length===0 ? 0 : myPurchases.length/myViews.length;
+
+		let tagScore = 0;
+		product.tags.forEach(tag=>{
+			tagScore += tags.find(t=>t._id.equals(tag)).score;
+		})
+
+		const supplierScore = suppliers.find(s=>s._id.equals(product.supplier)).score;
+
+		const score = 0.1 * (rating/5) + 0.2*purchaseToViewRatio + (tagScore/(totalTagScore+1)) + 0.3*(supplierScore/(totalSupplierScore+1)) - (userId==="undefined" ? 0 : myPurchases.reduce((acc, curr)=>acc+curr.quantity, 0));
+		return {...product._doc, score, rating};
+
+	}).sort((a,b)=>b.score-a.score);
+
+	res.json(recommendedProducts.slice(0, amount||50));
 };
 
 const getNewProducts = async (req, res) => {
-	const products = await Product.find().sort({$natural:-1});
+	const {supplier, amount} = req.query;
+	const obj = {};
+	if(supplier)
+		obj.supplier = supplier;
+	
+
+	const products = await Product.find(obj).limit(amount||50).sort({date:-1});
 	res.json(products);
 };
 
 const getPopularProducts = async (req, res) => {
-	const products = await Product.find();
-	res.json(products);
+	const {supplier, amount} = req.query;
+	const obj = {};
+	if(supplier)
+		obj.supplier = supplier;
+
+	const products = await Product.find(obj);
+	const purchases = await Purchase.find({product: {$in: products.map(p=>p._id)}});
+	const allReviews = await Review.find({product: {$in: products.map(p=>p._id)}});
+
+	const popularProducts = products.map(p=>{
+		var score = 0;
+		const myPurchases = purchases.filter(pur=>p._id.equals(pur.product));
+
+		myPurchases.forEach(pur=>{
+			const date = new Date(pur.date);
+			const dayDiff = dateDiff(date, new Date());
+			score += pur.quantity/(dayDiff+1);
+		});
+
+		const reviews = allReviews.filter(rev=>rev.product.equals(p._id));
+		let rating = 0;
+		reviews.forEach((rev) => {rating += rev.rating});
+		if(reviews.length > 0){rating /= reviews.length;}
+		else rating = 0.5;
+
+		score *= rating;
+
+		return {...p._doc, score, rating};
+	}).sort((a,b)=>b.score-a.score)
+	
+	res.json(popularProducts.slice(0,amount||50));
 };
 
 const getFlashProducts = async (req, res) => {
@@ -56,17 +170,18 @@ const getFlashProducts = async (req, res) => {
 	dates[1].setDate(dates[1].getDate() - 7);
 	dates[2].setMonth(dates[2].getMonth()-1);
 	let tempList = [];
-	let p = await Purchase.aggregate([{$match: {"date": {$gte: dates[0]}}}, {$group: {_id: "$product", count: {$sum:1}}}, {$sort: {count: -1}}]).limit(1);
+	let p = await Purchase.aggregate([{$match: {"date": {$gte: dates[0]}}}, {$group: {_id: "$product", count: {$sum: "$quantity"}}}, {$sort: {count: -1}}]).limit(1);
 	tempList.push(p[0]);
-	p = await Purchase.aggregate([{$match: {"date": {$gte: dates[1]}}}, {$group: {_id: "$product", count: {$sum:1}}}, {$sort: {count: -1}}]).limit(1);
+	p = await Purchase.aggregate([{$match: {"date": {$gte: dates[1]}}}, {$group: {_id: "$product", count: {$sum: "$quantity"}}}, {$sort: {count: -1}}]).limit(1);
 	tempList.push(p[0]);
-	p = await Purchase.aggregate([{$match: {"date": {$gte: dates[2]}}}, {$group: {_id: "$product", count: {$sum:1}}}, {$sort: {count: -1}}]).limit(1);
+	p = await Purchase.aggregate([{$match: {"date": {$gte: dates[2]}}}, {$group: {_id: "$product", count: {$sum: "$quantity"}}}, {$sort: {count: -1}}]).limit(1);
 	tempList.push(p[0]);
 	for(let i = 0; i < tempList.length;++i){
 		p = await Product.findById(tempList[i]);
 		current.push(p);
 	}
 	flash.push(["Most Purchased", current, 'https://media.istockphoto.com/id/826661764/video/falling-dollar-banknotes-in-4k-loopable.jpg?s=640x640&k=20&c=VkMeB7CyxyI96uGVnRuJLg5mI4AHlVVlc9DsT6jMA0Q=']);
+	current = [];
 	p = await Product.find({date: {$gte: dates[0]}}).sort({$natural:-1}).limit(1);
 	current.push(p[0]);
 	p = await Product.find({date: {$gte: dates[1], $lte: dates[0]}}).sort({$natural:-1}).limit(1);
@@ -74,17 +189,6 @@ const getFlashProducts = async (req, res) => {
 	p = await Product.find({date: {$gte: dates[2], $lte: dates[1]}}).sort({$natural:-1}).limit(1);
 	current.push(p[0]);
 	flash.push(["Newest", current, 'https://img.freepik.com/free-vector/bokeh-lights-glitter-background_1048-8548.jpg']);
-	/*
-	current = [];
-	tempList = [];
-	p = await Review.aggregate([{$match: {"date": {$gte: dates[0]}}}, {$group: {_id: "$product", count: {$sum:1}}}, {$sort: {count: -1}}]).limit(1);
-	tempList.push(p);
-	p = await Review.aggregate([{$match: {"date": {$gte: dates[1]}}}, {$group: {_id: "$product", count: {$sum:1}}}, {$sort: {count: -1}}]).limit(1);
-	tempList.push(p);
-	p = await Review.aggregate([{$match: {"date": {$gte: dates[2]}}}, {$group: {_id: "$product", count: {$sum:1}}}, {$sort: {count: -1}}]).limit(1);
-	tempList.push(p);
-	console.log(tempList);
-	*/
 	res.json(flash);
 };
 
@@ -142,11 +246,11 @@ const search = async (req, res) => {
 				match += descriptionPriority;
 		})
 
-		const reviews = allReviews.filter(rev=>rev.product===product._id);
+		const reviews = allReviews.filter(rev=>rev.product.equals(product._id));
 		let rating = 0;
 		reviews.forEach((rev) => {rating += rev.rating});
 		if(reviews.length > 0){rating /= reviews.length;}
-		else rating = 2.5;
+		else rating = 0.5;
 
 		return {...product, match, rating};
 	}).map(p=>({...p._doc, match:p.match, rating: p.rating})).filter(p=>p.match>0);
@@ -177,7 +281,7 @@ const search = async (req, res) => {
 		if(!flag && filters.tags.length>0) 
 			return false;
 
-		if(p.price < filters.prices[0] || p.price > filters.prices[1])
+		if(filters.prices && (p.price < filters.prices[0] || p.price > filters.prices[1]))
 			return false;
 
 		if(p.rating < filters.rating)
@@ -216,6 +320,18 @@ const search = async (req, res) => {
 
 }
 
+const exactSearch = async (req, res) => {
+	const { key, tag, supplier } = req.headers;
+	const products = await Product.find();
+	
+
+	let searchedProducts = products.filter(product=>{
+		return product.name.toLowerCase().includes(key.toLowerCase())&&product.tags.includes(tag)&&product.supplier.toString()===supplier;
+	});
+
+	res.json(searchedProducts.slice(0, 50));
+}
+
 const getAutoCompletes = async (req, res) => {
 	const {key} = req.headers;
 	const products = await Product.find({});
@@ -227,13 +343,15 @@ const getAutoCompletes = async (req, res) => {
 }
 
 module.exports = {
-	addProduct,
-	getProducts,
+  addProduct,
+  getProducts,
+	getProductById,
 	getNewProducts,
 	getPopularProducts,
 	getFlashProducts,
 	editProduct,
 	deleteProduct,
 	search,
+	exactSearch,
 	getAutoCompletes
 };

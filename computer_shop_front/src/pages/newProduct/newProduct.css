@@ -1,3 +1,6 @@
+*{
+    scroll-behavior: smooth;
+}
 #newProductContainer{
     display: flex;
     flex-direction: column;
@@ -124,6 +127,12 @@ input[type=number] {
     width: fit-content;
     align-self: center;
     margin-top: 7vh;
+}
+.wrapperClassName{
+    width: 39.1vw;
+}
+.public-DraftEditor-content{
+    height: 18vh;
 }
 #tagsContainer {
     padding: 5px;

@@ -17,6 +17,7 @@ const UserSettings = () => {
   const [photo, setPhoto] = useState('');
   const [phoneValid, setPhoneValid] = useState(true);
   const [usernameValid, setUsernameValid] = useState(true);
+  const [background, setBackground] = useState('');
 
   const [email, setEmail] = useState('');
 
@@ -33,6 +34,7 @@ const UserSettings = () => {
     setPhone(user.phone||'');
     setPhoto(user.profilePhoto||'');
     setViewedImage(user.profilePhoto||'');
+    setBackground(user.background||'');
   }, [user, navigate])
 
 
@@ -45,6 +47,7 @@ const UserSettings = () => {
   const onRepeatPasswordChange = (e) => setRepeatPassword(e.target.value);
   const onPasswordChange = (e) => setPassword(e.target.value);
   const onOldPasswordChange = (e) => setOldPassword(e.target.value);
+  const onBackgroundChange = (e) => setBackground(e.target.value);
   const onPhoneChange = (e) => {
     setPhone(e.target.value);
     if(validatePhone(e.target.value)) {
@@ -65,7 +68,7 @@ const UserSettings = () => {
       return;
     }
 
-    fetch('http://localhost:88/user/update/profile', {
+    fetch(`${process.env.REACT_APP_SERVER_URL}/user/update/profile`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json'
@@ -92,7 +95,7 @@ const UserSettings = () => {
       return;
     }
 
-    fetch('http://localhost:88/user/update/password', {
+    fetch(`${process.env.REACT_APP_SERVER_URL}/user/update/password`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json'
@@ -119,7 +122,7 @@ const UserSettings = () => {
       return;
     }
 
-    fetch('http://localhost:88/user/update/username', {
+    fetch(`${process.env.REACT_APP_SERVER_URL}/user/update/username`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json'
@@ -138,8 +141,27 @@ const UserSettings = () => {
     })
   }
 
+  const onBackgroundSubmit = () => {
+    fetch(`${process.env.REACT_APP_SERVER_URL}/user/update/background`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        email: user.email,
+        background
+      })
+    }).then((res) => res.json()).then((res) => {
+      if(res.error) {
+        alert(res.error);
+      } else {
+        window.location.reload();
+      }
+    })
+  }
+
   const deleteUser = () => {
-    fetch('http://localhost:88/user/delete', {
+    fetch(`${process.env.REACT_APP_SERVER_URL}/user/delete`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json'
@@ -230,6 +252,22 @@ const UserSettings = () => {
         </div>
       </section>
     }
+    {user.level===1&&<section className='settingsPart'>
+      <h2>Supplier Page</h2>
+      <div className="input1">
+      <div className="input1 photoTextbox">
+        <label>
+          <input type='text' required onChange={onBackgroundChange} value={background}/>
+          <span>Background</span>
+        </label>
+        <div>
+          <img src={background} alt='    ' style={{width: "100px", height: "100%", marginLeft: "20px"}}/>
+        </div>
+      </div>
+      {background !== user.background 
+        && <button className='button1' style={{marginRight: "30px"}} onClick={onBackgroundSubmit}>Save</button>}
+      </div>
+    </section>}
     <section className='settingsPart'>
       <h2 className='deleteAccHeader'>DELETE USER</h2>
       <p><b style={{color: "red"}}>WARNING: </b> This action cannot be reversed. all information will be deleted, and cannot be restored. please be sure about deleting your account.</p>

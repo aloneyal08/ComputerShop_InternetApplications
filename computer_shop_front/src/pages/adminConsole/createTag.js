@@ -10,7 +10,7 @@ const CreateTag = ({reload}) => {
   const onBackgroundChange = (e) => setBackground(e.target.value);
 
   const onSubmit = () => {
-    fetch(`http://localhost:88/tag/add`, {
+    fetch(`${process.env.REACT_APP_SERVER_URL}/tag/add`, {
       method: 'POST',
       body: JSON.stringify({text, background}),
       headers: {

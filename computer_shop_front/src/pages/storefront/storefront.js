@@ -1,9 +1,13 @@
-import React, {useRef, useEffect, useState} from 'react';
+import React, {useRef, useEffect, useState, useContext} from 'react';
 import './storefront.css';
 import { FlashContainer } from './flashContainer';
 import {ProductCard} from '../../components/productCard/productCard';
+import { useNavigate } from 'react-router-dom';
+import { UserContext } from '../../Contexts';
 
 const Storefront = () => {
+  const {user} = useContext(UserContext)
+
   const [recProducts, setRecProducts] = useState([]);
   const [popProducts, setPopProducts] = useState([]);
   const [newProducts, setNewProducts] = useState([]);
@@ -14,6 +18,7 @@ const Storefront = () => {
   const [resetDelay, setResetDelay] = useState(false);
 
   const flashContainers = useRef();
+  const navigate = useNavigate();
 
   function useInterval(callback, delay) {
     const savedCallback = useRef();
@@ -69,12 +74,12 @@ const Storefront = () => {
   useInterval(moveFlash, resetDelay?null:5000)
 
   useEffect(() => {
-    fetch('http://localhost:88/product/get').then((res)=>res.json()).then((res) => {setRecProducts(res.slice(0, 50))});
-    fetch('http://localhost:88/product/get-popular').then((res)=>res.json()).then((res) => {setPopProducts(res.slice(0, 50))});
-    fetch('http://localhost:88/product/get-new').then((res)=>res.json()).then((res) => {setNewProducts(res.slice(0, 50))});
-    fetch('http://localhost:88/user/get-suppliers').then((res)=>res.json()).then((res) => {setRecSupplier(res.slice(0, 50))});
-    fetch('http://localhost:88/product/get-flash').then((res) =>res.json()).then((res) => {setFlashProducts(res)});
-  }, []);
+    fetch(`${process.env.REACT_APP_SERVER_URL}/product/get?userId=${user._id}`).then((res)=>res.json()).then((res) => {setRecProducts(res)});
+    fetch(`${process.env.REACT_APP_SERVER_URL}/product/get-popular`).then((res)=>res.json()).then((res) => {setPopProducts(res)});
+    fetch(`${process.env.REACT_APP_SERVER_URL}/product/get-new`).then((res)=>res.json()).then((res) => {setNewProducts(res)});
+    fetch(`${process.env.REACT_APP_SERVER_URL}/user/get-suppliers`).then((res)=>res.json()).then((res) => {setRecSupplier(res)});
+    fetch(`${process.env.REACT_APP_SERVER_URL}/product/get-flash`).then((res) =>res.json()).then((res) => {setFlashProducts(res)});
+  }, [user._id]);
   return <div>
     <div id='flashWrapper'>
       <div id='dots'>{flashProducts.map((p, index) => <span key={index} className={`dot ${flashPos===index?'selected':''}`} onClick={() => {moveFlash(index)}}>•</span>)}</div>
@@ -84,7 +89,7 @@ const Storefront = () => {
     </div>
     <div id='showContainer'>
       <h1 className='title'>Recommended</h1>
-      <div className='itemContainer scrollBar1' onLoad={scrollHandle} onScroll={scrollHandle}>
+      <div className='itemContainer scrollBar1 hover' onLoad={scrollHandle} onScroll={scrollHandle}>
         <button className='moveLeft' onClick={(e) => {moveSide(e, -1)}}>
           {'<'}
         </button>
@@ -94,7 +99,7 @@ const Storefront = () => {
         </button>
       </div>
       <h1 className='title'>Popular</h1>
-      <div className='itemContainer scrollBar1' onLoad={scrollHandle} onScroll={scrollHandle}>
+      <div className='itemContainer scrollBar1 hover' onLoad={scrollHandle} onScroll={scrollHandle}>
         <button className='moveLeft' disabled={true} onClick={(e) => {moveSide(e, -1)}}>
           {'<'}
         </button>
@@ -104,7 +109,7 @@ const Storefront = () => {
         </button>
       </div>
       <h1 className='title'>New</h1>
-      <div className='itemContainer scrollBar1' onLoad={scrollHandle} onScroll={scrollHandle}>
+      <div className='itemContainer scrollBar1 hover' onLoad={scrollHandle} onScroll={scrollHandle}>
         <button className='moveLeft' disabled={true} onClick={(e) => {moveSide(e, -1)}}>
           {'<'}
         </button>
@@ -114,14 +119,14 @@ const Storefront = () => {
         </button>
       </div>
       <h1 className='title'>Recommended</h1>
-      <div className='itemContainer scrollBar1' onLoad={scrollHandle} onScroll={scrollHandle} style={{marginLeft: '50px'}}>
+      <div className='itemContainer scrollBar1 hover' onLoad={scrollHandle} onScroll={scrollHandle} style={{marginLeft: '50px'}}>
       <button className='moveLeft' disabled={true} onClick={(e) => {moveSide(e, -1)}}>
         {'<'}
       </button>
       {recSupplier.map((supplier)=>
-      <div className='userCard' key={supplier._id}>
-        <img alt='           ' className='userPhoto' src={supplier.profilePhoto} onError={(e) =>{e.currentTarget.src = require('../../images/userDefault.png')}} />
-        <h4>{supplier.fullName}</h4>
+      <div className='userCard' key={supplier._id} onClick={()=>navigate(`/supplier/${supplier._id}`)}>
+        <img alt='           ' className='userPhoto' src={supplier.profilePhoto||require('../../images/userDefault.png')} onError={(e) =>{e.currentTarget.src = require('../../images/userDefault.png')}} />
+        <h4 className='supplierName'>{supplier.fullName}</h4>
       </div>)}
         <button className='moveRight' onClick={(e) => {moveSide(e, 1)}}>
           {'>'}

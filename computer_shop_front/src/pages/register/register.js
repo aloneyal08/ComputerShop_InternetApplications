@@ -6,7 +6,7 @@ import { useGoogleLogin } from '@react-oauth/google';
 import './register.css';
 
 export const googleRegister = (user, setUser, navigate) => {
-  fetch('http://localhost:88/user/register', {
+  fetch(`${process.env.REACT_APP_SERVER_URL}/user/register`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
@@ -117,7 +117,7 @@ const Register = () => {
     }
     
     
-    fetch(`http://localhost:88/${isSupplier ? 'supplier/request/create' : 'user/register'}`, {
+    fetch(`${process.env.REACT_APP_SERVER_URL}/${isSupplier ? 'supplier/request/create' : 'user/register'}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -181,7 +181,7 @@ const Register = () => {
       <div className="input1">
         <label>
           <input type='text' required onChange={onEmailChange} onBlur={checkEmailValid} className={emailValid ? '' : 'invalidBox'}/>
-          <span className={emailValid ? '' : 'invalidText'}>{emailValid ? 'Email*' : 'INVALID EMAIL*'}</span>
+          <span className={emailValid ? '' : 'invalidText'}>{emailValid ? `Email* ${isSupplier ? '(Contact)' : ''}` : 'INVALID EMAIL*'}</span>
         </label>
       </div>
       <div className="input1">

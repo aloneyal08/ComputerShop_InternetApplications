@@ -10,10 +10,18 @@ const Purchase = new Schema({
     type: mongoose.Types.ObjectId,
     required: true
   },
-  date: {
-    type: Date,
+  quantity : {
+    type: Number,
     required: true
   },
+  date: {
+    type: Date,
+    default: Date.now
+  },
+  price: {
+    type: Number,
+    required: true
+  }
 });
 
 module.exports = mongoose.model('Purchase', Purchase);

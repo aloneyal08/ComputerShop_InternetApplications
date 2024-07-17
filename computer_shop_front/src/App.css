@@ -50,6 +50,12 @@
   outline: 0;
 }
 
+.button1:disabled{
+  background-image: linear-gradient(#7b8590, #58616b);
+  color: rgb(163, 163, 163);
+  text-decoration:line-through;
+}
+
 @media (max-width: 420px) {
   .button1 {
     height: 48px;
@@ -157,6 +163,8 @@
 }
 .userPhoto{
   border-radius: 50%;
+  width: 150px;
+  height: 150px;
 }
 .scrollBar1{
   padding-bottom: 7px;
@@ -170,15 +178,19 @@
   background-color: #e7e7e743;
   border: 1px solid #cacaca;
   box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.3);
-  visibility: hidden;
 }
 .scrollBar1::-webkit-scrollbar-thumb{
   transition: 0.3s;
   border-radius: 8px;
   background: radial-gradient(rgba(220, 220, 220, 0.258), rgba(173, 173, 173, 0.685));
+}
+.hover.scrollBar1::-webkit-scrollbar-track{
   visibility: hidden;
 }
-.scrollBar1:hover::-webkit-scrollbar-track, .scrollBar1:hover::-webkit-scrollbar-thumb{
+.hover.scrollBar1::-webkit-scrollbar-thumb{
+  visibility: hidden;
+}
+.hover.scrollBar1:hover::-webkit-scrollbar-track, .hover.scrollBar1:hover::-webkit-scrollbar-thumb{
   transition: 0.3s;
   visibility: visible;
 }
@@ -295,6 +307,31 @@
 .iconButton:hover {
   background-color: rgba(0, 0, 0, .05);
 }
+.scrollBar2::-webkit-scrollbar{
+  width: 10px;
+}
+.scrollBar2::-webkit-scrollbar-track{
+  transition: 0.3s;
+  border-radius: 8px;
+  background-color: #e7e7e743;
+  border: 1px solid #cacaca;
+  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.3);
+}
+.scrollBar2::-webkit-scrollbar-thumb{
+  transition: 0.3s;
+  border-radius: 8px;
+  background: radial-gradient(rgba(220, 220, 220, 0.258), rgba(173, 173, 173, 0.685));
+}
+.hover.scrollBar2::-webkit-scrollbar-track{
+  visibility: hidden;
+}
+.hover.scrollBar2::-webkit-scrollbar-thumb{
+  visibility: hidden;
+}
+.hover.scrollBar2:hover::-webkit-scrollbar-track, .hover.scrollBar2:hover::-webkit-scrollbar-thumb{
+  transition: 0.3s;
+  visibility: visible;
+}
 
 .select1 {
   background-color: white;
@@ -357,4 +394,44 @@ select:-moz-focusring {
 
 .select-search-container {
   width: 100%;
+}
+
+.rdw-dropdown-wrapper {
+  z-index: 1;
+}
+
+.richTextInput1 {
+  height: 180px !important;
+  max-height: 180px !important;
+}
+
+.supplierNames {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  overflow-x: auto;
+  gap: 20px;
+  height: 30px;
+}
+
+.supplierColor {
+  height: 15px;
+  width: 15px;
+  border: 1px solid black;
+}
+
+.supplierBarName {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.supplierBarButton {
+  border-radius: 50px;
+  padding-left: 10px;
+  padding-right: 10px;
+  height: 20px;
+  position: relative;
+  background-color: lightgray;
+  cursor: pointer;
 }

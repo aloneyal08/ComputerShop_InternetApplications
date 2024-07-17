@@ -39,8 +39,8 @@ const SearchScreen = () => {
 
   const createSearchStr = useCallback(() => {
     if(prices[0] === 0||tags.length===0||prices[0] === -1||prices[1] === -1) return;
-    const biggerThan = prices[0]===minMaxPrices.dollar[0] ? "" : `>${prices[0]}`;
-    const smallerThan = prices[1]===minMaxPrices.dollar[1] ? "" : `<${prices[1]}`;
+    const biggerThan = prices[0]===minMaxPrices.dollar[0] ? "" : `>${Math.floor(prices[0])}`;
+    const smallerThan = prices[1]===minMaxPrices.dollar[1] ? "" : `<${Math.ceil(prices[1])}`;
     const arr = [
       ["tags", tagsFilter.map(t=>tags.find(t2=>t2._id===t.value).text).join('^')],
       ["price",  smallerThan.length>0||biggerThan.length>0 ? biggerThan + (biggerThan.length>0?"^":"") + smallerThan : ''],
@@ -56,7 +56,7 @@ const SearchScreen = () => {
 
   const getProducts = useCallback(() => {
     if(!exchangeRates[currency]) return;
-    fetch(`http://localhost:88/product/search`, {
+    fetch(`${process.env.REACT_APP_SERVER_URL}/product/search`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -78,7 +78,10 @@ const SearchScreen = () => {
           Math.floor(res.price.min*exchangeRates[currency]),
           Math.ceil(res.price.max*exchangeRates[currency])
         ]});
-        setPrices([prices[0]===-1?res.price.min:prices[0], prices[1]===-1?res.price.max:prices[1]]);
+        setPrices([
+          prices[0]===-1||prices[0]>res.price.max?res.price.min:prices[0], 
+          prices[1]===-1||prices[1]<res.price.min?res.price.max:prices[1]
+        ]);
         setSuppliers(res.suppliers.map(s=>({...s, checked: suppliers.length===0||!suppliers.includes(s.id)})))
       } else {
         setProducts(res.products);
@@ -140,26 +143,30 @@ const SearchScreen = () => {
       let prices = [-1, -1]
       conditions.forEach(con=>{
         if(isNaN(Number(con.substring(1))))return;
-        if(con[0] === '>')
+        if(con[0] === '>' && (Number(con.substring(1)) < prices[1]||prices[1]===-1))
           prices = [Number(con.substring(1)), prices[1]];
-        if(con[0] === '<')
+        if(con[0] === '<'  && (Number(con.substring(1)) > prices[0]||prices[0]===-1))
           prices = [prices[0], Number(con.substring(1))];
       })
       setPrices(prices);
     }
     if(params.rating) {
-      setRating(Number(params.rating));
+      const rating = Number(params.rating)||0.5;
+      setRating(rating > 5 ? 0.5 : rating);
     }
     if(params.discount) {
-      setDiscount(Number(params.discount));
+      const discount = Number(params.discount)||0;
+      setDiscount(discount > 100 ? 0 : discount);
     }
     if(params.suppliers) {
       setSuppliers(params.suppliers.split('^'));
     }
-    if(params.sort)
-      setSort(Number(params.sort)||1);
+    if(params.sort) {
+      const sort = Number(params.sort)||1;
+      setSort(sort > 5 ? 1 : sort)
+    }
 
-    fetch(`http://localhost:88/spell`, {
+    fetch(`${process.env.REACT_APP_SERVER_URL}/spell`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -175,6 +182,8 @@ const SearchScreen = () => {
   }, [navigate, tags])
   
   const checkSupplier = (id) => {
+    const amountChecked = suppliers.filter(s=>s.checked).length;
+    if(amountChecked === 1 && suppliers.find(s=>s.id===id).checked) return;
     setSuppliers(suppliers.map(s=>({...s, checked: (s.id === id ? !s.checked : s.checked)})))
   }
 
@@ -265,28 +274,37 @@ const SearchScreen = () => {
         <section>
           <label>Suppliers: </label>
           <div style={{marginTop: "20px"}}>
-            {
-              suppliers.map((supplier, i)=>{
-                return <div key={i}>
-                  <div className="checkbox1">
-                    <input checked={supplier.checked} id="supplierCheck" className="substituted" type="checkbox" aria-hidden="true" 
-                      onChange={()=>checkSupplier(supplier.id)}/>
-                    <label htmlFor="supplierCheck">{supplier.name}</label>
-                  </div>
-                </div>
-              })
-            }
+            <table style={{margin: "auto"}}>
+              <tbody>
+                {
+                suppliers.map((supplier, i)=>{
+                  return <tr key={i}>
+                    <td className="checkbox1">
+                      <input checked={supplier.checked} id={'supplierCheck_' + supplier.id} className="substituted" type="checkbox" aria-hidden="true" 
+                        onChange={()=>checkSupplier(supplier.id)}/>
+                        <label htmlFor={'supplierCheck_' + supplier.id}></label>
+                    </td>
+                    <td>
+                      <label >{supplier.name}</label>
+                    </td>
+                  </tr>
+                })
+              }
+              </tbody>
+            </table>
           </div>
         </section>
       </div>
-      <div className='searchProducts'>
-        {
-          products.map(product=>(
-            <ProductCard product={product} key={product._id}/>
-          ))
-        }
+      <div style={{gridArea: "main"}}>
+        <div className='searchProducts'>
+          {
+            products.map(product=>(
+              <ProductCard product={product} key={product._id}/>
+            ))
+          }
+        </div>
+        {products.length===0&&<h2>No Products Found...</h2>}
       </div>
-      {products.length===0&&<h2>No Products Found...</h2>}
     </div>
   </div>
 }
