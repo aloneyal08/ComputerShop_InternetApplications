@@ -76,6 +76,11 @@ const getPopularProducts = async (req, res) => {
 	res.json(products);
 };
 
+const getLinkedProduct = async (req, res) => {
+	let products = await Product.find({parentProduct: null});
+	res.json(products);
+}
+
 const getFlashProducts = async (req, res) => {
 	let flash = [];
 	let current = [];
@@ -262,6 +267,7 @@ module.exports = {
 	getProductById,
 	getNewProducts,
 	getPopularProducts,
+	getLinkedProduct,
 	getFlashProducts,
 	editProduct,
 	deleteProduct,

@@ -46,9 +46,11 @@
 }
 .input2 {
     margin: 0 30px 0.75rem 5px;
+    padding: 0 20px;
 }
 .input2 > label > span{
     left: 0.2rem;
+    padding: 0 20px;
 }
 .input2 > label > input:focus + span,
 .input2 > label > input:valid + span {
@@ -142,14 +144,37 @@ input[type=number] {
 #tagsContainer {
     padding: 5px;
 }
-.statsRow > td > .input2{
+.statTitle, .statValue{
+    width: 271px !important;
+    line-break: anywhere;
+}
+.statTitle{
+    font-weight: bold;
+}
+.statsRow > td > .input2, .statsRow > div > .input2{
     margin-left: 30px;
 }
-.statsRow > td > .button1{
+.statsRow > td > .button1, .statsRow > div > .button1{
     padding: 3px;
     padding-bottom: 6px;
     width: 25px;
     height: 25px;
     background-image: none;
     background-color: rgb(162, 162, 162);
+}
+#statInput{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+.select-search-option{
+    display: flex;
+    flex-direction: row;
+    column-gap: 20px;
+    align-items: center;
+}
+.productLinkImg{
+    height: 42px;
+    width: 60px;
 }

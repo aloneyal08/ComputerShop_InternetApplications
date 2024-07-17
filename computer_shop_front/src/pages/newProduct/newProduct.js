@@ -5,6 +5,7 @@ import { Editor } from "react-draft-wysiwyg";
 import { convertToRaw, EditorState, ContentState } from "draft-js";
 import htmlToDraft from 'html-to-draftjs';
 import draftToHtmlPuri from "draftjs-to-html";
+import SelectSearch from 'react-select-search';
 import 'react-select-search/style.css'
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import './newProduct.css';
@@ -26,6 +27,8 @@ const NewProduct = () => {
   const [stats, setStats] = useState({});
   const [statTitle, setStatTitle] = useState('');
   const [statValue, setStatValue] = useState('');
+  const [linkedProductOptions, setLinkedProductOptions] = useState([]);
+  const [parent, setParent] = useState(null);
   
   useEffect(() => {
     const blocksFromHtml = htmlToDraft("");
@@ -34,6 +37,12 @@ const NewProduct = () => {
     const editorState = EditorState.createWithContent(contentState);
     setDescription(editorState);
   }, []);
+
+  useEffect(() => {
+    fetch(`${process.env.REACT_APP_SERVER_URL}/product/get-linked`).then(res=>res.json()).then(res=>{
+      setLinkedProductOptions([{name: 'No Linked Product', value:null}].concat(res.map(p=>{return {name: p.name, value: p._id, photo: p.photo}})))}
+    );
+  }, [])
 
   const onTextChange = (state) => {
     setDescription(state);
@@ -55,6 +64,10 @@ const NewProduct = () => {
     if(Object.keys(stats).length >= 10){
       return;
     }
+    if(statTitle === '' || statValue === ''){
+      alert('missing stat name/value');
+      return;
+    }
     let temp = {...stats};
     temp[statTitle] = statValue;
     setStats(temp);
@@ -69,6 +82,8 @@ const NewProduct = () => {
   };
 
   const addProduct = async (e) => {
+    console.log(stats);
+    console.log(parent);
     let value = draftToHtmlPuri(
       convertToRaw(description.getCurrentContent())
     );
@@ -104,7 +119,9 @@ const NewProduct = () => {
         price: price/exchangeRates[currency],
         photo: photo === ''?null:photo,
         tags: chosenTags.length===0?null:chosenTags.map(t=>t.value),
-        supplier: user._id
+        supplier: user._id,
+        stats,
+        parentProduct: parent
       })
     }).then((res) => res.json()).then((res) => {
       if(res.error) {
@@ -187,45 +204,60 @@ const NewProduct = () => {
                   {
                     Object.keys(stats).map(key=><tr className='statsRow' key={key}>
                       <td className='statTitle'>{key}</td>
-                      <td>-</td>
                       <td className='statValue'>{stats[key]}</td>
                       <td><button className='button1' onClick={() => removeStat(key)}>✕</button></td>
                     </tr>)
                     }
-                  <tr className='statsRow'>
-                    <td>
-                      <div className="input1 input2">
-                        <label>
-                          <input value={statTitle} required type='text' onChange={e=>setStatTitle(e.currentTarget.value)}/>
-                          <span>Stat Name</span>
-                        </label>
+                    </tbody>
+                  </table>
+                    {Object.keys(stats).length<10?
+                      <div className='statsRow' id='statInput'>
+                        <div>
+                          <div className="input1 input2">
+                            <label>
+                              <input value={statTitle} style={{fontWeight: 'bold'}} required type='text' onChange={e=>setStatTitle(e.currentTarget.value)}/>
+                              <span>Stat Name</span>
+                            </label>
+                          </div>
+                        </div>
+                        <div style={{maxWidth: '10px'}}>-</div>
+                        <div>
+                          <div className="input1 input2">
+                            <label>
+                              <input value={statValue} required type='text' onChange={e=>setStatValue(e.currentTarget.value)}/>
+                              <span>Stat Value</span>
+                            </label>
+                          </div>
+                        </div>
+                        <div>
+                          <button className='button1' onClick={addStat}>+</button>
+                        </div>
                       </div>
-                    </td>
-                    <td>-</td>
-                    <td>
-                      <div className="input1 input2">
-                        <label>
-                          <input value={statValue} required type='text' onChange={e=>setStatValue(e.currentTarget.value)}/>
-                          <span>Stat Value</span>
-                        </label>
-                      </div>
-                    </td>
-                    <td>
-                      <button disabled={Object.keys(stats).length>=10} className='button1' onClick={addStat}>+</button>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+                      :
+                      <></>
+                    }
                       {Object.keys(stats).length>=10?
-                      <p id='statsError'>No more than 10 stats</p>
+                      <p style={{color: 'red', fontWeight: 'bold'}} id='statsError'>No more than 10 stats</p>
                       :
                       <></>
                       }
             </section>
             <hr className='separator' />
-            <h3 className='inputTitle'>Choose the Product's "Parent"</h3>
+            <h3 className='inputTitle'>Linked Product</h3>
             <section className='inputContainer'>
-              
+              <p style={{color: 'gray', textAlign:'left', fontSize: '14px'}}>You can't choose a product that already has a link to another product*</p>
+              <SelectSearch value={parent} onChange={(e)=>{setParent(e)}} search={true} name="link" id='linkedProductInput' options={linkedProductOptions} placeholder="Link Your Product" renderValue={(valueProps) =>
+                <div className='input1 input2'>
+                  <label>
+                  <input type='text' required {...valueProps} placeholder=''/>
+                  <span>{valueProps.placeholder}</span>
+                  </label>
+                </div>} renderOption={(optionsProps, optionsData) => {
+                    return <button className='select-search-option' {...optionsProps}>{optionsData.photo?<img alt='     ' src={optionsData.photo}  className='productLinkImg'/>:<></>}{optionsData.name}</button>
+                }}
+                filterOptions={[(arr, b) => {
+                  return arr.filter((e)=>e.name.toLocaleLowerCase().includes(b.toLocaleLowerCase()))
+                }]}/>
             </section>
           </section>
           <section id='preview'>
