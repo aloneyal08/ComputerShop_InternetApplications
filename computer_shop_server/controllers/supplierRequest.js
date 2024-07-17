@@ -82,7 +82,7 @@ const acceptRequestGet = async (req, res) => {
        </head>
        <body>
           <div class="container">
-            <h1>Couldnt Accept The Request</h1>
+            <h1>Couldn't Accept The Request</h1>
             <p>You dont have the permission to do this requst</p>
           </div>
         </body>
@@ -129,7 +129,7 @@ const acceptRequest = async (req, res) => {
        </head>
        <body>
           <div class="container">
-            <h1>Couldnt Accept The Request</h1>
+            <h1>Couldn't Accept The Request</h1>
             <p>The given request was invalid</p>
           </div>
         </body>
@@ -171,8 +171,8 @@ const acceptRequest = async (req, res) => {
        </head>
        <body>
           <div class="container">
-            <h1>Couldnt Accept The Request</h1>
-            <p>Your Requst might already have been handled, please check ur email for more information!</p>
+            <h1>Couldn't Accept The Request</h1>
+            <p>Your Requst might already have been handled, please check your email for more information!</p>
           </div>
         </body>
       </html>
@@ -262,7 +262,7 @@ const rejectRequestGet = async (req, res) => {
        </head>
        <body>
           <div class="container">
-            <h1>Couldnt Reject The Request</h1>
+            <h1>Couldn't Reject The Request</h1>
             <p>You dont have the permission to do this requst</p>
           </div>
         </body>
@@ -309,7 +309,7 @@ const rejectRequest = async (req, res) => {
        </head>
        <body>
           <div class="container">
-            <h1>Couldnt Reject The Request</h1>
+            <h1>Couldn't Reject The Request</h1>
             <p>You dont have the permissions to do this request</p>
           </div>
         </body>
@@ -352,8 +352,8 @@ const rejectRequest = async (req, res) => {
        </head>
        <body>
           <div class="container">
-            <h1>Couldnt Reject The Request</h1>
-            <p>Your Requst might already have been handled, please check ur email for more information!</p>
+            <h1>Couldn't Reject The Request</h1>
+            <p>Your Requst might already have been handled, please check your email for more information!</p>
           </div>
         </body>
       </html>
@@ -439,7 +439,7 @@ const cancelRequest = async (req, res) => {
        </head>
        <body>
           <div class="container">
-            <h1>Couldnt Cancel The Request</h1>
+            <h1>Couldn't Cancel The Request</h1>
             <p>The given request was invalid</p>
           </div>
         </body>
@@ -481,8 +481,8 @@ const cancelRequest = async (req, res) => {
        </head>
        <body>
           <div class="container">
-            <h1>Couldnt Cancel The Request</h1>
-            <p>Your Requst might already have been handled, please check ur email for more information!</p>
+            <h1>Couldn't Cancel The Request</h1>
+            <p>Your Requst might already have been handled, please check your email for more information!</p>
           </div>
         </body>
       </html>
