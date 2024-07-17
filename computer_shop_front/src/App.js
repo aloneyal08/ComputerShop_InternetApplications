@@ -16,6 +16,7 @@ import AdminConsole from './pages/adminConsole/adminConsole';
 import ProductPage from './pages/productPage/productPage';
 import SupplierPage from './pages/supplierPage/supplierPage';
 import ConfirmPurchase from './pages/confirmPurchase/confirmPurchase';
+import { NotFound } from './pages/notFound/notFound';
 
 const App = () => {
   const [user, setUser] = useState({});
@@ -90,7 +91,7 @@ const App = () => {
                   <Route path="/search" element={<SearchScreen />} />
                   <Route path="/supplier/:supplierId" element={<SupplierPage />} />
                   <Route path='/purchase/confirm' element={<ConfirmPurchase />} />
-                  <Route path="*" element={<h1>Not Found</h1>} />
+                  <Route path="*" element={<NotFound/>} />
                 </Routes>
               </div>
             </div>
