@@ -2,7 +2,6 @@ const Message = require('../models/Message');
 const request = require('request')
 const { sendEmail, removeHTMLTags } = require('../utils');
 require('dotenv').config()
-
 const createMessage = async (req, res) => {
   const {to, content, subject, header, from, level} = req.body;
 
