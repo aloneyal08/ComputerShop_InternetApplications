@@ -109,7 +109,7 @@ const getProducts = async (req, res) => {
 
 		const supplierScore = suppliers.find(s=>s._id.equals(product.supplier)).score;
 
-		const score = 0.1 * (rating/5) + 0.2*purchaseToViewRatio + 1*(tagScore/(totalTagScore+1)) + 0.3*(supplierScore/(totalSupplierScore+1))
+		const score = 0.1 * (rating/5) + 0.2*purchaseToViewRatio + 1*(tagScore/(totalTagScore+1)) + 0.3*(supplierScore/(totalSupplierScore+1)) - myPurchases.reduce((acc, curr)=>acc+curr.quantity, 0);
 		return {...product._doc, score, rating};
 
 	}).sort((a,b)=>b.score-a.score);
