@@ -28,6 +28,7 @@ const ProductPage = () => {
 	const [ratingPercentages, setRatingPercentages] = useState([]);
 	const [quantity, setQuantity] = useState(1);
 	const [supplierName, setSupplierName] = useState('');
+	const [linkedProducts, setLinkedProduct] = useState([]);
 
 	const reviewList = useRef(null);
 
@@ -168,6 +169,15 @@ const ProductPage = () => {
 	  	}).then((res)=>res.json()).then((res)=>{
 			setSupplierName(res.fullName);
 	  	});
+			fetch(`${process.env.REACT_APP_SERVER_URL}/product/linked`,{
+				method: 'POST',
+					headers: {
+					'Content-Type': 'application/json'
+					},
+					body: JSON.stringify({product: product._id})
+				}).then((res)=>res.json()).then((res)=>{
+					setLinkedProduct(res);
+				});
 		}
 	}, [product])
 
@@ -194,6 +204,23 @@ const ProductPage = () => {
 				<div id='productDesc' dangerouslySetInnerHTML={{__html: product.description}}>
 				</div>
 				<hr className='separator'/>
+				{product.stats?
+					<p style={{columnCount: 2, textAlign: 'left', paddingLeft: '20px'}}>
+						{Object.keys(product.stats).map(key=><><b>{key}</b>: {product.stats[key]}<br /></>)}
+					</p>
+					:
+					<></>
+				}
+				<hr className='separator'/>
+				{linkedProducts.length > 0?
+				<>
+				<h4 style={{marginRight: 'auto'}}>This Product is linked to:</h4>
+
+				<hr className='separator'/>
+				</>
+				:
+				<></>
+				}
 				{   product.tags?
 					<div id='tags'>
 						{product.tags.map((tag, index)=>(<div className='productTag' key={index} ><p className='productTagName'>{tag}</p></div>))}

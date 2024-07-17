@@ -2,7 +2,6 @@ const Review = require('../models/review');
 const Product = require('../models/product');
 const Purchase = require('../models/purchase');
 const Tag = require('../models/tag');
-const { connect } = require('mongoose');
 const { getKeywords, removeHTMLTags } = require('../utils');
 const User = require('../models/user');
 
@@ -78,6 +77,20 @@ const getPopularProducts = async (req, res) => {
 
 const getLinkedProduct = async (req, res) => {
 	let products = await Product.find({parentProduct: null});
+	res.json(products);
+}
+
+const getAllLinked = async (req, res) => {
+	const {product} = req.body;
+	p = await Product.findById(product);
+	let products = [];
+	console.log(p.parentProduct)
+	if(p.parentProduct !== null){
+		products.push(await Product.findById(p.parentProduct));
+		products = products.concat(await Product.find({parentProduct: p.parentProduct, _id: {$nin: [p._id]}}))
+	} else{
+		products = await Product.find({parentProduct: p._id});
+	}
 	res.json(products);
 }
 
@@ -268,6 +281,7 @@ module.exports = {
 	getNewProducts,
 	getPopularProducts,
 	getLinkedProduct,
+	getAllLinked,
 	getFlashProducts,
 	editProduct,
 	deleteProduct,

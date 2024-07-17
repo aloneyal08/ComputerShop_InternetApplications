@@ -156,12 +156,7 @@ export const NavBar = () => {
 			</div>}
 			<div className='navBarOthers'>
 				<div className='nbImageContainer' onMouseEnter={()=>setAccountPopupOpen(true)} onMouseLeave={leaveAccountIcon}>
-					<img src={user.profilePhoto} alt='' className='navBarPhoto navBarAccountPhoto' style={{zIndex: 2}}/>
-					<img 
-						src={require('../../images/userDefault.png')} 
-						alt='' className='navBarPhoto navBarAccountPhoto' 
-						style={{zIndex: 1}}
-					/>
+					<img src={user.profilePhoto} alt='' className='navBarPhoto navBarAccountPhoto' onError={(e) =>{e.currentTarget.src = require('../../images/userDefault.png')}}/>
 				</div>
 				{user.level === 1
 					? <button className='addProduct' onClick={()=>navigate("/product/new")}/>
@@ -194,13 +189,7 @@ export const NavBar = () => {
 			<div className='arrowUp'/>
 			<h3>{user.email}</h3>
 			<div style={{marginTop: "15px", height: "80px"}}>
-				<img src={user.profilePhoto} alt='' className='photoPreview navBarAccountPhoto' style={{zIndex: 2}}/>
-				<img 
-					src={require('../../images/userDefault.png')}
-					alt='' 
-					className='photoPreview navBarAccountPhoto' 
-					style={{zIndex: 1}}
-				/>
+				<img src={user.profilePhoto} alt='' className='photoPreview navBarAccountPhoto' onError={(e) =>{e.currentTarget.src = require('../../images/userDefault.png')}}/>
 			</div>
 			<h1>Hello, {user.fullName||"Guest"}</h1>
 			<div className='accountPopupButtons'>
