@@ -1,9 +1,9 @@
 import React, {useEffect, useState, useContext} from 'react';
 import {useNavigate} from 'react-router-dom';
-import {MoneyContext, UserContext} from '../Contexts';
+import {MoneyContext, UserContext} from '../../Contexts';
 import './confirmPurchase.css';
 
-const currencies = require('../currencies.json');
+const currencies = require('../../currencies.json');
 
 const ConfirmPurchase = () =>{
   const [purchase, setPurchase] = useState(-1);

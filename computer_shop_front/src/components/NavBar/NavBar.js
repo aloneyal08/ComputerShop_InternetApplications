@@ -73,6 +73,7 @@ export const NavBar = () => {
 		const urlParams = new URLSearchParams(window.location.search);
 		const key = urlParams.get('key')||'';
 		setSearch(key.split("::")[0]);
+		setSearchValue(key.split("::")[0]);
 
 		var canvas = arrowRef.current;
 		if (canvas.getContext) {

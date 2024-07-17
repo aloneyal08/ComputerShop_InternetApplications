@@ -2,8 +2,8 @@ const Review = require('../models/review');
 const Product = require('../models/product');
 const Purchase = require('../models/purchase');
 const Tag = require('../models/tag');
-const { connect } = require('mongoose');
-const { getKeywords, removeHTMLTags } = require('../utils');
+const View = require('../models/view');
+const { getKeywords, removeHTMLTags, dateDiff } = require('../utils');
 const User = require('../models/user');
 
 const addProduct = async (req, res) => {
@@ -47,13 +47,74 @@ const getProductById = async (req, res) => {
 };
 
 const getProducts = async (req, res) => {
-	const {supplier, amount} = req.query;
+	const {supplier, amount, userId} = req.query;
 	const obj = {};
 	if(supplier)
 		obj.supplier = supplier;
 
-	const products = await Product.find(obj).limit(amount||50);
-	res.json(products);
+	const obj2 = {}
+	if(userId != 'undefined')
+		obj2.user = userId;
+
+	const allSuppliers = await User.find({level: 1});
+	const products = await Product.find(obj);
+	const purchases = await Purchase.find({product: {$in: products.map(p=>p._id)}, ...obj2});
+	const views = await View.find({product: {$in: products.map(p=>p._id)}, ...obj2});
+	const allReviews = await Review.find({product: {$in: products.map(p=>p._id)}});
+	const allTags = await Tag.find({});
+
+	const viewsWith = views.map(view=>{
+		const product = products.find(p=>p._id.equals(view.product));
+
+		return {...view._doc, tags: product.tags, supplier: product.supplier};
+	})
+
+	const purchasesWith = purchases.map(purchase=>{
+		const product = products.find(p=>p._id.equals(purchase.product));
+		return {...purchase._doc, tags: product.tags, supplier: product.supplier};
+	})
+
+	const tags = allTags.map(tag=>{
+		let score = 0;
+		score += viewsWith.filter(view=>view.tags.includes(tag._id.toString())).length * 0.7;
+		score += purchasesWith.filter(pur=>pur.tags.includes(tag._id.toString())).reduce((acc, curr)=>acc+curr.quantity, 0);
+		return {...tag._doc, score};
+	})
+	let totalTagScore = tags.reduce((acc, curr)=>acc+curr.score, 0);
+
+	const suppliers = allSuppliers.map(supplier=>{
+		let score = 0;
+		score += viewsWith.filter(view=>view.supplier.equals(supplier._id)).length * 0.7;
+		score += purchasesWith.filter(pur=>pur.supplier.equals(supplier._id)).reduce((acc, curr)=>acc+curr.quantity, 0);
+		return {...supplier._doc, score};
+	});
+	let totalSupplierScore = suppliers.reduce((acc, curr)=>acc+curr.score, 0);
+	
+
+	const recommendedProducts = products.map(product=>{
+		const reviews = allReviews.filter(rev=>rev.product.equals(product._id));
+		let rating = 0;
+		reviews.forEach((rev) => {rating += rev.rating});
+		if(reviews.length > 0){rating /= reviews.length;}
+		else rating = 0.5;
+
+		const myPurchases = purchases.filter(pur=>product._id.equals(pur.product));
+		const myViews = views.filter(view=>product._id.equals(view.product));
+		const purchaseToViewRatio = myViews.length===0 ? 0 : myPurchases.length/myViews.length;
+
+		let tagScore = 0;
+		product.tags.forEach(tag=>{
+			tagScore += tags.find(t=>t._id.equals(tag)).score;
+		})
+
+		const supplierScore = suppliers.find(s=>s._id.equals(product.supplier)).score;
+
+		const score = 0.1 * (rating/5) + 0.2*purchaseToViewRatio + (tagScore/(totalTagScore+1)) + 0.3*(supplierScore/(totalSupplierScore+1)) - (userId==="undefined" ? 0 : myPurchases.reduce((acc, curr)=>acc+curr.quantity, 0));
+		return {...product._doc, score, rating};
+
+	}).sort((a,b)=>b.score-a.score);
+
+	res.json(recommendedProducts.slice(0, amount||50));
 };
 
 const getNewProducts = async (req, res) => {
@@ -61,8 +122,9 @@ const getNewProducts = async (req, res) => {
 	const obj = {};
 	if(supplier)
 		obj.supplier = supplier;
+	
 
-	const products = await Product.find(obj).limit(amount||50).sort({$natural:-1});
+	const products = await Product.find(obj).limit(amount||50).sort({date:-1});
 	res.json(products);
 };
 
@@ -72,8 +134,32 @@ const getPopularProducts = async (req, res) => {
 	if(supplier)
 		obj.supplier = supplier;
 
-	const products = await Product.find(obj).limit(amount||50);
-	res.json(products);
+	const products = await Product.find(obj);
+	const purchases = await Purchase.find({product: {$in: products.map(p=>p._id)}});
+	const allReviews = await Review.find({product: {$in: products.map(p=>p._id)}});
+
+	const popularProducts = products.map(p=>{
+		var score = 0;
+		const myPurchases = purchases.filter(pur=>p._id.equals(pur.product));
+
+		myPurchases.forEach(pur=>{
+			const date = new Date(pur.date);
+			const dayDiff = dateDiff(date, new Date());
+			score += pur.quantity/(dayDiff+1);
+		});
+
+		const reviews = allReviews.filter(rev=>rev.product.equals(p._id));
+		let rating = 0;
+		reviews.forEach((rev) => {rating += rev.rating});
+		if(reviews.length > 0){rating /= reviews.length;}
+		else rating = 0.5;
+
+		score *= rating;
+
+		return {...p._doc, score, rating};
+	}).sort((a,b)=>b.score-a.score)
+	
+	res.json(popularProducts.slice(0,amount||50));
 };
 
 const getFlashProducts = async (req, res) => {
@@ -160,7 +246,7 @@ const search = async (req, res) => {
 				match += descriptionPriority;
 		})
 
-		const reviews = allReviews.filter(rev=>rev.product===product._id);
+		const reviews = allReviews.filter(rev=>rev.product.equals(product._id));
 		let rating = 0;
 		reviews.forEach((rev) => {rating += rev.rating});
 		if(reviews.length > 0){rating /= reviews.length;}

@@ -15,7 +15,7 @@ import SupplierDashboard from './pages/supplierDashboard/supplierDashboard';
 import AdminConsole from './pages/adminConsole/adminConsole';
 import ProductPage from './pages/productPage/productPage';
 import SupplierPage from './pages/supplierPage/supplierPage';
-import ConfirmPurchase from './confirmPurchase/confirmPurchase';
+import ConfirmPurchase from './pages/confirmPurchase/confirmPurchase';
 
 const App = () => {
   const [user, setUser] = useState({});
