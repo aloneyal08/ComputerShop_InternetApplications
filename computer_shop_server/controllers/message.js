@@ -22,7 +22,7 @@ const createMessage = async (req, res) => {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        message: header + "\n" + removeHTMLTags(content),
+        message: header + "\n\n" + removeHTMLTags(content),
         access_token: process.env.FACEBOOK_TOKEN
       }),
     }, (error, response, body)=>{
