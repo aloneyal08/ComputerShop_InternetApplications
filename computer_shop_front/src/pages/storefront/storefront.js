@@ -1,10 +1,13 @@
-import React, {useRef, useEffect, useState} from 'react';
+import React, {useRef, useEffect, useState, useContext} from 'react';
 import './storefront.css';
 import { FlashContainer } from './flashContainer';
 import {ProductCard} from '../../components/productCard/productCard';
 import { useNavigate } from 'react-router-dom';
+import { UserContext } from '../../Contexts';
 
 const Storefront = () => {
+  const {user} = useContext(UserContext)
+
   const [recProducts, setRecProducts] = useState([]);
   const [popProducts, setPopProducts] = useState([]);
   const [newProducts, setNewProducts] = useState([]);
@@ -71,12 +74,12 @@ const Storefront = () => {
   useInterval(moveFlash, resetDelay?null:5000)
 
   useEffect(() => {
-    fetch(`${process.env.REACT_APP_SERVER_URL}/product/get`).then((res)=>res.json()).then((res) => {setRecProducts(res)});
+    fetch(`${process.env.REACT_APP_SERVER_URL}/product/get?userId=${user._id}`).then((res)=>res.json()).then((res) => {setRecProducts(res)});
     fetch(`${process.env.REACT_APP_SERVER_URL}/product/get-popular`).then((res)=>res.json()).then((res) => {setPopProducts(res)});
     fetch(`${process.env.REACT_APP_SERVER_URL}/product/get-new`).then((res)=>res.json()).then((res) => {setNewProducts(res)});
     fetch(`${process.env.REACT_APP_SERVER_URL}/user/get-suppliers`).then((res)=>res.json()).then((res) => {setRecSupplier(res)});
     fetch(`${process.env.REACT_APP_SERVER_URL}/product/get-flash`).then((res) =>res.json()).then((res) => {setFlashProducts(res)});
-  }, []);
+  }, [user._id]);
   return <div>
     <div id='flashWrapper'>
       <div id='dots'>{flashProducts.map((p, index) => <span key={index} className={`dot ${flashPos===index?'selected':''}`} onClick={() => {moveFlash(index)}}>•</span>)}</div>
