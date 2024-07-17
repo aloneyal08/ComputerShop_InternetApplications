@@ -435,3 +435,7 @@ select:-moz-focusring {
   background-color: lightgray;
   cursor: pointer;
 }
+
+.rdw-list-dropdown {
+  z-index: unset !important;
+}

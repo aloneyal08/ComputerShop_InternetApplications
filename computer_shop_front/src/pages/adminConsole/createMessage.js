@@ -22,7 +22,7 @@ const CreateMessage = ({reload}) => {
       return;
     }
     fetch(`${process.env.REACT_APP_SERVER_URL}/user/emails`).then((res) => res.json()).then((res) =>{
-      setEmails(['all', 'users', 'suppliers', 'admins'].concat(res));
+      setEmails(['all', 'users', 'suppliers', 'admins', 'post to Facebook'].concat(res));
     });
   }, [user])
 
@@ -58,7 +58,14 @@ const CreateMessage = ({reload}) => {
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({to, subject, header, content: c, from: user.email, level: user.level}),
+      body: JSON.stringify({
+        to: to==="post to Facebook" ? "facebook" : to, 
+        subject, 
+        header, 
+        content: c, 
+        from: user.email, 
+        level: user.level
+      }),
     }).then(res=>res.json()).then(res=>{
       if(res.error) {
         alert(res.error);
@@ -93,14 +100,14 @@ const CreateMessage = ({reload}) => {
         }} />}
       <div className="input1">
         <label>
-          <input type='text' required onChange={onSubjectChange}/>
+          <input type='text' required onChange={onSubjectChange} value={subject}/>
           <span>Subject</span>
         </label>
       </div>
       <span>Content</span>
       <div className="input1">
         <label>
-          <input type='text' required onChange={onHeaderChange}/>
+          <input type='text' required onChange={onHeaderChange} value={header}/>
           <span>Header</span>
         </label>
       </div>
