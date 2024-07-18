@@ -7,6 +7,7 @@ const View = require('../models/view');
 const Login = require('../models/login');
 
 const { encrypt, decrypt } = require('../utils');
+const { default: mongoose } = require('mongoose');
 
 
 const getUserById = async (req, res) => {
@@ -178,6 +179,7 @@ const deleteUser = async (req, res) => {
       await View.deleteMany({product})
       await Purchase.updateMany({product},{$set: {product: null}})
     })
+    await Product.deleteMany({supplier: user._id});
   }
 
   res.json({});
@@ -223,22 +225,22 @@ const addAdmin = async (req, res) => {
 
 const getSupplier = async (req, res) => {
   const {id} = req.query;
-  try{
-    const supplier = await User.findById(id);
-    if(!supplier || supplier.level !== 1 || supplier.suspended)
-      return res.status(404).json({error: 'Supplier not found'});
-    delete supplier.password;
+  
+  if(!mongoose.Types.ObjectId.isValid(id))
+    return res.status(404).json({error: 'Supplier not found'});
 
-    const tags = await Tag.find({});
+  const supplier = await User.findById(id);
+  if(!supplier || supplier.level !== 1 || supplier.suspended)
+    return res.status(404).json({error: 'Supplier not found'});
+  delete supplier.password;
 
-    const products = await Product.find({supplier: id});
+  const tags = await Tag.find({});
 
-    const supplierTags = tags.filter(tag=>products.find(p=>p.tags.map(t=>t.toString()).includes(tag._id.toString()))).map(tag=>({text: tag.text, _id: tag._id}));
+  const products = await Product.find({supplier: id});
 
-    res.json({supplier, tags: supplierTags});
-  } catch(e) {
-    res.status(404).json({error: 'Supplier not found'});
-  }
+  const supplierTags = tags.filter(tag=>products.find(p=>p.tags.map(t=>t.toString()).includes(tag._id.toString()))).map(tag=>({text: tag.text, _id: tag._id}));
+
+  res.json({supplier, tags: supplierTags});
 }
 
 const getSupplierProducts = async (req, res) => {
