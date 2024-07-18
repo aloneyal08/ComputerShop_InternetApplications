@@ -1,8 +1,10 @@
 import React, {useState, useEffect, useContext} from 'react';
 import {MoneyContext} from '../../Contexts';
 import {useNavigate} from 'react-router-dom';
+import { emptyProduct as ep } from '../../utils';
 
 const currencies = require('../../currencies.json');
+const emptyProduct = {...ep, name: "Product Not Available"}
 
 const CartItem = ({cartItem, index, setPrices = () => {},  changedFunc = () => {}, deleteFunc = () => {}, retrieveFunc = () => {}}) => {
 	const {currency, exchangeRates} = useContext(MoneyContext); 
@@ -44,30 +46,39 @@ const CartItem = ({cartItem, index, setPrices = () => {},  changedFunc = () => {
 			'Content-Type': 'application/json'
 			},
 			body: JSON.stringify({id: cartItem.productId})
-		}).then((res)=>res.json()).then(res=>setProduct(res));
-	}, [cartItem.productId])
+		}).then((res)=>res.json()).then(res=>{
+			if(res.error) {
+				setProduct(emptyProduct);
+				deleteFunc();
+				return;
+			}
+			setProduct(res);
+		});
+	}, [cartItem, cartItem.productId, deleteFunc])
 
 	useEffect(()=>{
-		if(product.price){
+		if(product.price && !product.empty){
 			setPrices(prev=>prev.map((p,i)=>i===index?amount*product.price:p));
 		}
-	}, [amount, product.price, setPrices, index])
+	}, [amount, product.price, setPrices, index, product.empty])
 
 	if(Object.keys(cartItem).length <= 0){return;}
 	return <tr onClick={()=>navigate(`/product/${product._id}`)} className={`cartItemContainer ${deleted?'deleted':''}`}>
 		<td className='cartItemTd'><button onClick={deleted?retrieveItem:deleteItem} className={`cartItemDelete ${deleted?'deleted':''}`}>{deleted?'⟳':'✕'}</button></td>
-		<td className='cartItemTd'><img alt='         ' className='cartItemImg' src={product.photo} /></td>
+		<td className='cartItemTd'><img alt='         ' className='cartItemImg' src={product.photo} onError={(e) =>{e.currentTarget.src = require('../../images/defaultProduct.jpg');}}/></td>
 		<td className='cartItemTd'><h2 className='cartItemName' style={{textDecoration: deleted?'line-through':'none'}}>{product.name}</h2></td>
 		<td onClick={(e)=>e.stopPropagation()} className='cartItemTd'><div className='cartItemQuantityWrapper'>
-			<button disabled={deleted} className='button1' onClick={(e) => addQuantity(e, -1)}>-</button>
-			{deleted?
-				<p>{amount}</p>
-				:
-				<input value={amount} onChange={(e)=>changeQuantity(e.currentTarget)} />
-			}
-			<button disabled={deleted} className='button1' onClick={(e) => addQuantity(e, 1)}>+</button>
+			{!product.empty&&<>
+				<button disabled={deleted} className='button1' onClick={(e) => addQuantity(e, -1)}>-</button>
+				{deleted?
+					<p>{amount}</p>
+					:
+					<input value={amount} onChange={(e)=>changeQuantity(e.currentTarget)} />
+				}
+				<button disabled={deleted} className='button1' onClick={(e) => addQuantity(e, 1)}>+</button>
+			</>}
 		</div></td>
-		<td className='cartItemTd'><h2 className='cartItemPrice'>{currencies[currency].symbol + Math.floor(product.price*amount*exchangeRates[currency]*100)/100}</h2></td>
+		{!product.empty&&<td className='cartItemTd'><h2 className='cartItemPrice'>{currencies[currency].symbol + Math.floor(product.price*amount*exchangeRates[currency]*100)/100}</h2></td>}
 	</tr>
   }
   

@@ -20,6 +20,8 @@ const NewProduct = () => {
   const [description, setDescription] = useState('');
   const [stock, setStock] = useState('');
   const [price, setPrice] = useState('');
+  const [priceVal, setPriceVal] = useState('');
+
   const [photo, setPhoto] = useState('');
   const [chosenTags, setChosenTags] = useState([]);
   const [validPhoto, setValidPhoto] = useState(false);
@@ -33,8 +35,8 @@ const NewProduct = () => {
   }, []);
 
   useEffect(()=>{
-    console.log(validPhoto)
-  }, [validPhoto])
+    setPriceVal(price === ''?'':Math.floor(price*exchangeRates[currency]*100)/100);
+  }, [currency, exchangeRates, price])
 
   const onTextChange = (state) => {
     setDescription(state);
@@ -48,7 +50,6 @@ const NewProduct = () => {
 
   const priceChange = (e) =>{
     let pr = e.target.value === ''? '' : Math.floor(e.target.value*100)/100
-    e.target.value = pr;
     setPrice(pr/exchangeRates[currency]);
   }
 
@@ -85,7 +86,7 @@ const NewProduct = () => {
         name,
         description: value,
         stock,
-        price: price/exchangeRates[currency],
+        price: price,
         photo: photo === ''?null:photo,
         tags: chosenTags.length===0?null:chosenTags.map(t=>t.value),
         supplier: user._id
@@ -152,7 +153,7 @@ const NewProduct = () => {
               <hr className='separator' />
               <div className="input1 input2 num">
                 <label>
-                  <input required type='number' step={0.01} min={0.01} onChange={priceChange}/>
+                  <input required type='number' step={0.01} min={0.01} onChange={priceChange} value={priceVal}/>
                   <span>Product Price*</span>
                 </label>
               </div>

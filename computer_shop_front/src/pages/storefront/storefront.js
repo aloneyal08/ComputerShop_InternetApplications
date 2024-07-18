@@ -74,10 +74,15 @@ const Storefront = () => {
   useInterval(moveFlash, resetDelay?null:5000)
 
   useEffect(() => {
-    fetch(`${process.env.REACT_APP_SERVER_URL}/product/get?userId=${user._id}`).then((res)=>res.json()).then((res) => {setRecProducts(res)});
+    fetch(`${process.env.REACT_APP_SERVER_URL}/product/get?userId=${user._id}`).then((res)=>res.json()).then((recP) => {
+      setRecProducts(recP)
+      fetch(`${process.env.REACT_APP_SERVER_URL}/user/get-suppliers`).then((res)=>res.json()).then((res) => {
+        const recSupplier = [...new Set(recP.map(p=>p.supplier))].map((id)=>res.find(s=>s._id===id));
+        setRecSupplier(recSupplier);
+      });
+    });
     fetch(`${process.env.REACT_APP_SERVER_URL}/product/get-popular`).then((res)=>res.json()).then((res) => {setPopProducts(res)});
     fetch(`${process.env.REACT_APP_SERVER_URL}/product/get-new`).then((res)=>res.json()).then((res) => {setNewProducts(res)});
-    fetch(`${process.env.REACT_APP_SERVER_URL}/user/get-suppliers`).then((res)=>res.json()).then((res) => {setRecSupplier(res)});
     fetch(`${process.env.REACT_APP_SERVER_URL}/product/get-flash`).then((res) =>res.json()).then((res) => {setFlashProducts(res)});
   }, [user._id]);
   return <div>

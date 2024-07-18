@@ -1,5 +1,6 @@
 const Review = require('../models/review');
 const Product = require('../models/product');
+const { default: mongoose } = require('mongoose');
 
 const writeReview = async (req, res) => {
   const { product, user, title, text, rating } = req.body;
@@ -35,6 +36,8 @@ const getRating = async (req, res) => {
 
 const getSupplierRating = async (req, res) => {
   const {supplier} = req.query;
+  if(!mongoose.Types.ObjectId.isValid(supplier))
+    return res.status(404).json({error: 'Supplier not found'});
   const products = await Product.find({supplier});
   let sRating = 0, count = 0;
   for(let i = 0;i < products.length; ++i){

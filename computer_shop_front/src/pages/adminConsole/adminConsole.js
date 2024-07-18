@@ -41,10 +41,7 @@ const AdminConsole = () => {
 
   useEffect(() => {
     fetch(`${process.env.REACT_APP_SERVER_URL}/supplier/request`).then(res=>res.json()).then(req=>{
-      setRequests(req);
-    });
-    fetch(`${process.env.REACT_APP_SERVER_URL}/user/suppliers`).then(res=>res.json()).then(s=>{
-      setSuppliers(s.map(s=>({...s, checked: true})));
+      setRequests(req.reverse());
     });
     fetch(`${process.env.REACT_APP_SERVER_URL}/message/`).then(res=>res.json()).then(m=>{
       setMessages(m);
@@ -62,24 +59,28 @@ const AdminConsole = () => {
   }, [force])
 
   useEffect(()=>{
-		fetch(`${process.env.REACT_APP_SERVER_URL}/user/supplier/purchases/time`,{
-			method: 'POST',
-			headers: {'Content-Type': 'application/json'},
-			body: JSON.stringify({
-				type: purchaseYAxis,
-				...purchaseData
-			})
-		}).then(res=>res.json()).then(data=>{
-      const dates = [...new Set(data.map(d=>d[0]))];
-			setPurchases(
-        dates.map(date=>{
-          const dateData = data.filter(d=>d[0]===date).map(d=>[d[1],d[2],d[3]]).sort((a,b)=>b[0]-a[0]).filter((d,i)=>{
-            return suppliers.length&&suppliers.find(s=>s._id===d[1]).checked
-          });
-          return [date, isSum==='sum' ? dateData.map(d=>d[0]).reduce((partialSum, a) => partialSum + a, 0) : dateData]
+    fetch(`${process.env.REACT_APP_SERVER_URL}/user/suppliers`).then(res=>res.json()).then(s=>{
+      setSuppliers(s.map(s=>({...s, checked: true})));
+      fetch(`${process.env.REACT_APP_SERVER_URL}/user/supplier/purchases/time`,{
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+          type: purchaseYAxis,
+          ...purchaseData
         })
-      );
-		});
+      }).then(res=>res.json()).then(data=>{
+        const dates = [...new Set(data.map(d=>d[0]))];
+        setPurchases(
+          dates.map(date=>{
+            const dateData = data.filter(d=>d[0]===date).map(d=>[d[1],d[2],d[3]]).sort((a,b)=>b[0]-a[0]).filter((d,i)=>{
+              const supplier = s.find(s=>s._id===d[1])||{checked: false}
+              return suppliers.length&&supplier.checked
+            });
+            return [date, isSum==='sum' ? dateData.map(d=>d[0]).reduce((partialSum, a) => partialSum + a, 0) : dateData]
+          })
+        );
+      });
+    });
 	}, [purchaseData, purchaseYAxis, force, isSum, suppliers])
 
   useEffect(()=>{

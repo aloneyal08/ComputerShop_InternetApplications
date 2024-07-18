@@ -133,7 +133,7 @@ export const NavBar = () => {
 	return <header className='navBar' style={location.pathname !== "/" || user.level === 1 || user.level === 2 ? {height: "50px"} : {}}>
 		<div className='mainBar'>
 			<div className='logo' onClick={()=>navigate("/")}>
-				<h1>SHOP</h1>
+				<h1>O.C.S</h1>
 			</div>
 			{(user.level===0||!user.level)&&<div className='searchArea'>
 				<input 
