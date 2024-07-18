@@ -16,6 +16,7 @@ import AdminConsole from './pages/adminConsole/adminConsole';
 import ProductPage from './pages/productPage/productPage';
 import SupplierPage from './pages/supplierPage/supplierPage';
 import ConfirmPurchase from './pages/confirmPurchase/confirmPurchase';
+import EditProduct from './pages/editProduct/editProduct';
 
 const App = () => {
   const [user, setUser] = useState({});
@@ -85,6 +86,7 @@ const App = () => {
                   <Route path="/login" element={<Login/>} />
                   <Route path="/register" element={<Register />} />
                   {user.level===1&&<Route path="/product/new" element={<NewProduct />} />}
+                  {user.level===1&&<Route path='/product/:productId/edit' element={<EditProduct />} />}
                   <Route path='/product/:productId' element={<ProductPage />} />
                   <Route path="/settings" element={<UserSettings />} />
                   <Route path="/cart" element={<Cart />} />

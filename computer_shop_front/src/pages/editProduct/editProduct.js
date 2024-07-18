@@ -1,22 +1,24 @@
 import React, { useState, useEffect, useContext } from 'react'
-import { UserContext, MoneyContext} from '../../Contexts';
-import { useNavigate } from 'react-router-dom';
+import { UserContext, MoneyContext, TagsContext} from '../../Contexts';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Editor } from "react-draft-wysiwyg";
-import { convertToRaw, EditorState, ContentState } from "draft-js";
+import { convertToRaw, EditorState, ContentState, convertFromRaw, convertFromHTML } from "draft-js";
 import htmlToDraft from 'html-to-draftjs';
 import draftToHtmlPuri from "draftjs-to-html";
 import SelectSearch from 'react-select-search';
 import 'react-select-search/style.css'
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
-import './newProduct.css';
 import { ProductCard } from '../../components/productCard/productCard';
 import TagSelect from '../../components/tagSelect/tagSelect';
 
-const NewProduct = () => {
+const EditProduct = () => {
+  const {productId} = useParams();
   const {user} = useContext(UserContext);
   const {currency, exchangeRates} = useContext(MoneyContext);
+  const tags = useContext(TagsContext);
   const navigate = useNavigate();
 
+  const [product, setProduct] = useState({});
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [stock, setStock] = useState('');
@@ -29,20 +31,43 @@ const NewProduct = () => {
   const [statValue, setStatValue] = useState('');
   const [linkedProductOptions, setLinkedProductOptions] = useState([]);
   const [parent, setParent] = useState(null);
-  
-  useEffect(() => {
-    const blocksFromHtml = htmlToDraft("");
-    const { contentBlocks, entityMap } = blocksFromHtml;
-    const contentState = ContentState.createFromBlockArray(contentBlocks, entityMap);
-    const editorState = EditorState.createWithContent(contentState);
-    setDescription(editorState);
-  }, []);
 
   useEffect(() => {
+		fetch(`${process.env.REACT_APP_SERVER_URL}/product/get-id`,{
+			method: 'POST',
+			headers: {
+			'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({id: productId})
+		}).then((res)=>res.json()).then((res)=>{
+			if(res.error){
+				navigate('/not-found');
+			}
+			if(res.tags && tags.length > 0){
+				res.tags = res.tags.map((tag) => {let t = tags.find(t => t._id === tag); return {name: t.text, value: t._id}}).filter(tag => tag);
+		}
+		setProduct(res)});
     fetch(`${process.env.REACT_APP_SERVER_URL}/product/get-linked`).then(res=>res.json()).then(res=>{
       setLinkedProductOptions([{name: 'No Linked Product', value:null}].concat(res.map(p=>{return {name: p.name, value: p._id, photo: p.photo}})))}
     );
-  }, [])
+  }, [productId, tags, navigate])
+
+  useEffect(()=>{
+    if(Object.keys(product).length > 0){
+      setName(product.name);
+      console.log(product.description)
+      let value = convertFromHTML(product.description);
+      value = EditorState.createWithContent(ContentState.createFromBlockArray(value.contentBlocks, value.entityMap));
+      console.log(value)
+      setDescription(value)
+      setPhoto(product.photo);
+      setStock(Number(product.stock));
+      setPrice(Math.floor(Number(product.price)*exchangeRates[currency]*100)/100);
+      setChosenTags(product.tags)
+      setStats(product.stats || []);
+      setParent(product.parentProduct);
+    }
+  }, [product, currency, exchangeRates])
 
   const onTextChange = (state) => {
     setDescription(state);
@@ -85,9 +110,7 @@ const NewProduct = () => {
     setStats(temp);
   };
 
-  const addProduct = async (e) => {
-    console.log(stats);
-    console.log(parent);
+  const saveProduct = async (e) => {
     let value = draftToHtmlPuri(
       convertToRaw(description.getCurrentContent())
     );
@@ -111,7 +134,7 @@ const NewProduct = () => {
       alert('A product picture must be entered!');
       return;
     }
-    fetch(`${process.env.REACT_APP_SERVER_URL}/product/add`, {
+    fetch(`${process.env.REACT_APP_SERVER_URL}/product/edit`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -131,7 +154,7 @@ const NewProduct = () => {
       if(res.error) {
         alert(res.error);
       } else {
-        navigate('/');
+        navigate(`/product/${product._id}`);
       }
     })
   };
@@ -148,7 +171,7 @@ const NewProduct = () => {
             <section className='inputContainer' id='baseInfoContainer'>
               <div className="input1 input2">
                 <label>
-                <input type='text' required onChange={(e) => {setName(e.target.value);}}/>
+                <input value={name} type='text' required onChange={(e) => {setName(e.target.value);}}/>
                 <span>Product Name*</span>
                 </label>
                 <hr className='separator' />
@@ -173,7 +196,7 @@ const NewProduct = () => {
             <section className='inputContainer' id='pictureContainer'>
               <div className="input1 input2">
                 <label>
-                  <input required type='text' onChange={changeImageFunc}/>
+                  <input value={photo} required type='text' onChange={changeImageFunc}/>
                   <span>Product Photo*</span>
                 </label>
               </div>
@@ -183,14 +206,14 @@ const NewProduct = () => {
             <section className='inputContainer' id='detailContainer'>
               <div className="input1 input2">
                 <label>
-                  <input required type='number' step={1} min={0} onChange={(e) => {setStock(e.target.value);}}/>
+                  <input value={stock} required type='number' step={1} min={0} onChange={(e) => {setStock(e.target.value);}}/>
                   <span>Starting Stock*</span>
                 </label>
               </div>
               <hr className='separator' />
               <div className="input1 input2 num">
                 <label>
-                  <input required type='number' step={0.01} min={0.01} onChange={priceChange}/>
+                  <input value={price} required type='number' step={0.01} min={0.01} onChange={priceChange}/>
                   <span>Product Price*</span>
                 </label>
               </div>
@@ -265,8 +288,8 @@ const NewProduct = () => {
             </section>
           </section>
           <section id='preview'>
-            <ProductCard isClickable={false} onImageError={()=>{setValidPhoto(false)}} product={{name: name===''?"Product's Name":name, price: price===''?"Product's Price":price, stock, photo, rating: 2.5, supplierName: user.fullName}} />
-            <button id='addProductBtn' onClick={addProduct} className='button1'>Add New Product</button>
+            <ProductCard isClickable={false} onImageError={()=>{setValidPhoto(false)}} product={{name: name===''?"Product's Name":name, price: price===''?"Product's Price":price/exchangeRates[currency], stock, photo, rating: 2.5, supplierName: user.fullName}} />
+            <button id='addProductBtn' onClick={saveProduct} className='button1'>Save Changes</button>
           </section>
         </div>
       </div>
@@ -274,4 +297,4 @@ const NewProduct = () => {
 
 }
 
-export default NewProduct;
+export default EditProduct;

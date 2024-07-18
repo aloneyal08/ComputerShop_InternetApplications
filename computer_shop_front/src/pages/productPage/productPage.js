@@ -205,8 +205,9 @@ const ProductPage = () => {
 				</div>
 				<hr className='separator'/>
 				{product.stats?
-					<p style={{columnCount: 2, textAlign: 'left', paddingLeft: '20px'}}>
-						{Object.keys(product.stats).map(key=><><b>{key}</b>: {product.stats[key]}<br /></>)}
+					<p id='statShow'>
+						{Object.keys(product.stats).map(key=><div key={key}><b>{key}</b>:<br/></div>)}
+						{Object.keys(product.stats).map(key=><div key={key}><i>{product.stats[key]}</i><br/></div>)}
 					</p>
 					:
 					<></>
@@ -214,8 +215,19 @@ const ProductPage = () => {
 				<hr className='separator'/>
 				{linkedProducts.length > 0?
 				<>
-				<h4 style={{marginRight: 'auto'}}>This Product is linked to:</h4>
-
+				<h4 style={{marginRight: 'auto'}}>Related Product:</h4>
+				<div className='scrollBar2' style={{display: 'flex', flexDirection: 'row', columnGap: '25px', maxWidth: '30vw', overflowX: 'auto'}}>
+					{
+						linkedProducts.map(p=>
+						<div onClick={()=>{navigate(`/product/${p._id}`)}} style={{display: 'flex', flexDirection: 'row', cursor: 'pointer', border: '1px solid gainsboro', minWidth: '200px'}} key={p._id} className='linkedProductCard'>
+							<img style={{width: '75px', height: '75px'}} alt='    ' src={p.photo} />
+							<div style={{display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', alignContent: 'center', height: 'fit-content'}}>
+								<h5 style={{margin: 0, textAlign: 'left', lineBreak: 'loose', maxWidth: '150px'}} className='linkedName'>{p.name}</h5>
+								<h5 style={{margin: 0, textAlign: 'left'}} className='linkedPrice'>{currencies[currency].symbol + Math.floor(p.price*exchangeRates[currency]*100)/100}</h5>
+							</div>
+						</div>)
+					}
+				</div>
 				<hr className='separator'/>
 				</>
 				:

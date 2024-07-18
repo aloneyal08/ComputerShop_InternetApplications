@@ -145,6 +145,7 @@ input[type=number] {
     padding: 5px;
 }
 .statTitle, .statValue{
+    padding-left: 50px;
     width: 271px !important;
     line-break: anywhere;
 }
