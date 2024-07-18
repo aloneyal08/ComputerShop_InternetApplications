@@ -5,6 +5,7 @@ const Tag = require('../models/tag');
 const View = require('../models/view');
 const { getKeywords, removeHTMLTags, dateDiff } = require('../utils');
 const User = require('../models/user');
+const { default: mongoose } = require('mongoose');
 
 const addProduct = async (req, res) => {
 	const { name, price, photo, description, stats, parentProduct, stock, supplier, tags } = req.body;
@@ -35,15 +36,17 @@ const addProduct = async (req, res) => {
 
 const getProductById = async (req, res) => {
 	const {id} = req.body;
-	try {
-		const product = await Product.findById(id);
-		if(!product){
-			return res.status(404).json({error: 'Product not found'});
-		}
-		res.json(product);
-	} catch(err) {
-		return res.status(404).json({error: "couldn't get product"});
+	if(!mongoose.Types.ObjectId.isValid(id))
+		return res.status(404).json({error: "Couldn't get product"});
+
+	const product = await Product.findById(id);
+	if(!product){
+		return res.status(404).json({error: 'Product not found'});
 	}
+	const s = await User.findOne({_id: product.supplier});
+	if(!s || s.suspended)
+		return res.status(404).json({error: "Couldn't get product"});
+	res.json(product);
 };
 
 const getProducts = async (req, res) => {
@@ -57,7 +60,10 @@ const getProducts = async (req, res) => {
 		obj2.user = userId;
 
 	const allSuppliers = await User.find({level: 1});
-	const products = await Product.find(obj);
+	const products = (await Product.find(obj)).filter(p=>{
+		const s = allSuppliers.find(s=>s._id.equals(p.supplier));
+		return s && !s.suspended
+	})
 	const purchases = await Purchase.find({product: {$in: products.map(p=>p._id)}, ...obj2});
 	const views = await View.find({product: {$in: products.map(p=>p._id)}, ...obj2});
 	const allReviews = await Review.find({product: {$in: products.map(p=>p._id)}});
@@ -123,9 +129,12 @@ const getNewProducts = async (req, res) => {
 	if(supplier)
 		obj.supplier = supplier;
 	
-
-	const products = await Product.find(obj).limit(amount||50).sort({date:-1});
-	res.json(products);
+	const suppliers = await User.find({level: 1});
+	const products = await (await Product.find(obj).sort({date:-1})).filter(p=>{
+		const s = suppliers.find(s=>s._id.equals(p.supplier));
+		return s && !s.suspended;
+	});
+	res.json(products.slice(0, amount||50));
 };
 
 const getPopularProducts = async (req, res) => {
@@ -134,7 +143,11 @@ const getPopularProducts = async (req, res) => {
 	if(supplier)
 		obj.supplier = supplier;
 
-	const products = await Product.find(obj);
+	const allSuppliers = await User.find({level: 1});
+	const products = (await Product.find(obj)).filter(p=>{
+		const s = allSuppliers.find(s=>s._id.equals(p.supplier));
+		return s && !s.suspended
+	})
 	const purchases = await Purchase.find({product: {$in: products.map(p=>p._id)}});
 	const allReviews = await Review.find({product: {$in: products.map(p=>p._id)}});
 
@@ -163,6 +176,9 @@ const getPopularProducts = async (req, res) => {
 };
 
 const getFlashProducts = async (req, res) => {
+	const products = await Product.find({});
+	const suppliers = await User.find({level: 1});
+
 	let flash = [];
 	let current = [];
 	dates = [new Date(), new Date(), new Date()];
@@ -170,24 +186,44 @@ const getFlashProducts = async (req, res) => {
 	dates[1].setDate(dates[1].getDate() - 7);
 	dates[2].setMonth(dates[2].getMonth()-1);
 	let tempList = [];
-	let p = await Purchase.aggregate([{$match: {"date": {$gte: dates[0]}}}, {$group: {_id: "$product", count: {$sum: "$quantity"}}}, {$sort: {count: -1}}]).limit(1);
-	tempList.push(p[0]);
-	p = await Purchase.aggregate([{$match: {"date": {$gte: dates[1]}}}, {$group: {_id: "$product", count: {$sum: "$quantity"}}}, {$sort: {count: -1}}]).limit(1);
-	tempList.push(p[0]);
-	p = await Purchase.aggregate([{$match: {"date": {$gte: dates[2]}}}, {$group: {_id: "$product", count: {$sum: "$quantity"}}}, {$sort: {count: -1}}]).limit(1);
-	tempList.push(p[0]);
+	let p = await Purchase.aggregate([{$match: {"date": {$gte: dates[0]}}}, {$group: {_id: "$product", count: {$sum: "$quantity"}}}, {$sort: {count: -1}}])
+
+	tempList.push(p);
+	p = await Purchase.aggregate([{$match: {"date": {$gte: dates[1]}}}, {$group: {_id: "$product", count: {$sum: "$quantity"}}}, {$sort: {count: -1}}]);
+
+	tempList.push(p);
+	p = await Purchase.aggregate([{$match: {"date": {$gte: dates[2]}}}, {$group: {_id: "$product", count: {$sum: "$quantity"}}}, {$sort: {count: -1}}]);
+
+	tempList.push(p);
+	tempList = tempList.map(arr=>{
+		return arr.filter(pur=>{
+			const p = products.find(p=>p._id.equals(pur._id));
+			const s = suppliers.find(s=>s._id.equals(p.supplier));
+			return s && !s.suspended;
+		})[0]
+	})
+
 	for(let i = 0; i < tempList.length;++i){
 		p = await Product.findById(tempList[i]);
 		current.push(p);
 	}
+
 	flash.push(["Most Purchased", current, 'https://media.istockphoto.com/id/826661764/video/falling-dollar-banknotes-in-4k-loopable.jpg?s=640x640&k=20&c=VkMeB7CyxyI96uGVnRuJLg5mI4AHlVVlc9DsT6jMA0Q=']);
 	current = [];
-	p = await Product.find({date: {$gte: dates[0]}}).sort({$natural:-1}).limit(1);
-	current.push(p[0]);
-	p = await Product.find({date: {$gte: dates[1], $lte: dates[0]}}).sort({$natural:-1}).limit(1);
-	current.push(p[0]);
-	p = await Product.find({date: {$gte: dates[2], $lte: dates[1]}}).sort({$natural:-1}).limit(1);
-	current.push(p[0]);
+	p = await Product.find({date: {$gte: dates[0]}}).sort({$natural:-1})
+	current.push(p);
+	p = await Product.find({date: {$gte: dates[1], $lte: dates[0]}}).sort({$natural:-1})
+	current.push(p);
+	p = await Product.find({date: {$gte: dates[2], $lte: dates[1]}}).sort({$natural:-1})
+	current.push(p);
+
+	current = current.map(arr=>{
+		return arr.filter(pur=>{
+			const p = products.find(p=>p._id.equals(pur._id));
+			const s = suppliers.find(s=>s._id.equals(p.supplier));
+			return s && !s.suspended;
+		})[0]
+	})
 	flash.push(["Newest", current, 'https://img.freepik.com/free-vector/bokeh-lights-glitter-background_1048-8548.jpg']);
 	res.json(flash);
 };
@@ -217,6 +253,15 @@ const deleteProduct = async (req, res) => {
 	if(!reviews){
 		return res.status(404).json({ errors: ['Product not found'] });
 	}
+
+	const purchases = await Purchase.deleteMany({product: _id});
+	if(!purchases){
+		return res.status(404).json({ errors: ['Product not found'] });
+	}
+	const views = await View.deleteMany({product: _id});
+	if(!views){
+		return res.status(404).json({ errors: ['Product not found'] });
+	}
 	res.send();
 };
 
@@ -230,9 +275,12 @@ const search = async (req, res) => {
 
 	const keywords = getKeywords(key);
 
-	const products = await Product.find({});
-	const tags = await Tag.find({});
 	const Suppliers = await User.find({level: 1});
+	const products = (await Product.find({})).filter(p=>{
+		const s = Suppliers.find(s=>s._id.equals(p.supplier));
+		return s && !s.suspended;
+	})
+	const tags = await Tag.find({});
 	const allReviews = await Review.find();
 
 	let searchedProducts = products.map(product=>{
@@ -334,7 +382,11 @@ const exactSearch = async (req, res) => {
 
 const getAutoCompletes = async (req, res) => {
 	const {key} = req.headers;
-	const products = await Product.find({});
+	const suppliers = await User.find({level: 1});
+	const products = (await Product.find({})).filter(p=>{
+		const s = suppliers.find(s=>s._id.equals(p.supplier));
+		return s && !s.suspended;
+	})
 
 	const names = products.map(p=>p.name).filter(name=>name.toLowerCase().startsWith(key)).slice(0, 10); 
 	const recommendations = products.map(p=>p.name).slice(0, 10);

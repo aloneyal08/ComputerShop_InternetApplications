@@ -83,15 +83,24 @@ const App = () => {
                   <Route path="/" element={<MainPage />} />
                   <Route path="/login" element={<Login/>} />
                   <Route path="/register" element={<Register />} />
-                  {user.level===1&&<Route path="/product/new" element={<NewProduct />} />}
-                  <Route path='/product/:productId' element={<ProductPage />} />
-                  <Route path="/settings" element={<UserSettings />} />
-                  <Route path="/cart" element={<Cart />} />
-                  <Route path="/history" element={<History />} />
-                  <Route path="/search" element={<SearchScreen />} />
-                  <Route path="/supplier/:supplierId" element={<SupplierPage />} />
-                  <Route path='/purchase/confirm' element={<ConfirmPurchase />} />
-                  <Route path="*" element={<NotFound/>} />
+                  {user.level===1&&
+                    <>
+                      <Route path="/product/new" element={<NewProduct />} />
+                      <Route path={`/supplier/${user._id}`} element={<SupplierPage id={user._id}/>} />
+                    </>
+                  }
+                  {(user.loggedOut||user.level===0)&&
+                    <>
+                      <Route path='/product/:productId' element={<ProductPage />} />
+                      <Route path="/cart" element={<Cart />} />
+                      <Route path="/supplier/:supplierId" element={<SupplierPage />} />
+                      <Route path='/purchase/confirm' element={<ConfirmPurchase />} />
+                      <Route path="/search" element={<SearchScreen />} />
+                      <Route path="/settings" element={<UserSettings />} />
+                      <Route path="/history" element={<History />} />
+                    </>
+                  }
+                  {Object.keys(user).length!==0&&<Route path="*" element={<NotFound/>} />}
                 </Routes>
               </div>
             </div>

@@ -4,9 +4,10 @@ import { useNavigate, useParams } from 'react-router-dom';
 import ReactStarsRating from 'react-awesome-stars-rating';
 import { ProductCard } from '../../components/productCard/productCard';
 
-const SupplierPage = () => {
+const SupplierPage = ({id}) => {
   const navigate = useNavigate();
-  const {supplierId} = useParams();
+  var {supplierId} = useParams();
+  if(!supplierId) supplierId = id;
   const [supplier, setSupplier] = useState({});
   const [tags, setTags] = useState([]);
   const [tab, setTab] = useState('Home');
