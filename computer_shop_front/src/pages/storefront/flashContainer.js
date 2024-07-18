@@ -1,14 +1,9 @@
 import React from 'react';
 import { ProductCard } from '../../components/productCard/productCard';
 import './flashContainer.css'
+import { emptyProduct } from '../../utils';
 
 export const FlashContainer = ({list}) => {
-	let emptyProduct = {
-		name: 'No Product Yet',
-		price: '⠀⠀',
-		supplierName: '⠀⠀⠀⠀⠀⠀⠀⠀',
-		photo: 'fail'
-	}
 	return (
 	<div className='flashContainer'>
 		<h2 className='flashTitle'>The {list[0]} Products</h2>

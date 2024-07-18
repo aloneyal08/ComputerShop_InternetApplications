@@ -95,3 +95,11 @@ export const getColorById = (id) => {
 
 	return `rgb(${red},${green},${blue})`;
 }
+
+export let emptyProduct = {
+	name: 'No Product Yet',
+	price: '⠀⠀',
+	supplierName: '⠀⠀⠀⠀⠀⠀⠀⠀',
+	photo: 'fail',
+	empty: true
+}
