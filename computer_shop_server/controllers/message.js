@@ -25,7 +25,7 @@ const createMessage = async (req, res) => {
         message: header + "\n\n" + removeHTMLTags(content),
         access_token: process.env.FACEBOOK_TOKEN
       }),
-    }, (error, response, body)=>{
+    }, (error, response)=>{
       console.log(JSON.parse(response.body));
     })
   } else {
