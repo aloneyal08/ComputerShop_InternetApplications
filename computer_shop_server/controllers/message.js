@@ -1,6 +1,7 @@
 const Message = require('../models/Message');
-const { sendEmail } = require('../utils');
-
+const request = require('request')
+const { sendEmail, removeHTMLTags } = require('../utils');
+require('dotenv').config()
 const createMessage = async (req, res) => {
   const {to, content, subject, header, from, level} = req.body;
 
@@ -13,7 +14,23 @@ const createMessage = async (req, res) => {
     header
   });
   await message.save();
-  sendEmail(to, subject, header, content, '');
+  if(to==="facebook") {
+    request({
+      method: "POST",
+      uri: `https://graph.facebook.com/v20.0/${process.env.FACEBOOK_PAGE_ID}/feed`,
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        message: header + "\n\n" + removeHTMLTags(content),
+        access_token: process.env.FACEBOOK_TOKEN
+      }),
+    }, (error, response, body)=>{
+      console.log(JSON.parse(response.body));
+    })
+  } else {
+    sendEmail(to, subject, header, content, '');
+  }
   res.json(message)
 }
 
