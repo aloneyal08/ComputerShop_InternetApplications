@@ -198,6 +198,7 @@ const getFlashProducts = async (req, res) => {
 	tempList = tempList.map(arr=>{
 		return arr.filter(pur=>{
 			const p = products.find(p=>p._id.equals(pur._id));
+			if(!p) return false;
 			const s = suppliers.find(s=>s._id.equals(p.supplier));
 			return s && !s.suspended;
 		})[0]
@@ -220,6 +221,7 @@ const getFlashProducts = async (req, res) => {
 	current = current.map(arr=>{
 		return arr.filter(pur=>{
 			const p = products.find(p=>p._id.equals(pur._id));
+			if(!p) return false;
 			const s = suppliers.find(s=>s._id.equals(p.supplier));
 			return s && !s.suspended;
 		})[0]

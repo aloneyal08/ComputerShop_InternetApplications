@@ -166,7 +166,19 @@ const deleteUser = async (req, res) => {
     return res.status(404).json({ error: 'User not found' });
   }
 
-  //TODO: delete all user's orders, reviews, etc.
+  await Login.updateMany({user: user._id}, {$set: {user: null}});
+  await Review.updateMany({user: user._id}, {$set: {user: null}});
+  await Purchase.updateMany({user: user._id},{$set: {user: null}});
+  await View.updateMany({user: user._id}, {$set: {user: null}});
+
+  if(user.level === 1) {
+    const products = await Product.find({supplier: user._id});
+    products.forEach(async product=>{
+      await Review.deleteMany({product})
+      await View.deleteMany({product})
+      await Purchase.updateMany({product},{$set: {product: null}})
+    })
+  }
 
   res.json({});
 }
@@ -213,7 +225,7 @@ const getSupplier = async (req, res) => {
   const {id} = req.query;
   try{
     const supplier = await User.findById(id);
-    if(!supplier || supplier.level !== 1)
+    if(!supplier || supplier.level !== 1 || supplier.suspended)
       return res.status(404).json({error: 'Supplier not found'});
     delete supplier.password;
 

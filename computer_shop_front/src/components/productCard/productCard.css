@@ -33,12 +33,12 @@
   flex-direction: column;
   align-items: start;
   line-height: 15px;
+  width: 100%;
 }
 .productName, .productSupplier, .productStock, .productPrice, .productRating{
   margin: 0;
 }
 .productName{
-  max-width: calc(var(--product-card-width)/1.8);
   overflow:hidden;
   white-space: nowrap;
   height: 20px;
@@ -61,4 +61,11 @@
 
 .productCard:hover h3 {
   text-decoration: underline;
+}
+
+.productMainCon {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  gap: 20px;
 }

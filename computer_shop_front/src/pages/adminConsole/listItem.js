@@ -29,13 +29,9 @@ export const RequestListItem = ({request, reload}) => {
       headers: {
         'Content-Type': 'application/json'
       }
-    }).then(res=>res.json()).then(rs=>{
-      if(rs.error) {
-        alert(rs.error);
-      } else {
-        setIsPopupOpen(false);
-        reload();
-      }
+    }).then(()=>{
+      setIsPopupOpen(false);
+      reload();
     })
   }
 
@@ -46,13 +42,9 @@ export const RequestListItem = ({request, reload}) => {
       headers: {
         'Content-Type': 'application/json'
       }
-    }).then(res=>res.json()).then(rs=>{
-      if(rs.error) {
-        alert(rs.error);
-      } else {
-        setIsPopupOpen(false);
-        reload();
-      }
+    }).then(()=>{
+      setIsPopupOpen(false);
+      reload();
     })
   }
 

@@ -83,6 +83,7 @@ const App = () => {
                   <Route path="/" element={<MainPage />} />
                   <Route path="/login" element={<Login/>} />
                   <Route path="/register" element={<Register />} />
+                  <Route path="/settings" element={<UserSettings />} />
                   {user.level===1&&
                     <>
                       <Route path="/product/new" element={<NewProduct />} />
@@ -96,7 +97,6 @@ const App = () => {
                       <Route path="/supplier/:supplierId" element={<SupplierPage />} />
                       <Route path='/purchase/confirm' element={<ConfirmPurchase />} />
                       <Route path="/search" element={<SearchScreen />} />
-                      <Route path="/settings" element={<UserSettings />} />
                       <Route path="/history" element={<History />} />
                     </>
                   }
