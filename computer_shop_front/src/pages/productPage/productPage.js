@@ -9,6 +9,7 @@ import './reviewCard.css'
 import './productPage.css';
 import { ReviewCard } from './reviewCard';
 import ReactStarsRating from 'react-awesome-stars-rating';
+import { ShareButton } from 'react-facebook';
 
 const currencies = require('../../currencies.json');
 
@@ -183,6 +184,9 @@ const ProductPage = () => {
 			id={product._id}
 		  />
 					<a href='#rating' onClick={() => {reviewList.current.scrollIntoView();return false;}}>{`${reviews.length} ratings`}</a>
+					<ShareButton href="http://www.facebook.com" className="my-classname">
+						Share
+					</ShareButton>
 				</div>
 				<h1 id='productName'>{product.name}</h1>
 				<a id='productSupplier' href={`/supplier/${product.supplier}`}>{supplierName}</a>
