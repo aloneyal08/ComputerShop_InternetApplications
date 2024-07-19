@@ -66,7 +66,7 @@ export const ProductCard = ({product, renderRating = true, renderStock = true, i
         }
       </section>
       <section className='productTextRight'>
-        <h4 className='productPrice'>{isNaN(product.price)?product.price:currencies[currency].symbol + Math.floor(product.price*exchangeRates[currency]*100)/100}</h4>
+        <h4 className='productPrice'>{isNaN(product.price)?product.price:currencies[currency].symbol + Math.round(product.price*exchangeRates[currency]*100)/100}</h4>
       </section>
     </div>
   </div>

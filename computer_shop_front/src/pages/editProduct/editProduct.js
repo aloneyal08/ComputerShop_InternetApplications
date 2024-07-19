@@ -2,8 +2,7 @@ import React, { useState, useEffect, useContext } from 'react'
 import { UserContext, MoneyContext, TagsContext} from '../../Contexts';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Editor } from "react-draft-wysiwyg";
-import { convertToRaw, EditorState, ContentState, convertFromRaw, convertFromHTML } from "draft-js";
-import htmlToDraft from 'html-to-draftjs';
+import { convertToRaw, EditorState, ContentState, convertFromHTML } from "draft-js";
 import draftToHtmlPuri from "draftjs-to-html";
 import SelectSearch from 'react-select-search';
 import 'react-select-search/style.css'
@@ -40,7 +39,7 @@ const EditProduct = () => {
 			},
 			body: JSON.stringify({id: productId})
 		}).then((res)=>res.json()).then((res)=>{
-			if(res.error){
+			if(res.error || res.supplier !== user._id){
 				navigate('/not-found');
 			}
 			if(res.tags && tags.length > 0){
@@ -50,24 +49,22 @@ const EditProduct = () => {
     fetch(`${process.env.REACT_APP_SERVER_URL}/product/get-linked`).then(res=>res.json()).then(res=>{
       setLinkedProductOptions([{name: 'No Linked Product', value:null}].concat(res.map(p=>{return {name: p.name, value: p._id, photo: p.photo}})))}
     );
-  }, [productId, tags, navigate])
+  }, [productId, tags, navigate, user._id])
 
   useEffect(()=>{
     if(Object.keys(product).length > 0){
       setName(product.name);
-      console.log(product.description)
       let value = convertFromHTML(product.description);
       value = EditorState.createWithContent(ContentState.createFromBlockArray(value.contentBlocks, value.entityMap));
-      console.log(value)
       setDescription(value)
       setPhoto(product.photo);
       setStock(Number(product.stock));
-      setPrice(Math.floor(Number(product.price)*exchangeRates[currency]*100)/100);
+      setPrice(Number(product.price)*exchangeRates[currency]);
       setChosenTags(product.tags)
       setStats(product.stats || []);
       setParent(product.parentProduct);
     }
-  }, [product, currency, exchangeRates])
+  }, [product])
 
   const onTextChange = (state) => {
     setDescription(state);
@@ -80,9 +77,9 @@ const EditProduct = () => {
   };
 
   const priceChange = (e) =>{
-    let pr = e.target.value === ''? '' : Math.floor(e.target.value*100)/100
-    e.target.value = pr;
-    setPrice(pr/exchangeRates[currency]);
+    let pr = e.target.value === ''? '' : Math.max(0, Math.floor(Number(e.target.value)*100)/100);
+    e.target.value = pr
+    setPrice(pr);
   };
 
   const addStat = () => {
@@ -122,7 +119,7 @@ const EditProduct = () => {
       alert('A starting stock must be entered!');
       return;
     }
-    if(price === null){
+    if(price === null || price === 0){
       alert('A product price must be entered!');
       return;
     }
