@@ -10,7 +10,9 @@ router.get('/get-new', productController.getNewProducts);
 router.get('/get-popular', productController.getPopularProducts);
 router.get('/get-linked', productController.getLinkedProduct);
 router.post('/linked', productController.getAllLinked);
+router.post('/is-parent', productController.getIsParent);
 router.get('/get-flash', productController.getFlashProducts);
+router.put('/edit', productController.editProduct)
 router.get('/search', productController.search);
 router.get('/search/exact', productController.exactSearch)
 router.get('/autocomplete', productController.getAutoCompletes);

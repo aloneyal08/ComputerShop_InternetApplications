@@ -30,6 +30,8 @@ const EditProduct = () => {
   const [statValue, setStatValue] = useState('');
   const [linkedProductOptions, setLinkedProductOptions] = useState([]);
   const [parent, setParent] = useState(null);
+  const [isParent, setIsParent] = useState(true);
+  const [discount, setDiscount] = useState(0);
 
   useEffect(() => {
 		fetch(`${process.env.REACT_APP_SERVER_URL}/product/get-id`,{
@@ -53,13 +55,22 @@ const EditProduct = () => {
 
   useEffect(()=>{
     if(Object.keys(product).length > 0){
+      fetch(`${process.env.REACT_APP_SERVER_URL}/product/is-parent`,{
+        method: 'POST',
+        headers: {
+        'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({id: productId})
+      }).then(res=>res.json()).then(res=>setIsParent(res));
       setName(product.name);
       let value = convertFromHTML(product.description);
       value = EditorState.createWithContent(ContentState.createFromBlockArray(value.contentBlocks, value.entityMap));
       setDescription(value)
       setPhoto(product.photo);
+      setValidPhoto(true);
       setStock(Number(product.stock));
       setPrice(Number(product.price)*exchangeRates[currency]);
+      setDiscount(Number(product.discount))
       setChosenTags(product.tags)
       setStats(product.stats || []);
       setParent(product.parentProduct);
@@ -116,7 +127,7 @@ const EditProduct = () => {
       return;
     }
     if(stock === null){
-      alert('A starting stock must be entered!');
+      alert('A stock must be entered!');
       return;
     }
     if(price === null || price === 0){
@@ -132,11 +143,12 @@ const EditProduct = () => {
       return;
     }
     fetch(`${process.env.REACT_APP_SERVER_URL}/product/edit`, {
-      method: 'POST',
+      method: 'PUT',
       headers: {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
+        _id: product._id,
         name,
         description: value,
         stock,
@@ -145,7 +157,8 @@ const EditProduct = () => {
         tags: chosenTags.length===0?null:chosenTags.map(t=>t.value),
         supplier: user._id,
         stats,
-        parentProduct: parent
+        parentProduct: parent,
+        discount
       })
     }).then((res) => res.json()).then((res) => {
       if(res.error) {
@@ -204,7 +217,7 @@ const EditProduct = () => {
               <div className="input1 input2">
                 <label>
                   <input value={stock} required type='number' step={1} min={0} onChange={(e) => {setStock(e.target.value);}}/>
-                  <span>Starting Stock*</span>
+                  <span>Stock*</span>
                 </label>
               </div>
               <hr className='separator' />
@@ -212,6 +225,13 @@ const EditProduct = () => {
                 <label>
                   <input value={price} required type='number' step={0.01} min={0.01} onChange={priceChange}/>
                   <span>Product Price*</span>
+                </label>
+              </div>
+              <hr className='separator' />
+              <div className="input1 input2 num">
+                <label>
+                  <input value={discount} required type='number' step={1} min={0} max={100} onChange={(e)=>{setDiscount(Math.floor(Math.max(0, Math.min(Number(e.currentTarget.value), 99))))}}/>
+                  <span>Product Discount</span>
                 </label>
               </div>
             </section>
@@ -266,23 +286,29 @@ const EditProduct = () => {
                       <></>
                       }
             </section>
-            <hr className='separator' />
-            <h3 className='inputTitle'>Linked Product</h3>
-            <section className='inputContainer'>
-              <p style={{color: 'gray', textAlign:'left', fontSize: '14px'}}>You can't choose a product that already has a link to another product*</p>
-              <SelectSearch value={parent} onChange={(e)=>{setParent(e)}} search={true} name="link" id='linkedProductInput' options={linkedProductOptions} placeholder="Link Your Product" renderValue={(valueProps) =>
-                <div className='input1 input2'>
-                  <label>
-                  <input type='text' required {...valueProps} placeholder=''/>
-                  <span>{valueProps.placeholder}</span>
-                  </label>
-                </div>} renderOption={(optionsProps, optionsData) => {
-                    return <button className='select-search-option' {...optionsProps}>{optionsData.photo?<img alt='     ' src={optionsData.photo}  className='productLinkImg'/>:<></>}{optionsData.name}</button>
-                }}
-                filterOptions={[(arr, b) => {
-                  return arr.filter((e)=>e.name.toLocaleLowerCase().includes(b.toLocaleLowerCase()))
-                }]}/>
-            </section>
+            {!isParent?
+            <>
+              <hr className='separator' />
+              <h3 className='inputTitle'>Linked Product</h3>
+              <section className='inputContainer'>
+                <p style={{color: 'gray', textAlign:'left', fontSize: '14px'}}>You can't choose a product that already has a link to another product*</p>
+                <SelectSearch value={parent} onChange={(e)=>{setParent(e)}} search={true} name="link" id='linkedProductInput' options={linkedProductOptions} placeholder="Link Your Product" renderValue={(valueProps) =>
+                  <div className='input1 input2'>
+                    <label>
+                    <input type='text' required {...valueProps} placeholder=''/>
+                    <span>{valueProps.placeholder}</span>
+                    </label>
+                  </div>} renderOption={(optionsProps, optionsData) => {
+                      return <button className='select-search-option' {...optionsProps}>{optionsData.photo?<img alt='     ' src={optionsData.photo}  className='productLinkImg'/>:<></>}{optionsData.name}</button>
+                  }}
+                  filterOptions={[(arr, b) => {
+                    return arr.filter((e)=>e.name.toLocaleLowerCase().includes(b.toLocaleLowerCase()))
+                  }]}/>
+              </section>
+              </>
+              :
+              <></>
+            }
           </section>
           <section id='preview'>
             <ProductCard isClickable={false} onImageError={()=>{setValidPhoto(false)}} product={{name: name===''?"Product's Name":name, price: price===''?"Product's Price":price/exchangeRates[currency], stock, photo, rating: 2.5, supplierName: user.fullName}} />

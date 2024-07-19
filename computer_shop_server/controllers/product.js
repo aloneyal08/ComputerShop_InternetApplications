@@ -84,7 +84,6 @@ const getAllLinked = async (req, res) => {
 	const {product} = req.body;
 	p = await Product.findById(product);
 	let products = [];
-	console.log(p.parentProduct)
 	if(p.parentProduct !== null){
 		products.push(await Product.findById(p.parentProduct));
 		products = products.concat(await Product.find({parentProduct: p.parentProduct, _id: {$nin: [p._id]}}))
@@ -93,6 +92,12 @@ const getAllLinked = async (req, res) => {
 	}
 	res.json(products);
 }
+
+const getIsParent = async (req, res) => {
+	const {id} = req.body;
+	const isParent = await Product.find({parentProduct: id}).countDocuments() >= 1;
+	res.json(isParent);
+};
 
 const getFlashProducts = async (req, res) => {
 	let flash = [];
@@ -125,13 +130,25 @@ const getFlashProducts = async (req, res) => {
 };
 
 const editProduct = async (req, res) => {
-	const { _id, name, price, photo, description, stock } = req.body;
-	const product = Product.findByIdAndUpdate({_id}, {
+	const { _id, name, price, discount, photo, description, stock, tags, stats, parentProduct } = req.body;
+	let obj = {};
+	if(tags){
+		obj.tags = tags;
+	}
+	if(stats){
+		obj.stats = stats;
+	}
+	if(parentProduct){
+		obj.parentProduct = parentProduct;
+	}
+	const product = await Product.findByIdAndUpdate(_id, {
 		name,
 		price,
 		photo,
 		description,
-		stock
+		stock,
+		discount,
+		...obj
 	});
 	if (!product) {
 		return res.status(404).json({ errors: ['Product not found'] });
@@ -282,6 +299,7 @@ module.exports = {
 	getPopularProducts,
 	getLinkedProduct,
 	getAllLinked,
+	getIsParent,
 	getFlashProducts,
 	editProduct,
 	deleteProduct,
