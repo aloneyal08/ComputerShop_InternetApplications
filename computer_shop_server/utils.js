@@ -79,11 +79,25 @@ const dateDiff = (first, second) => {
   return Math.round((second - first) / (1000 * 60 * 60 * 24));
 }
 
+const getOverlap = (s1, s2) => {
+  const string1 = s1.toLowerCase();
+  const string2 = s2.toLowerCase();
+  let overlap = null;
+  for(let i = 1; i <= string1.length; i++) {
+    if (string1.substring(string1.length - i) === string2.substring(0, i)) {
+      overlap = string2.substring(0, i);
+      break;
+    }
+  }
+  return overlap;
+}
+
 module.exports = {
   encrypt,
   decrypt,
   sendEmail,
   getKeywords,
   removeHTMLTags,
-  dateDiff
+  dateDiff,
+  getOverlap
 }

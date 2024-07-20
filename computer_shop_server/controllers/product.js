@@ -3,7 +3,7 @@ const Product = require('../models/product');
 const Purchase = require('../models/purchase');
 const Tag = require('../models/tag');
 const View = require('../models/view');
-const { getKeywords, removeHTMLTags, dateDiff } = require('../utils');
+const { getKeywords, removeHTMLTags, dateDiff, getOverlap } = require('../utils');
 const User = require('../models/user');
 const { default: mongoose } = require('mongoose');
 
@@ -382,18 +382,36 @@ const exactSearch = async (req, res) => {
 	res.json(searchedProducts.slice(0, 50));
 }
 
+
 const getAutoCompletes = async (req, res) => {
 	const {key} = req.headers;
+	
+	const tags = await Tag.find({});
 	const suppliers = await User.find({level: 1});
 	const products = (await Product.find({})).filter(p=>{
 		const s = suppliers.find(s=>s._id.equals(p.supplier));
 		return s && !s.suspended;
 	})
 
-	const names = products.map(p=>p.name).filter(name=>name.toLowerCase().startsWith(key)).slice(0, 10); 
-	const recommendations = products.map(p=>p.name).slice(0, 10);
-	//TODO: Implement a better autocomplete
-	res.json(key==='' ? recommendations :names);
+	const recommendations = products.map(p=>p.name).filter(name=>name.toLowerCase().startsWith(key))
+	const names = products.map(p=>p.name)
+
+	const suggestions = [...new Set(names.map(n=>n.split(' ')).flat(1).concat(tags.map(t=>t.text)))].map(word=>{
+		if(key.toLowerCase().includes(word.toLowerCase()))
+			return {key: null, score: 0};
+
+		const overlap = getOverlap(key, word);
+		if(overlap && overlap.length > 1)
+			return {key: key.replace(overlap, '') + word, score: 2 + overlap.length};
+
+		if(key.endsWith(' '))
+			return {key: key + word, score: 1}
+
+		return {key: key + ' ' + word, score: 1}
+	}).filter(word=>word.key).sort((a,b)=>b.score-a.score).map(word=>word.key);
+	
+	const arr = recommendations.concat(suggestions);
+	res.json(arr.slice(0, 10));
 }
 
 module.exports = {
