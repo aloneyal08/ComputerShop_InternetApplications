@@ -23,6 +23,9 @@
   justify-content: space-between;
   padding: 20px;
   transition: 0.2s;
+  -webkit-box-shadow: 10px 10px 25px 0px rgba(66,66,66,1);
+-moz-box-shadow: 10px 10px 25px 0px rgba(66,66,66,1);
+box-shadow: 10px 10px 25px 0px rgba(66,66,66,1);
 }
 
 .alertButton {

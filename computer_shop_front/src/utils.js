@@ -61,7 +61,7 @@ const getColorNum1 = (str) => {
 		sum += str.charCodeAt(i);
 	}
 
-	return 90 + sum % 165;
+	return sum % 256;
 }
 
 const getColorNum2 = (str) => {
@@ -86,7 +86,7 @@ export const getColorById = (id) => {
 
 	var i = 1;
 	var red = 0, green = 0, blue = 0;
-	while(getColorBrightness(red,green,blue) < 0.5 || getColorBrightness(red,green,blue) > 0.8){
+	while(getColorBrightness(red,green,blue) < 0.3 || getColorBrightness(red,green,blue) > 0.8){
 		red = (getColorNum1(redStr) + i*getColorNum2(redStr))%256;
 		green = (getColorNum1(greenStr) + i*getColorNum2(greenStr))%256;
 		blue = (getColorNum1(blueStr) + i*getColorNum2(blueStr))%256;

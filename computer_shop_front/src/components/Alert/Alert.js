@@ -7,6 +7,12 @@ const Alert = () => {
   const [message, setMessage] = useState('');
   const [callback, setCallback] = useState(null);
 
+  useEffect(() => {
+    if(!isVisible)
+      setCallback(null);
+  }, [isVisible])
+  
+
   const show = (header, message='') => {
     setIsVisible(true);
     setHeader(header);

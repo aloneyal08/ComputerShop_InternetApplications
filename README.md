@@ -11,7 +11,7 @@
 
 <p align="center">
   <a href="#key-features">Key Features</a> •
-  <a href="#credits">Credits</a> •
+  <a href="#credits">Credits</a>
 </p>
 
 ![screenshot](./computer_shop_front/src/images/screenshot.png)
@@ -28,7 +28,7 @@
 * Admins can suspend accounts of suppliers to prevent their products being shown
 * Admins and suppliers can view statistics using interactive graphs set by chosen parameters
 * Each supplier has their own page with recommended, popular and new products, and generated rating based on all products.
-* Users can filter search by price, discount, tags, supplier and sort by price, new, and best match.
+* Users can filter search by price, discount, tags, supplier and sort by price, new, rating, and best match.
 
 ## Credits
 
