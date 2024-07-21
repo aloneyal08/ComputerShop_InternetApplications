@@ -1,4 +1,5 @@
 const Tag = require('../models/tag');
+const Product = require('../models/product');
 
 const getTags = async (req, res) => {
 	const tags = await Tag.find();
@@ -20,6 +21,8 @@ const deleteTag = async (req, res) => {
 	if(!tag) {
 		return res.status(404).json({error: 'Tag not found'});
 	}
+
+	await Product.updateMany({tags: _id}, {$pull: {tags: _id}});
 	res.json(tag);
 }
 

@@ -143,9 +143,9 @@ const SearchScreen = () => {
       let prices = [-1, -1]
       conditions.forEach(con=>{
         if(isNaN(Number(con.substring(1))))return;
-        if(con[0] === '>' && (Number(con.substring(1)) < prices[1]||prices[1]===-1))
+        if(con[0] === '>' && (Number(con.substring(1)) < prices[1]||prices[1]===-1)&&Number(con.substring(1))>0)
           prices = [Number(con.substring(1)), prices[1]];
-        if(con[0] === '<'  && (Number(con.substring(1)) > prices[0]||prices[0]===-1))
+        if(con[0] === '<'  && (Number(con.substring(1)) > prices[0]||prices[0]===-1)&&Number(con.substring(1))>0)
           prices = [prices[0], Number(con.substring(1))];
       })
       setPrices(prices);

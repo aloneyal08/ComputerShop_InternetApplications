@@ -17,6 +17,7 @@ import ProductPage from './pages/productPage/productPage';
 import SupplierPage from './pages/supplierPage/supplierPage';
 import ConfirmPurchase from './pages/confirmPurchase/confirmPurchase';
 import { NotFound } from './pages/notFound/notFound';
+import Alert from './components/Alert/Alert'
 
 const App = () => {
   const [user, setUser] = useState({});
@@ -24,6 +25,7 @@ const App = () => {
   const [exchangeRates, setExchangeRates] = useState({});
   const [tags, setTags] = useState([]);
   const location = useLocation();
+  const [AlertComponent, AlertFunc, AlertConfirm] = Alert()
 
   const login = () => {
     const email = localStorage.getItem("email");
@@ -56,15 +58,17 @@ const App = () => {
 
   useEffect(() => {
     login();
-    // fetch(`https://api.freecurrencyapi.com/v1/latest?apikey=${process.env.REACT_APP_MONEY_KEY}&currencies=ILS%2CUSD%2CAUD%2CBGN%2CBRL%2CCAD%2CCHF%2CCNY%2CCZK%2CDKK%2CEUR%2CGBP%2CHKD%2CHRK%2CHUF%2CIDR%2CILS%2CINR%2CISK%2CJPY%2CKRW%2CMXN%2CMYR%2CNOK%2CNZD%2CPHP%2CPLN%2CRON%2CRUB%2CSEK%2CSGD%2CTHB%2CTRY%2CUSD%2CZAR`).then(res => res.json()).then(data => {
-    //   setExchangeRates(data.data)
-    //   console.log(JSON.stringify(data.data))
-    // }); TODO: change to actual data
-    setExchangeRates(JSON.parse(`{"AUD":1.4813102151,"BGN":1.8009502854,"BRL":5.4574210894,"CAD":1.3639101385,"CHF":0.8953201338,"CNY":7.2620912501,"CZK":23.184832423,"DKK":6.8825011939,"EUR":0.9223501077,"GBP":0.7803700842,"HKD":7.8118514857,"HRK":6.6061807982,"HUF":362.8148426166,"IDR":16255.104380651,"ILS":3.6872503779,"INR":83.4515723513,"ISK":138.1419768938,"JPY":160.7413785363,"KRW":1375.2236080902,"MXN":18.0672732397,"MYR":4.709680858,"NOK":10.5429012047,"NZD":1.6266203052,"PHP":58.4587913451,"PLN":3.9476305555,"RON":4.5891105702,"RUB":88.0057837104,"SEK":10.4740714929,"SGD":1.3475802572,"THB":36.5403351143,"TRY":32.6427958961,"USD":1,"ZAR":18.2080529644}`))
+    fetch(`https://api.freecurrencyapi.com/v1/latest?apikey=${process.env.REACT_APP_MONEY_KEY}&currencies=ILS%2CUSD%2CAUD%2CBGN%2CBRL%2CCAD%2CCHF%2CCNY%2CCZK%2CDKK%2CEUR%2CGBP%2CHKD%2CHRK%2CHUF%2CIDR%2CILS%2CINR%2CISK%2CJPY%2CKRW%2CMXN%2CMYR%2CNOK%2CNZD%2CPHP%2CPLN%2CRON%2CRUB%2CSEK%2CSGD%2CTHB%2CTRY%2CUSD%2CZAR`).then(res => res.json()).then(data => {
+      setExchangeRates(data.data)
+    });
     fetch(`${process.env.REACT_APP_SERVER_URL}/tag/get`).then((res) => res.json()).then((res) =>{
       setTags(res);
     });
   }, []);
+  useEffect(()=>{
+    window.alert = AlertFunc;
+    window.confirm = AlertConfirm;
+  }, [AlertConfirm, AlertFunc])
   var MainPage = Storefront;
 
   if(user.level === 0||user.loggedOut) MainPage = Storefront;
@@ -103,6 +107,7 @@ const App = () => {
                   {Object.keys(user).length!==0&&<Route path="*" element={<NotFound/>} />}
                 </Routes>
               </div>
+              <AlertComponent/>
             </div>
           </TagsContext.Provider>
         </MoneyContext.Provider>
