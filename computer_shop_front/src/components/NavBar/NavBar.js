@@ -166,10 +166,10 @@ export const NavBar = () => {
 				</div>
 				{user.level === 1
 					? <button className='addProduct' onClick={()=>navigate("/product/new")}/>
-					: <div className='cart' onClick={()=>navigate("/cart")}>
+					: (user.level===2 ? null : <div className='cart' onClick={()=>navigate("/cart")}>
           <div className='shopCartNumber'>{user.cart?user.cart.length:0}</div>
 					<img src={require("../../images/cart.png")} className='navBarPhoto' alt='  '/>
-				</div>
+				</div>)
 				}
 				<div className='currOptionNavBar' onClick={()=>setCurrencyPopupOpen(!isCurrencyPopupOpen)}>
 					<canvas className={'arrowCanvas ' + (isCurrencyPopupOpen ? 'rotated' : '')} ref={arrowRef}/>
