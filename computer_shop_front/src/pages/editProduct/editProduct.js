@@ -48,7 +48,13 @@ const EditProduct = () => {
 				res.tags = res.tags.map((tag) => {let t = tags.find(t => t._id === tag); return {name: t.text, value: t._id}}).filter(tag => tag);
 		}
 		setProduct(res)});
-    fetch(`${process.env.REACT_APP_SERVER_URL}/product/get-linked`).then(res=>res.json()).then(res=>{
+    fetch(`${process.env.REACT_APP_SERVER_URL}/product/get-linked`,{
+			method: 'POST',
+			headers: {
+			'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({supplier: user._id, product: productId})
+		}).then(res=>res.json()).then(res=>{
       setLinkedProductOptions([{name: 'No Linked Product', value:null}].concat(res.map(p=>{return {name: p.name, value: p._id, photo: p.photo}})))}
     );
   }, [productId, tags, navigate, user._id])
@@ -60,7 +66,7 @@ const EditProduct = () => {
         headers: {
         'Content-Type': 'application/json'
         },
-        body: JSON.stringify({id: productId})
+        body: JSON.stringify({id: product._id})
       }).then(res=>res.json()).then(res=>setIsParent(res));
       setName(product.name);
       let value = convertFromHTML(product.description);
@@ -71,11 +77,11 @@ const EditProduct = () => {
       setStock(Number(product.stock));
       setPrice(Number(product.price)*exchangeRates[currency]);
       setDiscount(Number(product.discount))
-      setChosenTags(product.tags)
-      setStats(product.stats || []);
+      setChosenTags(product.tags || [])
+      setStats(product.stats || {});
       setParent(product.parentProduct);
     }
-  }, [product])
+  }, [product, exchangeRates])
 
   const onTextChange = (state) => {
     setDescription(state);
@@ -117,6 +123,16 @@ const EditProduct = () => {
     delete temp[key];
     setStats(temp);
   };
+
+  const deleteProduct = async () => {
+    fetch(`${process.env.REACT_APP_SERVER_URL}/product/delete`,{
+      method: 'DELETE',
+      headers: {
+      'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({_id: product._id})
+    }).then(()=>{navigate('/')})
+  }
 
   const saveProduct = async (e) => {
     let value = draftToHtmlPuri(
@@ -278,12 +294,12 @@ const EditProduct = () => {
                         </div>
                       </div>
                       :
-                      <></>
+                      null
                     }
                       {Object.keys(stats).length>=10?
                       <p style={{color: 'red', fontWeight: 'bold'}} id='statsError'>No more than 10 stats</p>
                       :
-                      <></>
+                      null
                       }
             </section>
             {!isParent?
@@ -299,7 +315,7 @@ const EditProduct = () => {
                     <span>{valueProps.placeholder}</span>
                     </label>
                   </div>} renderOption={(optionsProps, optionsData) => {
-                      return <button className='select-search-option' {...optionsProps}>{optionsData.photo?<img alt='     ' src={optionsData.photo}  className='productLinkImg'/>:<></>}{optionsData.name}</button>
+                      return <button className='select-search-option' {...optionsProps}>{optionsData.photo?<img alt='     ' src={optionsData.photo}  className='productLinkImg'/>:null}{optionsData.name}</button>
                   }}
                   filterOptions={[(arr, b) => {
                     return arr.filter((e)=>e.name.toLocaleLowerCase().includes(b.toLocaleLowerCase()))
@@ -307,12 +323,13 @@ const EditProduct = () => {
               </section>
               </>
               :
-              <></>
+              null
             }
           </section>
           <section id='preview'>
-            <ProductCard isClickable={false} onImageError={()=>{setValidPhoto(false)}} product={{name: name===''?"Product's Name":name, price: price===''?"Product's Price":price/exchangeRates[currency], stock, photo, rating: 2.5, supplierName: user.fullName}} />
+            <ProductCard isClickable={false} onImageError={()=>{setValidPhoto(false)}} product={{name: name===''?"Product's Name":name, price: price===''?"Product's Price":price/exchangeRates[currency], stock, photo, rating: 2.5, supplierName: user.fullName, discount: discount}} />
             <button id='addProductBtn' onClick={saveProduct} className='button1'>Save Changes</button>
+            <button id='deleteProductBtn' onClick={deleteProduct} className='button1 deleteAccButton'>Delete Product</button>
           </section>
         </div>
       </div>

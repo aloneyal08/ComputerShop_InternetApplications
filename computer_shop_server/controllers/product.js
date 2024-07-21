@@ -76,7 +76,8 @@ const getPopularProducts = async (req, res) => {
 };
 
 const getLinkedProduct = async (req, res) => {
-	let products = await Product.find({parentProduct: null});
+	const {supplier, product} = req.body;
+	let products = await Product.find({parentProduct: null, supplier, _id: {$nin: [product]}});
 	res.json(products);
 }
 
@@ -104,6 +105,7 @@ const getFlashProducts = async (req, res) => {
 	let current = [];
 	dates = [new Date(), new Date(), new Date()];
 	dates[0].setDate(dates[0].getDate() - 1);
+	dates[0].setHours(0, 0, 0, 0);
 	dates[1].setDate(dates[1].getDate() - 7);
 	dates[2].setMonth(dates[2].getMonth()-1);
 	let tempList = [];
@@ -126,6 +128,29 @@ const getFlashProducts = async (req, res) => {
 	p = await Product.find({date: {$gte: dates[2], $lte: dates[1]}}).sort({$natural:-1}).limit(1);
 	current.push(p[0]);
 	flash.push(["Newest", current, 'https://img.freepik.com/free-vector/bokeh-lights-glitter-background_1048-8548.jpg']);
+	current = [];
+	tempList = [];
+	p = await Review.aggregate([{$match: {"date": {$gte: dates[0]}}}, {$group: {_id: "$product", rate: {$avg: {$sum: "$rating"}}}}, {$sort: {rate: -1}}]).limit(1);
+	tempList.push(p[0]);
+	p = await Review.aggregate([{$match: {"date": {$gte: dates[1]}}}, {$group: {_id: "$product", rate: {$avg: {$sum: "$rating"}}}}, {$sort: {rate: -1}}]).limit(1);
+	tempList.push(p[0]);
+	p = await Review.aggregate([{$match: {"date": {$gte: dates[2]}}}, {$group: {_id: "$product", rate: {$avg: {$sum: "$rating"}}}}, {$sort: {rate: -1}}]).limit(1);
+	tempList.push(p[0]);
+	for(let i = 0; i < tempList.length;++i){
+		p = await Product.findById(tempList[i]);
+		current.push(p);
+	}
+	flash.push(["Best Reviewed", current, '']);
+	current = [];
+	p = await Product.find({date: {$gte: dates[0]}}).sort({"discount":-1}).limit(1);
+	current.push(p[0]);
+	p = await Product.find({date: {$gte: dates[1], $lte: dates[0]}}).sort({"discount":-1}).limit(1);
+	current.push(p[0]);
+	p = await Product.find({date: {$gte: dates[2], $lte: dates[1]}}).sort({"discount":-1}).limit(1);
+	current.push(p[0]);
+	flash.push(["Biggest Sale", current, '']);
+	
+	
 	res.json(flash);
 };
 
@@ -163,9 +188,6 @@ const deleteProduct = async (req, res) => {
 		return res.status(404).json({ errors: ['Product not found'] });
 	}
 	const reviews = await Review.deleteMany({product: _id});
-	if(!reviews){
-		return res.status(404).json({ errors: ['Product not found'] });
-	}
 	res.send();
 };
 

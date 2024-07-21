@@ -39,7 +39,13 @@ const NewProduct = () => {
   }, []);
 
   useEffect(() => {
-    fetch(`${process.env.REACT_APP_SERVER_URL}/product/get-linked`).then(res=>res.json()).then(res=>{
+    fetch(`${process.env.REACT_APP_SERVER_URL}/product/get-linked`,{
+			method: 'POST',
+			headers: {
+			'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({supplier: user._id, product: null})
+		}).then(res=>res.json()).then(res=>{
       setLinkedProductOptions([{name: 'No Linked Product', value:null}].concat(res.map(p=>{return {name: p.name, value: p._id, photo: p.photo}})))}
     );
   }, [])
@@ -238,12 +244,12 @@ const NewProduct = () => {
                         </div>
                       </div>
                       :
-                      <></>
+                      null
                     }
                       {Object.keys(stats).length>=10?
                       <p style={{color: 'red', fontWeight: 'bold'}} id='statsError'>No more than 10 stats</p>
                       :
-                      <></>
+                      null
                       }
             </section>
             <hr className='separator' />
@@ -257,7 +263,7 @@ const NewProduct = () => {
                   <span>{valueProps.placeholder}</span>
                   </label>
                 </div>} renderOption={(optionsProps, optionsData) => {
-                    return <button className='select-search-option' {...optionsProps}>{optionsData.photo?<img alt='     ' src={optionsData.photo}  className='productLinkImg'/>:<></>}{optionsData.name}</button>
+                    return <button className='select-search-option' {...optionsProps}>{optionsData.photo?<img alt='     ' src={optionsData.photo}  className='productLinkImg'/>:null}{optionsData.name}</button>
                 }}
                 filterOptions={[(arr, b) => {
                   return arr.filter((e)=>e.name.toLocaleLowerCase().includes(b.toLocaleLowerCase()))

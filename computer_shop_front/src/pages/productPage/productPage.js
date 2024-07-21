@@ -210,13 +210,13 @@ const ProductPage = () => {
 						{Object.keys(product.stats).map(key=><div key={key}><i>{product.stats[key]}</i><br/></div>)}
 					</p>
 					:
-					<></>
+					null
 				}
 				<hr className='separator'/>
 				{linkedProducts.length > 0?
 				<>
 				<h4 style={{marginRight: 'auto'}}>Related Product:</h4>
-				<div className='scrollBar2' style={{display: 'flex', flexDirection: 'row', columnGap: '25px', maxWidth: '30vw', overflowX: 'auto'}}>
+				<div className='scrollBar1' style={{display: 'flex', flexDirection: 'row', columnGap: '25px', maxWidth: '30vw', overflowX: 'auto'}}>
 					{
 						linkedProducts.map(p=>
 						<div onClick={()=>{navigate(`/product/${p._id}`)}} style={{display: 'flex', flexDirection: 'row', cursor: 'pointer', border: '1px solid gainsboro', minWidth: '200px'}} key={p._id} className='linkedProductCard'>
@@ -231,38 +231,45 @@ const ProductPage = () => {
 				<hr className='separator'/>
 				</>
 				:
-				<></>
+				null
 				}
 				{   product.tags?
 					<div id='tags'>
 						{product.tags.map((tag, index)=>(<div className='productTag' key={index} ><p className='productTagName'>{tag}</p></div>))}
 					</div>
 					:
-					<></>
+					null
 				}
 				<hr className='separator'/>
 			</div>
 			<div id='buyInfo'>
 				{ user.loggedOut?
-					<h2>You need to login in order to buy stuff</h2>
+					<h2>In order to purchase<br/> you will need to login</h2>
 					:
-					<></>
+					null
 				}
-				<h3 id='productPrice'>{currencies[currency].symbol + Math.floor(product.price*exchangeRates[currency]*100)/100}</h3>
+				{ product.discount > 0?
+					<div style={{display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', columnGap: '5px'}}>
+					<h1 id='productPrice'>{currencies[currency].symbol + Math.floor(product.price*exchangeRates[currency]*(1-(Number(product.discount)/100))*100)/100}</h1>
+						<p style={{textDecoration: 'line-through', fontSize: '13px', color: 'rgb(255, 64, 64)'}}>{currencies[currency].symbol + Math.round(product.price*exchangeRates[currency]*100)/100}</p>
+					</div>
+					:
+					<h1 id='productPrice'>{currencies[currency].symbol + Math.floor(product.price*exchangeRates[currency]*100)/100}</h1>
+				}
 				<hr className='separator' />
 				<h3 id='productStock' style={{color: product.stock > 0?'black':'red'}}>Currently {product.stock > 0?product.stock + ' in':'out of'} stock</h3>
 				<hr className='separator' />
-				{product.stock > 0 && !user.loggedOut?
+				{product.stock > 0 && !user.loggedOut && user._id !== product.supplier?
 					<div id='quantityWrapper'>
 						<button className='quantityBtn button1' onClick={(e) => changeQuantity(e, -1)}>-</button>
 						<input value={quantity} onChange={(e) => {onChangeQuantity(e.currentTarget)}} type='number'></input>
 						<button className='quantityBtn button1' onClick={(e) => changeQuantity(e, 1)}>+</button>
 					</div>
 					:
-					<></>
+					null
 				}
-				<button disabled={product.stock <= 0 || user.loggedOut} id='cartBtn' className='button1' onClick={addToCart}>Add To Cart</button>
-				<button disabled={product.stock <= 0 || user.loggedOut} id='buyBtn' className='button1' onClick={buyNow}>Buy Now</button>
+				<button disabled={product.stock <= 0 || user.loggedOut || user._id === product.supplier} id='cartBtn' className='button1' onClick={addToCart}>Add To Cart</button>
+				<button disabled={product.stock <= 0 || user.loggedOut || user._id === product.supplier} id='buyBtn' className='button1' onClick={buyNow}>Buy Now</button>
 			</div>
 		</div>
 		<div ref={reviewList} id='reviewWrapper'>
@@ -277,51 +284,59 @@ const ProductPage = () => {
 			</div>
 			<div id='reviewList'>
 				{!user.loggedOut?
-					<div className='reviewCard'>
-						<header className='reviewTop'>
-							<div className='reviewUser'>
-								<img alt='           ' src={user.profilePhoto} onError={(e) =>{e.currentTarget.src = require('../../images/userDefault.png')}} />
-							</div>
-							<div>
-								<div className='reviewUnderText'>
-									<h5 className='userName'>{user.fullName}</h5>
-									<h5 className='reviewDate'>{new Date().toLocaleDateString()}</h5>
+					<>
+						{user._id !== product.supplier?
+							<div className='reviewCard'>
+								<header className='reviewTop'>
+									<div className='reviewUser'>
+										<img alt='           ' src={user.profilePhoto||''} onError={(e) =>{e.currentTarget.src = require('../../images/userDefault.png')}} />
+									</div>
+									<div>
+										<div className='reviewUnderText'>
+											<h5 className='userName'>{user.fullName}</h5>
+											<h5 className='reviewDate'>{new Date().toLocaleDateString()}</h5>
+										</div>
+									</div>
+								</header>
+								<div className='revTitleWrapper'>
+									<ReactStarsRating
+									value={reviewRating}
+									secondaryColor="#cccccc"
+									primaryColor="#ffbc0b"
+									onChange={(rate) => {setReviewRating(rate);setChangedReview(true);}}
+									size={33}
+									id={"Review"}
+									className='addReview'
+									/>
+									<div id='revTitle' className="input1">
+										<label>
+										<input required type='text' onChange={(e) => {setReviewTitle(e.currentTarget.value);}}/>
+										<span>Review Title*</span>
+										</label>
+									</div>
 								</div>
+								<Editor
+								editorState={reviewDescription}
+								toolbarClassName="toolbarClassName"
+								wrapperClassName="wrapperClassName"
+								editorClassName="reviewDescEditable scrollBar2"
+								spellCheck={true}
+								editorStyle={{border: '1px solid gainsboro', fontSize: '14px', lineHeight: '15px'}}
+								toolbar={{
+									options: ['inline', 'fontSize', 'list', 'textAlign'],
+									list: {inDropdown: true}
+								}}
+								onEditorStateChange={onTextChange}
+								placeholder='Write what you think about the product'
+								/>
+								<button className='button1' id='reviewBtn' onClick={sendReview}>Send Review</button>
 							</div>
-						</header>
-						<div className='revTitleWrapper'>
-			  <ReactStarsRating
-				value={reviewRating}
-				secondaryColor="#cccccc"
-				primaryColor="#ffbc0b"
-				onChange={(rate) => {setReviewRating(rate);setChangedReview(true);}}
-				size={33}
-				id={"Review"}
-				className='addReview'
-			  />
-							<div id='revTitle' className="input1">
-								<label>
-								<input required type='text' onChange={(e) => {setReviewTitle(e.currentTarget.value);}}/>
-								<span>Review Title*</span>
-								</label>
+							:
+							<div>
+								You Cannot Review Your Own Product
 							</div>
-						</div>
-						<Editor
-						editorState={reviewDescription}
-						toolbarClassName="toolbarClassName"
-						wrapperClassName="wrapperClassName"
-						editorClassName="reviewDescEditable scrollBar2"
-						spellCheck={true}
-						editorStyle={{border: '1px solid gainsboro', fontSize: '14px', lineHeight: '15px'}}
-						toolbar={{
-							options: ['inline', 'fontSize', 'list', 'textAlign'],
-							list: {inDropdown: true}
-						}}
-						onEditorStateChange={onTextChange}
-						placeholder='Write what you think about the product'
-						/>
-						<button className='button1' id='reviewBtn' onClick={sendReview}>Send Review</button>
-					</div>
+						}
+					</>
 					:
 					<div>
 						To write a review please login

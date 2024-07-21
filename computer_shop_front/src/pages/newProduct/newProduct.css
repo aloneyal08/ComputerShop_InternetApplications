@@ -135,6 +135,12 @@ input[type=number] {
     align-self: center;
     margin-top: 7vh;
 }
+#deleteProductBtn{
+    display: flex;
+    width: fit-content;
+    align-self: center;
+    margin-top: 1vh;
+}
 .wrapperClassName{
     width: 39.1vw;
 }
