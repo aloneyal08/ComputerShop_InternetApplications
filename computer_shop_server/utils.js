@@ -40,7 +40,7 @@ const sendEmail = async (to, subject, header, content, buttons='') => {
     to: emails,
     subject: subject,
     html: `
-        <div style="background-image: url(https://us.123rf.com/450wm/panychev/panychev1603/panychev160300672/54290362-abstract-sfondo-blu-scuro.jpg?ver=6); position: absolute;width:650px;height:fit-content;padding:12px;font-family:'Franklin Gothic Medium','Arial Narrow', Arial, sans-serif;background-size: cover;display:flex;margin-left:865px;">
+        <div style="background-image: url(https://us.123rf.com/450wm/panychev/panychev1603/panychev160300672/54290362-abstract-sfondo-blu-scuro.jpg?ver=6); position: absolute;width:650px;height:fit-content;padding:12px;font-family:'Franklin Gothic Medium','Arial Narrow', Arial, sans-serif;background-size: cover;display:flex;margin:auto;">
           <div style="background-color: #E8E8E8;position: absolute;width: 85%;height: 85%;border-radius: 44px;left: 50%;top: 50%;transform: translate(-50%, -50%);margin:auto;">
             <h2 style="font-size:15px;text-align:center;">Hello Dear Customer</h2><br/><br/>
             <h1 style="font-size:40px;text-align:center;padding:5px;">${header}</h1><br/><br/>
