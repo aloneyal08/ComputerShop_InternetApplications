@@ -1,0 +1,43 @@
+.alertOut {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  transition: 0.2s;
+  z-index: 9999;
+}
+
+.alertIn {
+  position: fixed;
+  width: 500px;
+  background-color: white;
+  border-radius: 30px;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 20px;
+  transition: 0.2s;
+  -webkit-box-shadow: 10px 10px 25px 0px rgba(66,66,66,1);
+-moz-box-shadow: 10px 10px 25px 0px rgba(66,66,66,1);
+box-shadow: 10px 10px 25px 0px rgba(66,66,66,1);
+}
+
+.alertButton {
+  align-self: flex-end;
+}
+
+.alertButtons {
+  display: flex;
+  justify-content: flex-start;
+  flex-direction: row-reverse;
+  width: 100%;
+  margin-top: 10px;
+  height: fit-content;
+  gap: 10px;
+}

@@ -20,7 +20,6 @@ const NewProduct = () => {
   const [description, setDescription] = useState('');
   const [stock, setStock] = useState('');
   const [price, setPrice] = useState('');
-  const [priceVal, setPriceVal] = useState('');
 
   const [photo, setPhoto] = useState('');
   const [chosenTags, setChosenTags] = useState([]);
@@ -34,9 +33,6 @@ const NewProduct = () => {
     setDescription(editorState);
   }, []);
 
-  useEffect(()=>{
-    setPriceVal(price === ''?'':Math.floor(price*exchangeRates[currency]*100)/100);
-  }, [currency, exchangeRates, price])
 
   const onTextChange = (state) => {
     setDescription(state);
@@ -49,8 +45,8 @@ const NewProduct = () => {
   };
 
   const priceChange = (e) =>{
-    let pr = e.target.value === ''? '' : Math.floor(e.target.value*100)/100
-    setPrice(pr/exchangeRates[currency]);
+    let pr = e.target.value === '' ? '' : Math.floor(Number(e.target.value.replace(/\D+/g, ''))*100)/100;
+    setPrice(Number(pr));
   }
 
   const addProduct = async (e) => {
@@ -86,7 +82,7 @@ const NewProduct = () => {
         name,
         description: value,
         stock,
-        price: price,
+        price: Math.floor((price/exchangeRates[currency])*100)/100,
         photo: photo === ''?null:photo,
         tags: chosenTags.length===0?null:chosenTags.map(t=>t.value),
         supplier: user._id
@@ -153,7 +149,7 @@ const NewProduct = () => {
               <hr className='separator' />
               <div className="input1 input2 num">
                 <label>
-                  <input required type='number' step={0.01} min={0.01} onChange={priceChange} value={priceVal}/>
+                  <input required onChange={priceChange} value={price}/>
                   <span>Product Price*</span>
                 </label>
               </div>
@@ -165,7 +161,7 @@ const NewProduct = () => {
             </section>
           </section>
           <section id='preview'>
-            <ProductCard isClickable={false} onImageError={()=>{setValidPhoto(false)}} product={{name: name===''?"Product's Name":name, price: price===''?"Product's Price":price, stock, photo, rating: 2.5, supplierName: user.fullName}} />
+            <ProductCard roundCurr={false} isClickable={false} onImageError={()=>{setValidPhoto(false)}} product={{name: name===''?"Product's Name":name, price: price===''?"Product's Price":price, stock, photo, rating: 2.5, supplierName: user.fullName}} />
             <button id='addProductBtn' onClick={addProduct} className='button1'>Add New Product</button>
           </section>
         </div>

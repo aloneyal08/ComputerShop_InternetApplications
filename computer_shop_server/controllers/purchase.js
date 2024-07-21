@@ -14,7 +14,7 @@ const makePurchases = async (req, res) => {
 			return res.status(400).json({error: 'Product Out of Stock'});
 		}
 		stocks[i] = p.stock;
-		cart.push({user, product: list[i].productId, quantity: list[i].quantity, price: p.price*(1-p.discount)});
+		cart.push({user, product: list[i].productId, quantity: list[i].quantity, price: p.price*(100-p.discount)/100});
 	}
 	const purchases = await Purchase.insertMany(cart);
 	for(let i = 0; i < cart.length;++i){

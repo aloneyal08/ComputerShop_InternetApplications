@@ -325,6 +325,7 @@ const supplierPurchasesOverTime = async (req, res) => {
     const products = await Product.find({...obj, supplier: supplierId});
     const purchases = await Purchase.find({product: {$in: products.map(p=>p._id)}, date: {$gte: new Date(startDate), $lt: new Date(endDate)}});
     var arr = [];
+
     
     for(var date = new Date(startDate); date <= new Date(endDate);) {
       const nextDate = getDateJump(timeFrame, date);
@@ -336,12 +337,15 @@ const supplierPurchasesOverTime = async (req, res) => {
       else
         myPurchases.forEach((p) => {sum += p.quantity});
       arr.push([new Date(date), sum, supplierId, suppliers.find(s=>s._id.equals(supplierId)).fullName])
-  
+
+      console.log(sum);
       date = nextDate;
     }
 
     return arr;
   }))
+
+
   res.json(data.flat(1));
 
 }

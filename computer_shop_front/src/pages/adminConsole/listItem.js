@@ -80,7 +80,7 @@ export const RequestListItem = ({request, reload}) => {
 export const SupplierListItem = ({supplier, reload}) => {
 
   const changeUserStatus = () =>{
-    if(window.confirm(`Are you sure you want to preform this action?`)) {
+    window.confirm(`Are you sure you want to preform this action?`, '', ()=>{
       fetch(`${process.env.REACT_APP_SERVER_URL}/user/${supplier.suspended ? "restore" : "suspend"}`,{
         method: 'PUT',
         body: JSON.stringify({email: supplier.email}),
@@ -93,7 +93,7 @@ export const SupplierListItem = ({supplier, reload}) => {
         else
           reload();
       })
-    }
+    })
   }
 
   return <tr className='dashboardListItem'>
@@ -145,7 +145,7 @@ export const AdminListItem = ({admin, reload}) => {
   const [usernameValid, setUsernameValid] = useState(true);
 
   const deleteAdmin = () => {
-    if(window.confirm(`Are you sure you want to delete ${admin.fullName}?`)) {
+    window.confirm(`Are you sure you want to delete ${admin.fullName}?`, '', ()=>{
       fetch(`${process.env.REACT_APP_SERVER_URL}/user/delete`, {
         method: 'DELETE',
         body: JSON.stringify({email: admin.email}),
@@ -159,7 +159,7 @@ export const AdminListItem = ({admin, reload}) => {
           reload();
         }
       })
-    }
+    })
   }
 
   const onUsernameChange = (e) => {
@@ -257,20 +257,20 @@ export const TagListItem = ({tag, reload}) => {
   const onBackgroundChange = (e) => setBackground(e.target.value);
 
   const deleteTag = () => {
-    if(!window.confirm(`Are you sure you want to delete ${tag.text}?`))
-      return;
-    fetch(`${process.env.REACT_APP_SERVER_URL}/tag/delete`, {
-      method: 'DELETE',
-      body: JSON.stringify({_id: tag._id}),
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    }).then(res=>res.json()).then(rs=>{
-      if(rs.error) {
-        alert(rs.error);
-      } else {
-        reload();
-      }
+    window.confirm(`Are you sure you want to delete ${tag.text}?`, '', ()=>{
+      fetch(`${process.env.REACT_APP_SERVER_URL}/tag/delete`, {
+        method: 'DELETE',
+        body: JSON.stringify({_id: tag._id}),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }).then(res=>res.json()).then(rs=>{
+        if(rs.error) {
+          alert(rs.error);
+        } else {
+          reload();
+        }
+      })
     })
   }
 
