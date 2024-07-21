@@ -58,14 +58,15 @@ const ConfirmPurchase = () =>{
   useEffect(()=>{
 
   }, [purchase])
-  return <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
-    <h1 style={{fontSize: '50px'}}>Please Confirm Your Purchase</h1>
-    <h1 style={{fontSize: '45px'}}>The Total Will Be {currencies[currency].symbol + Math.floor(total*exchangeRates[currency]*100)/100}</h1>
-    <h3  style={{fontSize: '30px'}}>{getAmount()} Items{`(${purchase.length} Unique)`} will be Bought</h3>
-    <div id='confirmContainer'>
-      <button className='button1' onClick={() => {navigate('/')}}>Cancel</button>
-      <button className='button1' onClick={confirm}>Confirm</button>
-    </div>
+  return <div className="confirm-purchase-container">
+  <h1 className="confirm-title">Please Confirm Your Purchase</h1>
+  <h2 className="total-amount">The Total Will Be {currencies[currency].symbol + Math.floor(total * exchangeRates[currency] * 100) / 100}</h2>
+  <h3 className="items-amount">{getAmount()} Items ({purchase.length} Unique) will be Bought</h3>
+  <div className="button-container">
+    <button className="button1" onClick={() => { navigate('/') }}>Cancel</button>
+    <button className="button1" onClick={confirm}>Confirm</button>
   </div>
+</div>
+
 };
 export default ConfirmPurchase;
