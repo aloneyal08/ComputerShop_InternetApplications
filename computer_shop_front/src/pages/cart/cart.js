@@ -150,8 +150,12 @@ const Cart = () => {
 	return <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
 		{user.loggedOut?
 			<>
-			<h1>To View Your Cart Please <a href='/login'>Login</a></h1>
-			</>
+			<div className="login-container">
+			<h1 className="login-message">You are not logged in</h1>
+			<h2 className='login_to_cart'>Please login to view Cart</h2>
+			<button onClick={() => {navigate("/login") }} className="button1 margin_top">login</button>
+			</div>
+		   	</>		   
 			:
 			<>
 			{user.cart.length > 0?
@@ -172,8 +176,13 @@ const Cart = () => {
 				</>
 				:
 				<>
+				
+				<div className="empty-cart-message">
 				<h1>You currently Don't Have Any Items in Your Cart</h1>
-				<h3>Try Searching for Products You Like to Add to Your Cart</h3>
+				<h2 className='cart_no_products'>Try Searching for Products You Like to Add to Your Cart</h2>
+				<button onClick={() => {navigate("/") }} className="button1 margin_top">Home</button>
+				</div>
+					
 				</>
 			}
 			</>
