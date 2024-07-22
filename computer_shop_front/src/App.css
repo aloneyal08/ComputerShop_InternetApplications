@@ -1,65 +1,65 @@
 .App {
-  text-align: center;
+	text-align: center;
 }
 .mainApp {
-  overflow-y: scroll; 
+	overflow-y: scroll; 
 }
 
 .mainWindow {
-  padding-top: 90px;
+	padding-top: 90px;
 }
 
 .button1 {
-  align-items: center;
-  background-color: initial;
-  background-image: linear-gradient(#464d55, #25292e);
-  border-radius: 8px;
-  border-width: 0;
-  box-shadow: 0 10px 20px rgba(0, 0, 0, .1),0 3px 6px rgba(0, 0, 0, .05);
-  box-sizing: border-box;
-  color: #fff;
-  cursor: pointer;
-  display: inline-flex;
-  flex-direction: column;
-  font-family: expo-brand-demi,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
-  font-size: 18px;
-  height: 42px;
-  justify-content: center;
-  line-height: 1;
-  margin: 0;
-  outline: none;
-  overflow: hidden;
-  padding: 0 32px;
-  text-align: center;
-  text-decoration: none;
-  transform: translate3d(0, 0, 0);
-  transition: all 150ms;
-  vertical-align: baseline;
-  white-space: nowrap;
-  user-select: none;
-  -webkit-user-select: none;
-  touch-action: manipulation;
+	align-items: center;
+	background-color: initial;
+	background-image: linear-gradient(#464d55, #25292e);
+	border-radius: 8px;
+	border-width: 0;
+	box-shadow: 0 10px 20px rgba(0, 0, 0, .1),0 3px 6px rgba(0, 0, 0, .05);
+	box-sizing: border-box;
+	color: #fff;
+	cursor: pointer;
+	display: inline-flex;
+	flex-direction: column;
+	font-family: expo-brand-demi,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
+	font-size: 18px;
+	height: 42px;
+	justify-content: center;
+	line-height: 1;
+	margin: 0;
+	outline: none;
+	overflow: hidden;
+	padding: 0 32px;
+	text-align: center;
+	text-decoration: none;
+	transform: translate3d(0, 0, 0);
+	transition: all 150ms;
+	vertical-align: baseline;
+	white-space: nowrap;
+	user-select: none;
+	-webkit-user-select: none;
+	touch-action: manipulation;
 }
 
 .button1:hover:enabled {
-  box-shadow: rgba(0, 1, 0, .2) 0 2px 8px;
-  opacity: .85;
+	box-shadow: rgba(0, 1, 0, .2) 0 2px 8px;
+	opacity: .85;
 }
 
 .button1:active {
-  outline: 0;
+	outline: 0;
 }
 
 .button1:disabled{
-  background-image: linear-gradient(#7b8590, #58616b);
-  color: rgb(163, 163, 163);
-  text-decoration:line-through;
+	background-image: linear-gradient(#7b8590, #58616b);
+	color: rgb(163, 163, 163);
+	text-decoration:line-through;
 }
 
 @media (max-width: 420px) {
-  .button1 {
-    height: 48px;
-  }
+	.button1 {
+		height: 48px;
+	}
 }
 
 :root {
@@ -69,12 +69,12 @@
 	--input1-ink-high-contrast: #121212;
 }
 .input1 {
-  margin-bottom: 1.5rem;
-  position: relative;
+	margin-bottom: 1.5rem;
+	position: relative;
 }
 .input1 > label {
-  display: block;
-  width: 100%;
+	display: block;
+	width: 100%;
 }
 
 .input1 > label > input, .input1 > label > textarea {
@@ -84,16 +84,16 @@
 	height: 2rem;
 	font-size: 1.0625rem;
 	line-height: 147.6%;
-  padding: 0px;
+	padding: 0px;
 	padding-top: 0.825rem;
 	padding-bottom: 0.2rem;
-  font-family: stdFont;
-  background-color: transparent;
+	font-family: stdFont;
+	background-color: transparent;
 }
 
 .input1 > label > textarea {
-  resize: none;
-  height: 200px;
+	resize: none;
+	height: 200px;
 }
 
 .input1 > label > input:focus,.input1 > label > textarea:focus {
@@ -152,290 +152,290 @@
 }
 
 .invalidBox {
-  border-color: red !important;
+	border-color: red !important;
 }
 .invalidText {
-  color: red !important;
+	color: red !important;
 }
 .userCard{
-  display: flex;
-  flex-direction: column;
+	display: flex;
+	flex-direction: column;
 }
 .userPhoto{
-  border-radius: 50%;
-  width: 150px;
-  height: 150px;
+	border-radius: 50%;
+	width: 150px;
+	height: 150px;
 }
 .scrollBar1{
-  padding-bottom: 7px;
+	padding-bottom: 7px;
 }
 .scrollBar1::-webkit-scrollbar{
-  height: 10px;
+	height: 10px;
 }
 .scrollBar1::-webkit-scrollbar-track{
-  transition: 0.3s;
-  border-radius: 8px;
-  background-color: #e7e7e743;
-  border: 1px solid #cacaca;
-  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.3);
+	transition: 0.3s;
+	border-radius: 8px;
+	background-color: #e7e7e743;
+	border: 1px solid #cacaca;
+	box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.3);
 }
 .scrollBar1::-webkit-scrollbar-thumb{
-  transition: 0.3s;
-  border-radius: 8px;
-  background: radial-gradient(rgba(220, 220, 220, 0.258), rgba(173, 173, 173, 0.685));
+	transition: 0.3s;
+	border-radius: 8px;
+	background: radial-gradient(rgba(220, 220, 220, 0.258), rgba(173, 173, 173, 0.685));
 }
 .hover.scrollBar1::-webkit-scrollbar-track{
-  visibility: hidden;
+	visibility: hidden;
 }
 .hover.scrollBar1::-webkit-scrollbar-thumb{
-  visibility: hidden;
+	visibility: hidden;
 }
 .hover.scrollBar1:hover::-webkit-scrollbar-track, .hover.scrollBar1:hover::-webkit-scrollbar-thumb{
-  transition: 0.3s;
-  visibility: visible;
+	transition: 0.3s;
+	visibility: visible;
 }
 
 .checkbox1 *,
 .checkbox1 ::after,
 .checkbox1 ::before {
-  box-sizing: border-box;
+	box-sizing: border-box;
 }
 .checkbox1 [type=checkbox].substituted {
-  margin: 0;
-  width: 0;
-  height: 0;
-  display: inline;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
+	margin: 0;
+	width: 0;
+	height: 0;
+	display: inline;
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	appearance: none;
 }
 .checkbox1 [type=checkbox].substituted + label:before {
-  content: "";
-  display: inline-block;
-  vertical-align: top;
-  height: 1.15em;
-  width: 1.15em;
-  margin-right: 0.6em;
-  color: rgba(0, 0, 0, 0.275);
-  border: solid 0.06em;
-  box-shadow: 0 0 0.04em, 0 0.06em 0.16em -0.03em inset, 0 0 0 0.07em transparent inset;
-  border-radius: 0.2em;
-  background: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" version="1.1" xml:space="preserve" fill="white" viewBox="0 0 9 9"><rect x="0" y="4.3" transform="matrix(-0.707 -0.7072 0.7072 -0.707 0.5891 10.4702)" width="4.3" height="1.6" /><rect x="2.2" y="2.9" transform="matrix(-0.7071 0.7071 -0.7071 -0.7071 12.1877 2.9833)" width="6.1" height="1.7" /></svg>') no-repeat center, white;
-  background-size: 0;
-  will-change: color, border, background, background-size, box-shadow;
-  transform: translate3d(0, 0, 0);
-  transition: color 0.1s, border 0.1s, background 0.15s, box-shadow 0.1s;
+	content: "";
+	display: inline-block;
+	vertical-align: top;
+	height: 1.15em;
+	width: 1.15em;
+	margin-right: 0.6em;
+	color: rgba(0, 0, 0, 0.275);
+	border: solid 0.06em;
+	box-shadow: 0 0 0.04em, 0 0.06em 0.16em -0.03em inset, 0 0 0 0.07em transparent inset;
+	border-radius: 0.2em;
+	background: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" version="1.1" xml:space="preserve" fill="white" viewBox="0 0 9 9"><rect x="0" y="4.3" transform="matrix(-0.707 -0.7072 0.7072 -0.707 0.5891 10.4702)" width="4.3" height="1.6" /><rect x="2.2" y="2.9" transform="matrix(-0.7071 0.7071 -0.7071 -0.7071 12.1877 2.9833)" width="6.1" height="1.7" /></svg>') no-repeat center, white;
+	background-size: 0;
+	will-change: color, border, background, background-size, box-shadow;
+	transform: translate3d(0, 0, 0);
+	transition: color 0.1s, border 0.1s, background 0.15s, box-shadow 0.1s;
 }
 .checkbox1 [type=checkbox].substituted:enabled:active + label:before,
 .checkbox1 [type=checkbox].substituted:enabled + label:active:before {
-  box-shadow: 0 0 0.04em, 0 0.06em 0.16em -0.03em transparent inset, 0 0 0 0.07em rgba(0, 0, 0, 0.1) inset;
-  background-color: #f0f0f0;
+	box-shadow: 0 0 0.04em, 0 0.06em 0.16em -0.03em transparent inset, 0 0 0 0.07em rgba(0, 0, 0, 0.1) inset;
+	background-color: #f0f0f0;
 }
 .checkbox1 [type=checkbox].substituted:checked + label:before {
-  background-color: #c4c4c4;
-  background-size: 0.75em;
-  color: rgba(0, 0, 0, 0.075);
+	background-color: #c4c4c4;
+	background-size: 0.75em;
+	color: rgba(0, 0, 0, 0.075);
 }
 .checkbox1 [type=checkbox].substituted:checked:enabled:active + label:before,
 .checkbox1 [type=checkbox].substituted:checked:enabled + label:active:before {
-  background-color: #8d8d8d;
-  color: rgba(0, 0, 0, 0.275);
+	background-color: #8d8d8d;
+	color: rgba(0, 0, 0, 0.275);
 }
 .checkbox1 [type=checkbox].substituted:focus + label:before {
-  box-shadow: 0 0 0.04em, 0 0.06em 0.16em -0.03em transparent inset, 0 0 0 0.07em rgba(0, 0, 0, 0.1) inset, 0 0 0 3.3px rgba(211, 211, 211, 0.55), 0 0 0 5px rgba(194, 194, 194, 0.3);
+	box-shadow: 0 0 0.04em, 0 0.06em 0.16em -0.03em transparent inset, 0 0 0 0.07em rgba(0, 0, 0, 0.1) inset, 0 0 0 3.3px rgba(211, 211, 211, 0.55), 0 0 0 5px rgba(194, 194, 194, 0.3);
 }
 .checkbox1 [type=checkbox].substituted:focus:active + label:before,
 .checkbox1 [type=checkbox].substituted:focus + label:active:before {
-  box-shadow: 0 0 0.04em, 0 0.06em 0.16em -0.03em transparent inset, 0 0 0 0.07em rgba(0, 0, 0, 0.1) inset, 0 0 0 3.3px rgba(211, 211, 211, 0.55), 0 0 0 5px rgba(194, 194, 194, 0.3);
+	box-shadow: 0 0 0.04em, 0 0.06em 0.16em -0.03em transparent inset, 0 0 0 0.07em rgba(0, 0, 0, 0.1) inset, 0 0 0 3.3px rgba(211, 211, 211, 0.55), 0 0 0 5px rgba(194, 194, 194, 0.3);
 }
 .checkbox1 [type=checkbox].substituted:disabled + label:before {
-  opacity: 0.5;
+	opacity: 0.5;
 }
 
 .checkbox1 [type=checkbox].substituted.dark + label:before {
-  color: rgba(255, 255, 255, 0.275);
-  background-color: #222;
-  background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" version="1.1" xml:space="preserve" fill="rgba(34, 34, 34, 0.999)" viewBox="0 0 9 9"><rect x="0" y="4.3" transform="matrix(-0.707 -0.7072 0.7072 -0.707 0.5891 10.4702)" width="4.3" height="1.6" /><rect x="2.2" y="2.9" transform="matrix(-0.7071 0.7071 -0.7071 -0.7071 12.1877 2.9833)" width="6.1" height="1.7" /></svg>');
+	color: rgba(255, 255, 255, 0.275);
+	background-color: #222;
+	background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" version="1.1" xml:space="preserve" fill="rgba(34, 34, 34, 0.999)" viewBox="0 0 9 9"><rect x="0" y="4.3" transform="matrix(-0.707 -0.7072 0.7072 -0.707 0.5891 10.4702)" width="4.3" height="1.6" /><rect x="2.2" y="2.9" transform="matrix(-0.7071 0.7071 -0.7071 -0.7071 12.1877 2.9833)" width="6.1" height="1.7" /></svg>');
 }
 .checkbox1 [type=checkbox].substituted.dark:enabled:active + label:before,
 .checkbox1 [type=checkbox].substituted.dark:enabled + label:active:before {
-  background-color: #444;
-  box-shadow: 0 0 0.04em, 0 0.06em 0.16em -0.03em transparent inset, 0 0 0 0.07em rgba(255, 255, 255, 0.1) inset;
+	background-color: #444;
+	box-shadow: 0 0 0.04em, 0 0.06em 0.16em -0.03em transparent inset, 0 0 0 0.07em rgba(255, 255, 255, 0.1) inset;
 }
 .checkbox1 [type=checkbox].substituted.dark:checked + label:before {
-  background-color: #a97035;
-  color: rgba(255, 255, 255, 0.075);
+	background-color: #a97035;
+	color: rgba(255, 255, 255, 0.075);
 }
 .checkbox1 [type=checkbox].substituted.dark:checked:enabled:active + label:before,
 .checkbox1 [type=checkbox].substituted.dark:checked:enabled + label:active:before {
-  background-color: #c68035;
-  color: rgba(0, 0, 0, 0.275);
+	background-color: #c68035;
+	color: rgba(0, 0, 0, 0.275);
 }
 .checkbox1 [type=checkbox].substituted + label {
-  -webkit-user-select: none;
-  user-select: none;
+	-webkit-user-select: none;
+	user-select: none;
 }
 
 .popup {
-  background-color: rgb(230, 230, 230);
-  border: 1px #ddd solid;
-  border-radius: 30px;
-  -webkit-box-shadow: 21px 21px 63px -10px rgba(0,0,0,0.41);
-  -moz-box-shadow: 21px 21px 63px -10px rgba(0,0,0,0.41);
-  box-shadow: 21px 21px 63px -10px rgba(0,0,0,0.41);
-  position: absolute;
-  color: black;
-  padding: 15px;
-  padding-bottom: 30px;
-  transform-origin: center -10px;
-  transition: 0.07s;
-  scale: 0;
-  z-index: 500;
+	background-color: rgb(230, 230, 230);
+	border: 1px #ddd solid;
+	border-radius: 30px;
+	-webkit-box-shadow: 21px 21px 63px -10px rgba(0,0,0,0.41);
+	-moz-box-shadow: 21px 21px 63px -10px rgba(0,0,0,0.41);
+	box-shadow: 21px 21px 63px -10px rgba(0,0,0,0.41);
+	position: absolute;
+	color: black;
+	padding: 15px;
+	padding-bottom: 30px;
+	transform-origin: center -10px;
+	transition: 0.07s;
+	scale: 0;
+	z-index: 500;
 }
 
 .iconButton {
-  border: none;
-  background-color: transparent;
-  background-size: 70% 70%;
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  padding: 5px;
-  background-repeat: no-repeat;
-  background-position: center center;
+	border: none;
+	background-color: transparent;
+	background-size: 70% 70%;
+	width: 30px;
+	height: 30px;
+	border-radius: 50%;
+	padding: 5px;
+	background-repeat: no-repeat;
+	background-position: center center;
 }
 .iconButton:hover {
-  background-color: rgba(0, 0, 0, .05);
+	background-color: rgba(0, 0, 0, .05);
 }
 .scrollBar2::-webkit-scrollbar{
-  width: 10px;
+	width: 10px;
 }
 .scrollBar2::-webkit-scrollbar-track{
-  transition: 0.3s;
-  border-radius: 8px;
-  background-color: #e7e7e743;
-  border: 1px solid #cacaca;
-  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.3);
+	transition: 0.3s;
+	border-radius: 8px;
+	background-color: #e7e7e743;
+	border: 1px solid #cacaca;
+	box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.3);
 }
 .scrollBar2::-webkit-scrollbar-thumb{
-  transition: 0.3s;
-  border-radius: 8px;
-  background: radial-gradient(rgba(220, 220, 220, 0.258), rgba(173, 173, 173, 0.685));
+	transition: 0.3s;
+	border-radius: 8px;
+	background: radial-gradient(rgba(220, 220, 220, 0.258), rgba(173, 173, 173, 0.685));
 }
 .hover.scrollBar2::-webkit-scrollbar-track{
-  visibility: hidden;
+	visibility: hidden;
 }
 .hover.scrollBar2::-webkit-scrollbar-thumb{
-  visibility: hidden;
+	visibility: hidden;
 }
 .hover.scrollBar2:hover::-webkit-scrollbar-track, .hover.scrollBar2:hover::-webkit-scrollbar-thumb{
-  transition: 0.3s;
-  visibility: visible;
+	transition: 0.3s;
+	visibility: visible;
 }
 
 .select1 {
-  background-color: white;
-  border: thin solid black;
-  border-radius: 4px;
-  display: inline-block;
-  font: inherit;
-  line-height: 1.5em;
-  padding: 0.3em 3.5em 0.3em 1em;
-  margin: 0;      
-  appearance: none;
+	background-color: white;
+	border: thin solid black;
+	border-radius: 4px;
+	display: inline-block;
+	font: inherit;
+	line-height: 1.5em;
+	padding: 0.3em 3.5em 0.3em 1em;
+	margin: 0;      
+	appearance: none;
 }
 
 select.select1 {
-  background-image:
-    linear-gradient(45deg, transparent 50%, gray 50%),
-    linear-gradient(135deg, gray 50%, transparent 50%),
-    linear-gradient(to right, #ccc, #ccc);
-  background-position:
-    calc(100% - 20px) calc(1em + 2px),
-    calc(100% - 15px) calc(1em + 2px),
-    calc(100% - 2.5em) 0.5em;
-  background-size:
-    5px 5px,
-    5px 5px,
-    1px 1.5em;
-  background-repeat: no-repeat;
+	background-image:
+		linear-gradient(45deg, transparent 50%, gray 50%),
+		linear-gradient(135deg, gray 50%, transparent 50%),
+		linear-gradient(to right, #ccc, #ccc);
+	background-position:
+		calc(100% - 20px) calc(1em + 2px),
+		calc(100% - 15px) calc(1em + 2px),
+		calc(100% - 2.5em) 0.5em;
+	background-size:
+		5px 5px,
+		5px 5px,
+		1px 1.5em;
+	background-repeat: no-repeat;
 }
 
 select.select1:focus {
-  background-image:
-    linear-gradient(45deg, gray 50%, transparent 50%),
-    linear-gradient(135deg, transparent 50%, gray 50%),
-    linear-gradient(to right, #ccc, #ccc);
-  background-position:
-    calc(100% - 14px) 1em,
-    calc(100% - 20px) 1em,
-    calc(100% - 2.5em) 0.5em;
-  background-size:
-    6px 6px,
-    6px 6px,
-    1px 1.5em;
-  background-repeat: no-repeat;
-  border-color: gray;
-  outline: 0;
+	background-image:
+		linear-gradient(45deg, gray 50%, transparent 50%),
+		linear-gradient(135deg, transparent 50%, gray 50%),
+		linear-gradient(to right, #ccc, #ccc);
+	background-position:
+		calc(100% - 14px) 1em,
+		calc(100% - 20px) 1em,
+		calc(100% - 2.5em) 0.5em;
+	background-size:
+		6px 6px,
+		6px 6px,
+		1px 1.5em;
+	background-repeat: no-repeat;
+	border-color: gray;
+	outline: 0;
 }
 
 
 select:-moz-focusring {
-  color: transparent;
-  text-shadow: 0 0 0 #000;
+	color: transparent;
+	text-shadow: 0 0 0 #000;
 }
 
 .range1 .range-slider__thumb {
-  background: rgb(173, 173, 173) !important;
+	background: rgb(173, 173, 173) !important;
 }
 .range1 .range-slider__range {
-  background: rgb(151, 151, 151) !important;
+	background: rgb(151, 151, 151) !important;
 }
 
 .select-search-container {
-  width: 100%;
+	width: 100%;
 }
 
 .rdw-dropdown-wrapper {
-  z-index: 1;
+	z-index: 1;
 }
 
 .richTextInput1 {
-  height: 180px !important;
-  max-height: 180px !important;
+	height: 180px !important;
+	max-height: 180px !important;
 }
 
 .supplierNames {
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  overflow-x: auto;
-  gap: 20px;
-  height: 30px;
+	display: flex;
+	justify-content: center;
+	align-items: flex-start;
+	overflow-x: auto;
+	gap: 20px;
+	height: 30px;
 }
 
 .supplierColor {
-  height: 15px;
-  width: 15px;
-  border: 1px solid black;
+	height: 15px;
+	width: 15px;
+	border: 1px solid black;
 }
 
 .supplierBarName {
-  display: flex;
-  align-items: center;
-  gap: 10px;
+	display: flex;
+	align-items: center;
+	gap: 10px;
 }
 
 .supplierBarButton {
-  border-radius: 50px;
-  padding-left: 10px;
-  padding-right: 10px;
-  height: 20px;
-  position: relative;
-  background-color: lightgray;
-  cursor: pointer;
+	border-radius: 50px;
+	padding-left: 10px;
+	padding-right: 10px;
+	height: 20px;
+	position: relative;
+	background-color: lightgray;
+	cursor: pointer;
 }
 
 .rdw-list-dropdown {
-  z-index: unset !important;
+	z-index: unset !important;
 }

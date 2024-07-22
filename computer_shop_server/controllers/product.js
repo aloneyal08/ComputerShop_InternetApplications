@@ -415,8 +415,8 @@ const getAutoCompletes = async (req, res) => {
 }
 
 module.exports = {
-  addProduct,
-  getProducts,
+	addProduct,
+	getProducts,
 	getProductById,
 	getNewProducts,
 	getPopularProducts,

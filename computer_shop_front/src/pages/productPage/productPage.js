@@ -74,23 +74,23 @@ const ProductPage = () => {
 
 	const addToCart = () =>{
 		fetch(`${process.env.REACT_APP_SERVER_URL}/user/update/cart-add`, {
-		  method: 'PUT',
-		  headers: {
+			method: 'PUT',
+			headers: {
 			'Content-Type': 'application/json'
-		  },
-		  body: JSON.stringify({
+			},
+			body: JSON.stringify({
 			email: user.email,
 			addition: {productId, quantity}
-		  })
+			})
 		}).then((res) => res.json()).then((res) => {
-		  if(res.error) {
+			if(res.error) {
 			alert(res.error);
-		  } else {
+			} else {
 			let tempUser = user;
 			tempUser.cart.push({productId, quantity});
 			setUser(tempUser);
 			navigate('/cart');
-		  }
+			}
 		})
 	};
 
@@ -160,13 +160,13 @@ const ProductPage = () => {
 		}).then((res)=>res.json()).then((res)=>{setRating(res)});
 		fetch(`${process.env.REACT_APP_SERVER_URL}/user/id-get`,{
 			method: 'POST',
-		  	headers: {
+				headers: {
 				'Content-Type': 'application/json'
-		  	},
-		  	body: JSON.stringify({id: product.supplier})
-	  	}).then((res)=>res.json()).then((res)=>{
+				},
+				body: JSON.stringify({id: product.supplier})
+			}).then((res)=>res.json()).then((res)=>{
 			setSupplierName(res.fullName);
-	  	});
+			});
 		}
 	}, [product])
 
@@ -186,7 +186,7 @@ const ProductPage = () => {
 			primaryColor="#ffbc0b"
 			size={33}
 			id={product._id}
-		  />
+			/>
 					<a href='#rating' onClick={() => {reviewList.current.scrollIntoView();return false;}}>{`${reviews.length} ratings`}</a>
 					<ShareButton href="http://www.facebook.com">
 						Share
@@ -255,7 +255,7 @@ const ProductPage = () => {
 							</div>
 						</header>
 						<div className='revTitleWrapper'>
-			  <ReactStarsRating
+				<ReactStarsRating
 				value={reviewRating}
 				secondaryColor="#cccccc"
 				primaryColor="#ffbc0b"
@@ -263,7 +263,7 @@ const ProductPage = () => {
 				size={33}
 				id={"Review"}
 				className='addReview'
-			  />
+				/>
 							<div id='revTitle' className="input1">
 								<label>
 								<input required type='text' onChange={(e) => {setReviewTitle(e.currentTarget.value);}}/>

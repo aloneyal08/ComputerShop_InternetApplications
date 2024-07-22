@@ -32,23 +32,23 @@ app.use('/view', view);
 // other
 
 app.get('/spell', (req, res)=>{
-  const {key} = req.headers;
-  SpellChecker.getDictionary("en-US", function(err, dictionary) {
-    var isMisspelled = false;
-    const mean = key.split(' ').map(word=>{
-      var misspelled = !dictionary.spellCheck(word);
-      if(misspelled) {
-        isMisspelled = true;
-        var suggestions = dictionary.getSuggestions(word);
-        return suggestions.length > 0 ? suggestions[0] : word;
-      }
-      return word;
-    }).join(' ')
-    res.json({isMisspelled, mean})
-  })
+	const {key} = req.headers;
+	SpellChecker.getDictionary("en-US", function(err, dictionary) {
+		var isMisspelled = false;
+		const mean = key.split(' ').map(word=>{
+			var misspelled = !dictionary.spellCheck(word);
+			if(misspelled) {
+				isMisspelled = true;
+				var suggestions = dictionary.getSuggestions(word);
+				return suggestions.length > 0 ? suggestions[0] : word;
+			}
+			return word;
+		}).join(' ')
+		res.json({isMisspelled, mean})
+	})
 })
 
 mongoose.connection.once('open', () => {
-  console.log('Server started');
-  app.listen(88);
+	console.log('Server started');
+	app.listen(88);
 });

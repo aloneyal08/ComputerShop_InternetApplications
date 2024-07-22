@@ -1,17 +1,17 @@
 
 <h1 align="center">
-  <br>
-  <img src="./computer_shop_front/src/images/cart.png" alt="Markdownify" width="200">
-  <br>
-  O.C.S - Online Computer Shop
-  <br>
+	<br>
+	<img src="./computer_shop_front/src/images/cart.png" alt="Markdownify" width="200">
+	<br>
+	O.C.S - Online Computer Shop
+	<br>
 </h1>
 
 <h4 align="center">An online computer shop UI and server built with <a href="https://react.dev/" target="_blank">React</a> and <a href="https://expressjs.com/" target="_blank">Express</a></h4>
 
 <p align="center">
-  <a href="#key-features">Key Features</a> •
-  <a href="#credits">Credits</a>
+	<a href="#key-features">Key Features</a> •
+	<a href="#credits">Credits</a>
 </p>
 
 ![screenshot](./computer_shop_front/src/images/screenshot.png)

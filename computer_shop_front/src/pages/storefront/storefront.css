@@ -1,106 +1,106 @@
 #showContainer{
-    display: flex;
-    flex-direction: column;
+	display: flex;
+	flex-direction: column;
 }
 #title{
-    font-size: 40px;
-    margin: 0;
+	font-size: 40px;
+	margin: 0;
 }
 .title{
-    display: flex;
-    margin-left: 50px;
+	display: flex;
+	margin-left: 50px;
 }
 .itemContainer{
-    display: flex;
-    flex-direction: row;
-    max-width: 100%;
-    overflow-x: auto;
-    column-gap: 20px;
-    scroll-behavior: smooth;
-    width: calc(100% - 100px);
-    margin: auto;
+	display: flex;
+	flex-direction: row;
+	max-width: 100%;
+	overflow-x: auto;
+	column-gap: 20px;
+	scroll-behavior: smooth;
+	width: calc(100% - 100px);
+	margin: auto;
 }
 .moveRight, .moveLeft{
-    transition: 0.3s;
-    position: absolute;
-    display: flex;
-    align-self: center;
-    align-items: center;
-    justify-content: center;
-    width: 50px;
-    height: 110px;
-    padding: 10px 15px 10px 15px;
-    background-color: black;
-    color: white;
-    cursor: pointer;
-    font-size: 50px;
-    opacity: 0;
-    border: none;
+	transition: 0.3s;
+	position: absolute;
+	display: flex;
+	align-self: center;
+	align-items: center;
+	justify-content: center;
+	width: 50px;
+	height: 110px;
+	padding: 10px 15px 10px 15px;
+	background-color: black;
+	color: white;
+	cursor: pointer;
+	font-size: 50px;
+	opacity: 0;
+	border: none;
 }
 .moveLeft{
-    left: 0;
+	left: 0;
 }
 .moveRight{
-    right: 0;
+	right: 0;
 }
 .scrollBar1:hover > .moveLeft, .scrollBar1:hover > .moveRight{
-    transition: 0.3s;
-    opacity: 0.85;
+	transition: 0.3s;
+	opacity: 0.85;
 } 
 .scrollBar1:hover > .moveLeft:disabled, .scrollBar1:hover > .moveRight:disabled{
-    transition: 0.3s;
-    cursor: auto;
-    opacity: 0.4;
+	transition: 0.3s;
+	cursor: auto;
+	opacity: 0.4;
 }
 #flashWrapper{
-    display: flex;
-    flex-direction: column;
-    align-items: center; 
+	display: flex;
+	flex-direction: column;
+	align-items: center; 
 }
 #dots{
-    display: flex;
-    flex-direction: row;
-    column-gap: 4px;
-    
+	display: flex;
+	flex-direction: row;
+	column-gap: 4px;
+	
 }
 .dot{
-    transition: 0.7s;
-    font-size: 36px;
-    color: rgb(72, 72, 72);
-    cursor: pointer;
+	transition: 0.7s;
+	font-size: 36px;
+	color: rgb(72, 72, 72);
+	cursor: pointer;
 }
 .dot.selected{
-    transition: 0.7s;
-    color: black;
+	transition: 0.7s;
+	color: black;
 }
 .flashBackground{
-    width: 100%;
-    height: 310px;
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-position: center;
+	width: 100%;
+	height: 310px;
+	background-repeat: no-repeat;
+	background-size: cover;
+	background-position: center;
 }
 #backgroundContainer{
-    display: flex;
-    flex-direction: row;
-    position: absolute;
-    width: 100%;
-    height: 310px;
-    overflow-x: scroll;
+	display: flex;
+	flex-direction: row;
+	position: absolute;
+	width: 100%;
+	height: 310px;
+	overflow-x: scroll;
 }
 .userPhoto{
-    width: 120px;
-    height: 120px;
+	width: 120px;
+	height: 120px;
 }
 .supplierName {
-    margin: 15px;
-    font-size: 23px;
+	margin: 15px;
+	font-size: 23px;
 }
 
 .userCard {
-    cursor: pointer;
+	cursor: pointer;
 }
 
 .userCard:hover {
-    text-decoration: underline;
+	text-decoration: underline;
 }

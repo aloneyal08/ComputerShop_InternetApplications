@@ -155,7 +155,7 @@ const Cart = () => {
 			<h2 className='login_to_cart'>Please login to view Cart</h2>
 			<button onClick={() => {navigate("/login") }} className="button1 margin_top">login</button>
 			</div>
-		   	</>		   
+			 	</>		 
 			:
 			<>
 			{user.cart.length > 0?

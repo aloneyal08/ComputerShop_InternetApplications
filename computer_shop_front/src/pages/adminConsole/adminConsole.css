@@ -1,176 +1,176 @@
 .dashboard {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  justify-content: center;
-  padding: 15px;
-  gap: 20px;
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	justify-content: center;
+	padding: 15px;
+	gap: 20px;
 }
 
 .dashboardContainer {
-  border: 1.5px solid gray;
-  border-radius: 20px;
-  max-width: 900px;
-  height: 600px;
-  width: 40%;
-  flex: 1 1 200px;
-  min-width: 600px
+	border: 1.5px solid gray;
+	border-radius: 20px;
+	max-width: 900px;
+	height: 600px;
+	width: 40%;
+	flex: 1 1 200px;
+	min-width: 600px
 }
 
 .dashboardHeader {
-  text-align: left;
-  margin: 15px;
+	text-align: left;
+	margin: 15px;
 }
 
 .dashboardList {
-  overflow-y: scroll;
-  height: 542px;
-  border-radius: 20px;
-  border-top-left-radius: 0px;
-  border-top-right-radius: 0px;
-  width: 100%;
+	overflow-y: scroll;
+	height: 542px;
+	border-radius: 20px;
+	border-top-left-radius: 0px;
+	border-top-right-radius: 0px;
+	width: 100%;
 }
 
 .dashboardList table {
-  border-collapse: collapse;
-  width: 100%;
+	border-collapse: collapse;
+	width: 100%;
 }
 
 .dashboardListItem:nth-child(odd) {
-  background-color: #b4b4b4;
+	background-color: #b4b4b4;
 }
 .dashboardListItem:nth-child(even) {
-  background-color: #d6d6d6;
+	background-color: #d6d6d6;
 }
 
 .dashboardListItem {
-  height: 50px;
-  border: 1.5px solid gray;
-  width: 100%;
-  border-left-width: 0px;
-  border-right-width: 0px;
-  position: relative;
+	height: 50px;
+	border: 1.5px solid gray;
+	width: 100%;
+	border-left-width: 0px;
+	border-right-width: 0px;
+	position: relative;
 }
 .dashboardListItem th {
-  position: sticky;
-  top: 0;
-  background-color: #9cabb5;
-  z-index: 101;
+	position: sticky;
+	top: 0;
+	background-color: #9cabb5;
+	z-index: 101;
 }
 
 .statusText {
-  font-weight: bold;
+	font-weight: bold;
 }
 
 .requestPopup {
-  top: 45px;
-  left: 0;
-  right: 0;
-  margin: auto;
-  transform-origin: center -10px;
+	top: 45px;
+	left: 0;
+	right: 0;
+	margin: auto;
+	transform-origin: center -10px;
 }
 
 .centerAbsolute {
-  left: 50%;
+	left: 50%;
 }
 
 .requestDescription {
-  height: 150px;
-  overflow-y: auto;
+	height: 150px;
+	overflow-y: auto;
 }
 
 .requestButtons button {
-  margin: 7px;
+	margin: 7px;
 }
 
 .acceptButton {
-  background-image: linear-gradient(#3fa549, #128835);
+	background-image: linear-gradient(#3fa549, #128835);
 }
 .rejectButton {
-  background-image: linear-gradient(#c75757, #a03030);
+	background-image: linear-gradient(#c75757, #a03030);
 }
 
 .adminTblHeader {
-  background-color: #9cabb5;
-  z-index: 101;
+	background-color: #9cabb5;
+	z-index: 101;
 }
 
 .darkRedGradient {
-  background-image: linear-gradient(#8d3f3f, #641f1f);
+	background-image: linear-gradient(#8d3f3f, #641f1f);
 }
 
 .dashboardHeaderContainer {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  padding-right: 10px;
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: center;
+	padding-right: 10px;
 }
 
 .messagePopup {
-  transform-origin: 90% -10px;
-  width: 90%;
-  left: 0;
-  right: 0;
-  margin: auto;
-  margin-top: 10px;
+	transform-origin: 90% -10px;
+	width: 90%;
+	left: 0;
+	right: 0;
+	margin: auto;
+	margin-top: 10px;
 }
 
 .messagePopup > span {
-  text-align: left;
-  width: 100%;
-  display: block;
-  padding-left: 20px;
-  font-size: 18px;
-  font-weight: 600;
+	text-align: left;
+	width: 100%;
+	display: block;
+	padding-left: 20px;
+	font-size: 18px;
+	font-weight: 600;
 }
 
 .rdw-option-wrapper, .rdw-dropdown-wrapper {
-  background-color: transparent;
-  border: none;
+	background-color: transparent;
+	border: none;
 }
 
 .deleteButton {
-  background-image: url(https://static-00.iconduck.com/assets.00/delete-icon-1864x2048-bp2i0gor.png);
-  height: 38px;
-  width: 38px;
+	background-image: url(https://static-00.iconduck.com/assets.00/delete-icon-1864x2048-bp2i0gor.png);
+	height: 38px;
+	width: 38px;
 }
 
 .editButton {
-  background-image: url(https://cdn-icons-png.freepik.com/256/1159/1159633.png?semt=ais_hybrid);
-  height: 38px;
-  width: 38px;
+	background-image: url(https://cdn-icons-png.freepik.com/256/1159/1159633.png?semt=ais_hybrid);
+	height: 38px;
+	width: 38px;
 }
 
 .adminPopup {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	gap: 10px;
 }
 
 .adminEditPopup {
-  transform-origin: 92.75% -10px;
+	transform-origin: 92.75% -10px;
 }
 .adminEditPopup .arrowUp {
-  left: 92.75%;
+	left: 92.75%;
 }
 
 .tagEditPopup {
-  transform-origin: 87% -10px;
+	transform-origin: 87% -10px;
 }
 .tagEditPopup .arrowUp {
-  left: 87%;
+	left: 87%;
 }
 .messageWrapperEditor{
-  width: 100% !important;
+	width: 100% !important;
 }
 
 .supplierPopup {
-  top: 80px;
+	top: 80px;
 }
 
 .supplierPopup h2 {
-  margin: 5px;
+	margin: 5px;
 }

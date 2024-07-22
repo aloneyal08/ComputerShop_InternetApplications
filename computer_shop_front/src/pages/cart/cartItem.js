@@ -80,6 +80,6 @@ const CartItem = ({cartItem, index, setPrices = () => {},  changedFunc = () => {
 		</div></td>
 		{!product.empty&&<td className='cartItemTd'><h2 className='cartItemPrice'>{currencies[currency].symbol + Math.floor(product.price*amount*exchangeRates[currency]*100)/100}</h2></td>}
 	</tr>
-  }
-  
-  export default CartItem;
+}
+
+export default CartItem;
