@@ -7,10 +7,9 @@ const AddView = async (req, res) => {
 	if(!mongoose.Types.ObjectId.isValid(product))
 		return res.status(404).json({error: "couldn't get product"});
   const p = await Product.findById(product);
-  if(!p)
+  if(!p){
     return res.status(400).json({error: 'Product not found'});
-}
-
+	}
 	const view = new View({ user, product });
 	await view.save();
 	res.status(200).json(view);

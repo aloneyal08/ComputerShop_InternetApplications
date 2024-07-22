@@ -260,14 +260,14 @@ const getFlashProducts = async (req, res) => {
 	current = await Product.find({}).sort({"discount":-1}).limit(3);
 	flash.push([ 'The Biggest Sales', current, ['The Number #1 Sale', 'The Number #2 Sale', 'The Number #3 Sale']]);
   // TODO:
-	current = current.map(arr=>{
+	/*current = current.map(arr=>{
 		return arr.filter(pur=>{
 			const p = products.find(p=>p._id.equals(pur._id));
 			if(!p) return false;
 			const s = suppliers.find(s=>s._id.equals(p.supplier));
 			return s && !s.suspended;
 		})[0]
-	})
+	})*/
 	res.json(flash);
 };
 

@@ -171,7 +171,7 @@ const Cart = () => {
 				<h3>Your Total is: {currencies[currency].symbol + Math.floor(total*exchangeRates[currency]*100)/100} </h3>
 				<div className='cartBtnContainer'>
 					<button onClick={saveCart} className='button1'>Continue Shopping</button>
-					<button onClick={buyCart} className='button1'>Buy Items</button>
+					<button disabled={!newCart.find(e=>!e.deleted)} onClick={buyCart} className='button1'>Buy Items</button>
 				</div>
 				</>
 				:
