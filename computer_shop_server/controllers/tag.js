@@ -7,8 +7,8 @@ const getTags = async (req, res) => {
 };
 
 const addTag = async (req, res) => {
-	const { text, background } = req.body;
-	const tag = new Tag({ text, background });
+	const { text } = req.body;
+	const tag = new Tag({ text });
 	await tag.save();
 
 	res.json(tag);
@@ -27,9 +27,9 @@ const deleteTag = async (req, res) => {
 }
 
 const editTag = async (req, res) => {
-	const {_id, text, background} = req.body;
+	const {_id, text} = req.body;
 
-	const tag = await Tag.findByIdAndUpdate(_id, {text, background});
+	const tag = await Tag.findByIdAndUpdate(_id, {text});
 	if(!tag) {
 		return res.status(404).json({error: 'Tag not found'});
 	}

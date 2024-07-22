@@ -36,6 +36,9 @@ const AdminConsole = () => {
 
 	const [userNumberData, setUserNumberData] = useState([]);
 
+	const [selectedReq, setSelectedReq] = useState(null);
+	const [selectedMessage, setSelectedMessage] = useState(null);
+
 	const changePurchaseTimeFrame = (e) => setPurchaseData(getTimeData(e.target.value));
 	const changeLoginTimeFrame = (e) => setLoginData(getTimeData(e.target.value));
 
@@ -107,7 +110,7 @@ const AdminConsole = () => {
 	return <div>
 		<h1>Admin Console</h1>
 		<div className='dashboard'>
-			<div className='dashboardContainer'>
+			<div className='dashboardContainer' onMouseLeave={()=>setSelectedReq(null)}>
 				<h2 className='dashboardHeader'>Supplier Requests</h2>
 				<div className='dashboardList'>
 					<table>
@@ -119,7 +122,7 @@ const AdminConsole = () => {
 								<th>Status</th>
 							</tr>
 							{
-								requests.map((request, i)=><RequestListItem request={request} key={i} reload={reload}/>)
+								requests.map((request, i)=><RequestListItem request={request} key={i} reload={reload} selectedReq={selectedReq} setSelectedReq={setSelectedReq}/>)
 							}
 						</tbody>
 					</table>
@@ -145,7 +148,7 @@ const AdminConsole = () => {
 					{suppliers.length===0&&<h3>No Suppliers</h3>}
 				</div>
 			</div>
-			<div className='dashboardContainer'>
+			<div className='dashboardContainer' onMouseLeave={()=>setSelectedMessage(null)}>
 				<div className='dashboardHeaderContainer' style={{position: "relative"}}>
 					<h2 className='dashboardHeader'>Messages</h2>
 					<CreateMessage reload={reload}/>
@@ -160,7 +163,7 @@ const AdminConsole = () => {
 								<th style={{backgroundColor: "white"}}>Date</th>
 							</tr>
 							{
-								messages.map((message, i)=><MessageListItem message={message} key={i} reload={reload}/>)
+								messages.map((message, i)=><MessageListItem message={message} key={i} reload={reload} selectedMessage={selectedMessage} setSelectedMessage={setSelectedMessage}/>)
 							}
 						</tbody>
 					</table>

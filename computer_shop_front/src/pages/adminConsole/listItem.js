@@ -18,9 +18,8 @@ const getStatusObj = (s) => {
 }
 
 
-export const RequestListItem = ({request, reload}) => {
+export const RequestListItem = ({request, reload, selectedReq, setSelectedReq}) => {
 	const {user} = useContext(UserContext)
-	const [isPopupOpen, setIsPopupOpen] = useState(false);
 
 	const acceptRequest = () => {
 		fetch(`${process.env.REACT_APP_SERVER_URL}/supplier/request/accept`, {
@@ -30,7 +29,7 @@ export const RequestListItem = ({request, reload}) => {
 				'Content-Type': 'application/json'
 			}
 		}).then(()=>{
-			setIsPopupOpen(false);
+			setSelectedReq(null);
 			reload();
 		})
 	}
@@ -43,7 +42,7 @@ export const RequestListItem = ({request, reload}) => {
 				'Content-Type': 'application/json'
 			}
 		}).then(()=>{
-			setIsPopupOpen(false);
+			setSelectedReq(null);
 			reload();
 		})
 	}
@@ -51,7 +50,7 @@ export const RequestListItem = ({request, reload}) => {
 
 	const status = getStatusObj(request.status);
 	return <tr className='dashboardListItem' style={{cursor: request.status===0 ? "pointer" : null}} 
-							onClick={()=>setIsPopupOpen(true)} onMouseLeave={()=>setIsPopupOpen(false)}>
+							onClick={request.status===0 ? ()=>setSelectedReq(request._id) : null}>
 		<td className='requestName'>
 			{request.user.fullName}
 		</td>
@@ -64,7 +63,7 @@ export const RequestListItem = ({request, reload}) => {
 		<td style={{color: status.color}} className='statusText'>
 			{status.message}
 		</td>
-		<td className={'popup requestPopup ' + (isPopupOpen&&request.status===0 ? 'scale1' : '')}>
+		<td className={'popup requestPopup ' + (selectedReq===request._id ? 'scale1' : '')}>
 			<div className='arrowUp centerAbsolute'/>
 			<h5 style={{margin: "5px"}}>Email: {request.user.email}</h5>
 			<h5 style={{margin: "5px"}}>Request Description:</h5>
@@ -114,10 +113,9 @@ export const SupplierListItem = ({supplier, reload}) => {
 	</tr>
 }
 
-export const MessageListItem = ({message, isTo=true}) => {
-	const [isPopupOpen, setIsPopupOpen] = useState(false);
+export const MessageListItem = ({message, isTo=true, selectedMessage, setSelectedMessage}) => {
 
-	return <tr className='dashboardListItem' onClick={()=>setIsPopupOpen(true)} onMouseLeave={()=>setIsPopupOpen(false)}>
+	return <tr className='dashboardListItem' onClick={()=>setSelectedMessage(message._id)}>
 		
 		{isTo&&<td style={{width: "300px"}}>
 			{message.to}
@@ -128,7 +126,7 @@ export const MessageListItem = ({message, isTo=true}) => {
 		<td>
 			{new Date(message.date).toLocaleDateString()}
 		</td>
-		<td className={'popup requestPopup ' + (isPopupOpen ? 'scale1' : '')}>
+		<td className={'popup requestPopup ' + (selectedMessage===message._id ? 'scale1' : '')}>
 			<div className='arrowUp centerAbsolute'/>
 			<h2 style={{margin: "5px"}}>{message.header}</h2>
 			<div dangerouslySetInnerHTML={{ __html: message.content}}/>
@@ -251,10 +249,8 @@ export const AdminListItem = ({admin, reload}) => {
 export const TagListItem = ({tag, reload}) => {
 	const [isPopupOpen, setIsPopupOpen] = useState(false);
 	const [text, setText] = useState(tag.text);
-	const [background, setBackground] = useState(tag.background);
 
 	const onTextChange = (e) => setText(e.target.value);
-	const onBackgroundChange = (e) => setBackground(e.target.value);
 
 	const deleteTag = () => {
 		window.confirm(`Are you sure you want to delete ${tag.text}?`, '', ()=>{
@@ -277,7 +273,7 @@ export const TagListItem = ({tag, reload}) => {
 	const onSubmit = () => {
 		fetch(`${process.env.REACT_APP_SERVER_URL}/tag/edit`, {
 			method: 'PUT',
-			body: JSON.stringify({_id: tag._id, text, background}),
+			body: JSON.stringify({_id: tag._id, text}),
 			headers: {
 				'Content-Type': 'application/json'
 			}
@@ -294,9 +290,6 @@ export const TagListItem = ({tag, reload}) => {
 	return <tr className='dashboardListItem'>
 		<td >
 			{tag.text}
-		</td>
-		<td>
-			<img src={tag.background} alt=' ' style={{height: "50px"}}/>
 		</td>
 		<td>
 			<button className='iconButton deleteButton' onClick={deleteTag}/>
@@ -321,12 +314,6 @@ export const TagListItem = ({tag, reload}) => {
 				<label>
 					<input type='text' value={text} required onChange={onTextChange}/>
 					<span>Text</span>
-				</label>
-			</div>
-			<div className="input1">
-				<label>
-					<input type='text' value={background} required onChange={onBackgroundChange}/>
-					<span>Background Photo</span>
 				</label>
 			</div>
 			<button className='button1' onClick={onSubmit}>Submit</button>

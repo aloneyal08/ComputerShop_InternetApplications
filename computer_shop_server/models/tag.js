@@ -5,10 +5,6 @@ const Tag = new Schema({
 	text: {
 		type: String,
 		required: true
-	},
-	background: {
-		type: String,
-		required: false
 	}
 });
 

@@ -3,16 +3,13 @@ import React, { useState } from 'react'
 const CreateTag = ({reload}) => {
 	const [isPopupOpen, setIsPopupOpen] = useState(false);
 	const [text, setText] = useState('');
-	const [background, setBackground] = useState('');
-
 
 	const onTextChange = (e) => setText(e.target.value);
-	const onBackgroundChange = (e) => setBackground(e.target.value);
 
 	const onSubmit = () => {
 		fetch(`${process.env.REACT_APP_SERVER_URL}/tag/add`, {
 			method: 'POST',
-			body: JSON.stringify({text, background}),
+			body: JSON.stringify({text}),
 			headers: {
 				'Content-Type': 'application/json'
 			}
@@ -22,7 +19,6 @@ const CreateTag = ({reload}) => {
 			} else {
 				reload();
 				setIsPopupOpen(false);
-				setBackground('');
 				setText('');
 			}
 		})
@@ -39,12 +35,6 @@ const CreateTag = ({reload}) => {
 				<label>
 					<input type='text' value={text} required onChange={onTextChange}/>
 					<span>Text</span>
-				</label>
-			</div>
-			<div className="input1">
-				<label>
-					<input type='text' value={background} required onChange={onBackgroundChange}/>
-					<span>Background Photo</span>
 				</label>
 			</div>
 			<button className='button1' onClick={onSubmit}>Submit</button>
