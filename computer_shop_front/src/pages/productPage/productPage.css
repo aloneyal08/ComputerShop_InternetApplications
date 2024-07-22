@@ -193,6 +193,12 @@ font-size: 14px;
 	top: 10px;
 }
 @keyframes enlarge {
-	from {max-width: 0;}
-	to {max-width: var(--max-width);}
+    from {max-width: 0;}
+    to {max-width: var(--max-width);}
+}
+#statShow{
+    columns: 150px 2;
+    column-fill: balance;
+    text-align: left;
+    padding-left: 20px;
 }

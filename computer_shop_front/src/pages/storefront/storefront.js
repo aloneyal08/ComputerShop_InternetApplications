@@ -57,12 +57,13 @@ const Storefront = () => {
 		}
 	}
 
-	const moveSide = (e, side) =>{
-		const cardWidth = e.currentTarget.parentElement.children[1].clientWidth + 24.8;
-		let scrollEnd = Math.max(0, Math.min(e.currentTarget.parentElement.scrollLeft + (cardWidth*5*side), e.currentTarget.parentElement.scrollWidth - e.currentTarget.parentElement.clientWidth));
-		scrollEnd = Math.round(scrollEnd/cardWidth)*cardWidth;
-		e.currentTarget.parentElement.scroll(scrollEnd, 0);
-	};
+  const moveSide = (e, side) =>{
+    console.log(1)
+    const cardWidth = e.currentTarget.parentElement.children[1].clientWidth + 24.8;
+    let scrollEnd = Math.max(0, Math.min(e.currentTarget.parentElement.scrollLeft + (cardWidth*5*side), e.currentTarget.parentElement.scrollWidth - e.currentTarget.parentElement.clientWidth));
+    let roundedScrollEnd = Math.round(scrollEnd/cardWidth)*cardWidth;
+    e.currentTarget.parentElement.scroll(roundedScrollEnd, 0);
+  };
 
 	const scrollHandle = (e) => {
 		let pos = Math.round(e.currentTarget.scrollLeft);
@@ -73,72 +74,72 @@ const Storefront = () => {
 	
 	useInterval(moveFlash, resetDelay?null:5000)
 
-	useEffect(() => {
-		fetch(`${process.env.REACT_APP_SERVER_URL}/product/get?userId=${user._id}`).then((res)=>res.json()).then((recP) => {
-			setRecProducts(recP)
-			fetch(`${process.env.REACT_APP_SERVER_URL}/user/get-suppliers`).then((res)=>res.json()).then((res) => {
-				const recSupplier = [...new Set(recP.map(p=>p.supplier))].map((id)=>res.find(s=>s._id===id));
-				setRecSupplier(recSupplier);
-			});
-		});
-		fetch(`${process.env.REACT_APP_SERVER_URL}/product/get-popular`).then((res)=>res.json()).then((res) => {setPopProducts(res)});
-		fetch(`${process.env.REACT_APP_SERVER_URL}/product/get-new`).then((res)=>res.json()).then((res) => {setNewProducts(res)});
-		fetch(`${process.env.REACT_APP_SERVER_URL}/product/get-flash`).then((res) =>res.json()).then((res) => {setFlashProducts(res)});
-	}, [user._id]);
-	return <div>
-		<div id='flashWrapper'>
-			<div id='dots'>{flashProducts.map((p, index) => <span key={index} className={`dot ${flashPos===index?'selected':''}`} onClick={() => {moveFlash(index)}}>•</span>)}</div>
-			<div id='flashContainers' ref={flashContainers}>
-				{flashProducts.map((p, i) => <FlashContainer list={p} key={i}/>)}
-			</div>
-		</div>
-		<div id='showContainer'>
-			<h1 className='title'>Recommended</h1>
-			<div className='itemContainer scrollBar1 hover' onLoad={scrollHandle} onScroll={scrollHandle}>
-				<button className='moveLeft' onClick={(e) => {moveSide(e, -1)}}>
-					{'<'}
-				</button>
-				{recProducts.map((product)=><ProductCard product={product} key={product._id}/>)}
-				<button className='moveRight' onClick={(e) => {moveSide(e, 1)}}>
-					{'>'}
-				</button>
-			</div>
-			<h1 className='title'>Popular</h1>
-			<div className='itemContainer scrollBar1 hover' onLoad={scrollHandle} onScroll={scrollHandle}>
-				<button className='moveLeft' disabled={true} onClick={(e) => {moveSide(e, -1)}}>
-					{'<'}
-				</button>
-			{popProducts.map((product)=> <ProductCard product={product} key={product._id}/>)}
-				<button className='moveRight' onClick={(e) => {moveSide(e, 1)}}>
-					{'>'}
-				</button>
-			</div>
-			<h1 className='title'>New</h1>
-			<div className='itemContainer scrollBar1 hover' onLoad={scrollHandle} onScroll={scrollHandle}>
-				<button className='moveLeft' disabled={true} onClick={(e) => {moveSide(e, -1)}}>
-					{'<'}
-				</button>
-			{newProducts.map((product)=> <ProductCard product={product} key={product._id}/>)}
-				<button className='moveRight' onClick={(e) => {moveSide(e, 1)}}>
-					{'>'}
-				</button>
-			</div>
-			<h1 className='title'>Recommended</h1>
-			<div className='itemContainer scrollBar1 hover' onLoad={scrollHandle} onScroll={scrollHandle} style={{marginLeft: '50px'}}>
-			<button className='moveLeft' disabled={true} onClick={(e) => {moveSide(e, -1)}}>
-				{'<'}
-			</button>
-			{recSupplier.map((supplier)=>
-			<div className='userCard' key={supplier._id} onClick={()=>navigate(`/supplier/${supplier._id}`)}>
-				<img alt='           ' className='userPhoto' src={supplier.profilePhoto||require('../../images/userDefault.png')} onError={(e) =>{e.currentTarget.src = require('../../images/userDefault.png')}} />
-				<h4 className='supplierName'>{supplier.fullName}</h4>
-			</div>)}
-				<button className='moveRight' onClick={(e) => {moveSide(e, 1)}}>
-					{'>'}
-				</button>
-			</div>
-		</div>
-	</div>
+  useEffect(() => {
+    fetch(`${process.env.REACT_APP_SERVER_URL}/product/get?userId=${user._id}`).then((res)=>res.json()).then((recP) => {
+      setRecProducts(recP)
+      fetch(`${process.env.REACT_APP_SERVER_URL}/user/get-suppliers`).then((res)=>res.json()).then((res) => {
+        const recSupplier = [...new Set(recP.map(p=>p.supplier))].map((id)=>res.find(s=>s._id===id));
+        setRecSupplier(recSupplier);
+      });
+    });
+    fetch(`${process.env.REACT_APP_SERVER_URL}/product/get-popular`).then((res)=>res.json()).then((res) => {setPopProducts(res)});
+    fetch(`${process.env.REACT_APP_SERVER_URL}/product/get-new`).then((res)=>res.json()).then((res) => {setNewProducts(res)});
+    fetch(`${process.env.REACT_APP_SERVER_URL}/product/get-flash`).then((res) =>res.json()).then((res) => {setFlashProducts(res)});
+  }, [user._id]);
+  return <div>
+    <div id='flashWrapper'>
+      <div id='dots'>{flashProducts.map((p, index) => <span key={index} className={`dot ${flashPos===index?'selected':''}`} onClick={() => {moveFlash(index)}}>•</span>)}</div>
+      <div id='flashContainers' ref={flashContainers}>
+        {flashProducts.map((p, i) => <FlashContainer list={p} key={i}/>)}
+      </div>
+    </div>
+    <div id='showContainer'>
+      <h1 className='title'>Recommended</h1>
+      <div className='itemContainer scrollBar1 hover' onLoad={scrollHandle} onScroll={scrollHandle}>
+        <button className='moveLeft' onClick={(e) => {moveSide(e, -1)}}>
+          {'<'}
+        </button>
+        {recProducts.map((product)=><ProductCard product={product} key={product._id}/>)}
+        <button className='moveRight' onClick={(e) => {moveSide(e, 1)}}>
+          {'>'}
+        </button>
+      </div>
+      <h1 className='title'>Popular</h1>
+      <div className='itemContainer scrollBar1 hover' onLoad={scrollHandle} onScroll={scrollHandle}>
+        <button className='moveLeft'  onClick={(e) => {moveSide(e, -1)}}>
+          {'<'}
+        </button>
+      {popProducts.map((product)=> <ProductCard product={product} key={product._id}/>)}
+        <button className='moveRight' onClick={(e) => {moveSide(e, 1)}}>
+          {'>'}
+        </button>
+      </div>
+      <h1 className='title'>New</h1>
+      <div className='itemContainer scrollBar1 hover' onLoad={scrollHandle} onScroll={scrollHandle}>
+        <button className='moveLeft' onClick={(e) => {moveSide(e, -1)}}>
+          {'<'}
+        </button>
+      {newProducts.map((product)=> <ProductCard product={product} key={product._id}/>)}
+        <button className='moveRight' onClick={(e) => {moveSide(e, 1)}}>
+          {'>'}
+        </button>
+      </div>
+      <h1 className='title'>Recommended</h1>
+      <div className='itemContainer scrollBar1 hover' onLoad={scrollHandle} onScroll={scrollHandle} style={{marginLeft: '50px'}}>
+      <button className='moveLeft'onClick={(e) => {moveSide(e, -1)}}>
+        {'<'}
+      </button>
+      {recSupplier.map((supplier)=>
+      <div className='userCard' key={supplier._id} onClick={()=>navigate(`/supplier/${supplier._id}`)}>
+        <img alt='           ' className='userPhoto' src={supplier.profilePhoto || ''} onError={(e) =>{e.currentTarget.src = require('../../images/userDefault.png')}} />
+        <h4 className='supplierName'>{supplier.fullName}</h4>
+      </div>)}
+        <button className='moveRight' onClick={(e) => {moveSide(e, 1)}}>
+          {'>'}
+        </button>
+      </div>
+    </div>
+  </div>
 }
 
 export default Storefront;

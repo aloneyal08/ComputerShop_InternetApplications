@@ -3,14 +3,15 @@
 	--product-img-height: 210px;
 }
 .productCard{
-	display: flex;
-	flex-direction: column;
-	width: var(--product-card-width);
-	height: auto;
-	border: 3px solid gainsboro;
-	border-radius: 15px;
-	background-color: white;
-	cursor: pointer;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: var(--product-card-width);
+  height: auto;
+  border: 3px solid gainsboro;
+  border-radius: 15px;
+  background-color: white;
+  cursor: pointer;
 }
 .productImg{
 	display: flex;
@@ -62,7 +63,18 @@
 .productCard:hover h3 {
 	text-decoration: underline;
 }
-
+.discountLabel{
+  position: absolute;
+  text-align: center;
+  top: 7px;
+  right: -7%;
+	border-bottom: 20px solid rgb(245, 69, 69);
+	border-left: 20px solid transparent;
+	border-right: 20px solid transparent;
+  width: 15%;
+  height: 0;
+  transform: rotate(45deg);
+}
 .productMainCon {
 	display: flex;
 	justify-content: space-between;

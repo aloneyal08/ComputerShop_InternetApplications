@@ -34,5 +34,11 @@
 	font-size: 13px;
 }
 .flashProduct > div > div > section > .productPrice, .flashProduct > div > div > section > .productName{
-	font-size: 14px;
+    font-size: 14px;
+}
+.flashProduct > div > .discountLabel{
+    right: -10%;
+	border-bottom: 20px solid rgb(245, 69, 69);
+	border-left: 20px solid transparent;
+	border-right: 20px solid transparent;
 }

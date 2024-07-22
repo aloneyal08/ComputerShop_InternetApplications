@@ -307,6 +307,9 @@
 .iconButton:hover {
 	background-color: rgba(0, 0, 0, .05);
 }
+.scrollBar2{
+  padding-right: 7px;
+}
 .scrollBar2::-webkit-scrollbar{
 	width: 10px;
 }

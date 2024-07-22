@@ -8,7 +8,12 @@ router.post('/get-id', productController.getProductById)
 router.get('/get', productController.getProducts);
 router.get('/get-new', productController.getNewProducts);
 router.get('/get-popular', productController.getPopularProducts);
+router.post('/get-linked', productController.getLinkedProduct);
+router.post('/linked', productController.getAllLinked);
+router.post('/is-parent', productController.getIsParent);
 router.get('/get-flash', productController.getFlashProducts);
+router.put('/edit', productController.editProduct);
+router.delete('/delete', productController.deleteProduct)
 router.get('/search', productController.search);
 router.get('/search/exact', productController.exactSearch)
 router.get('/autocomplete', productController.getAutoCompletes);

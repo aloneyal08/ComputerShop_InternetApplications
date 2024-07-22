@@ -21,7 +21,7 @@ export const ReviewCard = ({review}) => {
 		<div className='reviewCard'>
 			<header className='reviewTop'>
 				<div className='reviewUser'>
-					<img alt='           ' src={user.profilePhoto} onError={(e) =>{e.currentTarget.src = require('../../images/userDefault.png')}} />
+					<img alt='           ' src={user.profilePhoto||''} onError={(e) =>{e.currentTarget.src = require('../../images/userDefault.png')}} />
 				</div>
 				<div>
 					<div className='reviewUnderText'>
@@ -42,7 +42,7 @@ export const ReviewCard = ({review}) => {
 				<h2 className='reviewTitle'>{review.title}</h2>
 			</div>
 			{review.text === '<p></p>\n'?
-				<></>
+				null
 				:
 				<div className='reviewDesc scrollBar2' dangerouslySetInnerHTML={{__html: review.text}}></div>
 			}

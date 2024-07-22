@@ -181,105 +181,104 @@ const UserSettings = () => {
 
 	if(Object.keys(user).length === 0 || user.loggedOut) return null;
 
-	return <div className='settings'>
-		<div className='settingsHeader'>
-			<img src={require("../../images/settings.png")} alt='_'/>
-			<h1>Settings</h1>
-		</div>
-		<section className='settingsPart'>
-			<h2>Profile</h2>
-			<div className="input1">
-				<label>
-					<input type='text' required onChange={onFullNameChange} value={fullName}/>
-					<span>Full Name</span>
-				</label>
-			</div>
-			<div className="input1">
-				<label>
-					<input type='text' required onBlur={checkPhoneValid} value={phone} onChange={onPhoneChange} className={phoneValid ? '' : 'invalidBox'}/>
-					<span className={phoneValid ? '' : 'invalidText'}>{phoneValid ? 'Phone (10 digits)' : 'INVALID PHONE (10 digits)'}</span>
-				</label>
-			</div>
-			<div className="input1 photoTextbox">
-				<label>
-					<input type='text' required onChange={onPhotoChange} value={photo}/>
-					<span>Photo URL</span>
-				</label>
-				<div>
-					<img src={viewedImage} alt='    ' className='photoPreview' />
-					<img src={require('../../images/userDefault.png')} alt='    ' className='photoPreview' style={{zIndex: -1}}/>
-				</div>
-				
-			</div>
-			{ ((fullName !== user.fullName) || (phone !== (user.phone||'')) || (photo !== (user.profilePhoto||'')))
-			 && <button className='button1' onClick={onProfileSubmit}>Save</button>}
-		</section>
-		<section className='settingsPart'>
-			<h2>Username</h2>
-			<div className="input1">
-				<label>
-					<input type='text' required onChange={onUsernameChange} value={username} onBlur={checkUsernameValid} className={usernameValid ? '' : 'invalidBox'}/>
-					<span className={usernameValid ? '' : 'invalidText'}>{usernameValid ? 'Username' : 'INVALID USERNAME'}</span>
-				</label>
-			</div>
-			{username !== user.username 
-				&& <button className='button1' style={{marginRight: "30px"}} onClick={onUsernameSubmit}>Save</button>}
-		</section>
-		{!user.google &&
-			<section className='settingsPart'>
-				<h2>Change Password</h2>
-				<div>
-					<div className="input1">
-						<label>
-							<input type='password' required onChange={onOldPasswordChange}/>
-							<span>Old Password</span>
-						</label>
-					</div>
-					<div className="input1">
-						<label>
-							<input type='password' required onChange={onPasswordChange}/>
-							<span>New Password</span>
-						</label>
-					</div>
-					<div className="input1">
-						<label>
-							<input type='password' required onChange={onRepeatPasswordChange}/>
-							<span>Repeat New Password</span>
-						</label>
-					</div>
-					{ (oldPassword !== '' || password !== '' || repeatPassword !== '')
-						&& <button className='button1' style={{marginRight: "30px"}} onClick={onPasswordSubmit}>Save</button>}
-				</div>
-			</section>
-		}
-		{user.level===1&&<section className='settingsPart'>
-			<h2>Supplier Page</h2>
-			<div className="input1">
-			<div className="input1 photoTextbox">
-				<label>
-					<input type='text' required onChange={onBackgroundChange} value={background}/>
-					<span>Background</span>
-				</label>
-				<div>
-					<img src={background} alt='    ' style={{width: "100px", height: "100%", marginLeft: "20px"}}/>
-				</div>
-			</div>
-			{background !== user.background 
-				&& <button className='button1' style={{marginRight: "30px"}} onClick={onBackgroundSubmit}>Save</button>}
-			</div>
-		</section>}
-		<section className='settingsPart'>
-			<h2 className='deleteAccHeader'>DELETE USER</h2>
-			<p><b style={{color: "red"}}>WARNING: </b> This action cannot be reversed. all information will be deleted, and cannot be restored. please be sure about deleting your account.</p>
-			<div className="input1">
-				<label>
-					<input type='text' required onChange={onEmailChange}/>
-					<span>Type your email to confirm</span>
-				</label>
-			</div>
-			<button disabled={email !== user.email} className='button1 deleteAccButton' onClick={deleteUser}>Delete my account</button>
-		</section>
-	</div>
+  return <div className='settings'>
+    <div className='settingsHeader'>
+      <img src={require("../../images/settings.png")} alt='_'/>
+      <h1>Settings</h1>
+    </div>
+    <section className='settingsPart'>
+      <h2>Profile</h2>
+      <div className="input1">
+        <label>
+          <input type='text' required onChange={onFullNameChange} value={fullName}/>
+          <span>Full Name</span>
+        </label>
+      </div>
+      <div className="input1">
+        <label>
+          <input type='text' required onBlur={checkPhoneValid} value={phone} onChange={onPhoneChange} className={phoneValid ? '' : 'invalidBox'}/>
+          <span className={phoneValid ? '' : 'invalidText'}>{phoneValid ? 'Phone (10 digits)' : 'INVALID PHONE (10 digits)'}</span>
+        </label>
+      </div>
+      <div className="input1 photoTextbox">
+        <label>
+          <input type='text' required onChange={onPhotoChange} value={photo}/>
+          <span>Photo URL</span>
+        </label>
+        <div>
+          <img src={viewedImage} alt='    ' className='photoPreview' onError={(e) =>{e.currentTarget.src = require('../../images/userDefault.png')}}/>
+        </div>
+        
+      </div>
+      { ((fullName !== user.fullName) || (phone !== (user.phone||'')) || (photo !== (user.profilePhoto||'')))
+       && <button className='button1' onClick={onProfileSubmit}>Save</button>}
+    </section>
+    <section className='settingsPart'>
+      <h2>Username</h2>
+      <div className="input1">
+        <label>
+          <input type='text' required onChange={onUsernameChange} value={username} onBlur={checkUsernameValid} className={usernameValid ? '' : 'invalidBox'}/>
+          <span className={usernameValid ? '' : 'invalidText'}>{usernameValid ? 'Username' : 'INVALID USERNAME'}</span>
+        </label>
+      </div>
+      {username !== user.username 
+        && <button className='button1' style={{marginRight: "30px"}} onClick={onUsernameSubmit}>Save</button>}
+    </section>
+    {!user.google &&
+      <section className='settingsPart'>
+        <h2>Change Password</h2>
+        <div>
+          <div className="input1">
+            <label>
+              <input type='password' required onChange={onOldPasswordChange}/>
+              <span>Old Password</span>
+            </label>
+          </div>
+          <div className="input1">
+            <label>
+              <input type='password' required onChange={onPasswordChange}/>
+              <span>New Password</span>
+            </label>
+          </div>
+          <div className="input1">
+            <label>
+              <input type='password' required onChange={onRepeatPasswordChange}/>
+              <span>Repeat New Password</span>
+            </label>
+          </div>
+          { (oldPassword !== '' || password !== '' || repeatPassword !== '')
+            && <button className='button1' style={{marginRight: "30px"}} onClick={onPasswordSubmit}>Save</button>}
+        </div>
+      </section>
+    }
+    {user.level===1&&<section className='settingsPart'>
+      <h2>Supplier Page</h2>
+      <div className="input1">
+      <div className="input1 photoTextbox">
+        <label>
+          <input type='text' required onChange={onBackgroundChange} value={background}/>
+          <span>Background</span>
+        </label>
+        <div>
+          <img src={background} alt='    ' style={{width: "100px", height: "100%", marginLeft: "20px"}}/>
+        </div>
+      </div>
+      {background !== user.background 
+        && <button className='button1' style={{marginRight: "30px"}} onClick={onBackgroundSubmit}>Save</button>}
+      </div>
+    </section>}
+    <section className='settingsPart'>
+      <h2 className='deleteAccHeader'>DELETE USER</h2>
+      <p><b style={{color: "red"}}>WARNING: </b> This action cannot be reversed. all information will be deleted, and cannot be restored. please be sure about deleting your account.</p>
+      <div className="input1">
+        <label>
+          <input type='text' required onChange={onEmailChange}/>
+          <span>Type your email to confirm</span>
+        </label>
+      </div>
+      <button disabled={email !== user.email} className='button1 deleteAccButton' onClick={deleteUser}>Delete my account</button>
+    </section>
+  </div>
 }
 
 export default UserSettings;

@@ -16,6 +16,7 @@ import AdminConsole from './pages/adminConsole/adminConsole';
 import ProductPage from './pages/productPage/productPage';
 import SupplierPage from './pages/supplierPage/supplierPage';
 import ConfirmPurchase from './pages/confirmPurchase/confirmPurchase';
+import EditProduct from './pages/editProduct/editProduct';
 import { NotFound } from './pages/notFound/notFound';
 import Alert from './components/Alert/Alert'
 
@@ -76,43 +77,46 @@ const App = () => {
 	else if(user.level === 2) MainPage = AdminConsole;
 	else MainPage = ()=>null;
 
-	return (
-			<UserContext.Provider value={{user, setUser}}>
-				<MoneyContext.Provider value={{currency, setCurrency, exchangeRates}}>
-					<TagsContext.Provider value={tags}>
-						<div className="App">
-							{location.pathname!=="/login"&&location.pathname!=="/register"&&<NavBar/>}
-							<div className='mainWindow' style={location.pathname!=="/" ? {paddingTop: "50px"} : {}}>
-								<Routes>
-									<Route path="/" element={<MainPage />} />
-									<Route path="/login" element={<Login/>} />
-									<Route path="/register" element={<Register />} />
-									<Route path="/settings" element={<UserSettings />} />
-									{user.level===1&&
-										<>
-											<Route path="/product/new" element={<NewProduct />} />
-											<Route path={`/supplier/${user._id}`} element={<SupplierPage id={user._id}/>} />
-										</>
-									}
-									{(user.loggedOut||user.level===0)&&
-										<>
-											<Route path='/product/:productId' element={<ProductPage />} />
-											<Route path="/cart" element={<Cart />} />
-											<Route path="/supplier/:supplierId" element={<SupplierPage />} />
-											<Route path='/purchase/confirm' element={<ConfirmPurchase />} />
-											<Route path="/search" element={<SearchScreen />} />
-											<Route path="/history" element={<History />} />
-										</>
-									}
-									{Object.keys(user).length!==0&&<Route path="*" element={<NotFound/>} />}
-								</Routes>
-							</div>
-							<AlertComponent/>
-						</div>
-					</TagsContext.Provider>
-				</MoneyContext.Provider>
-			</UserContext.Provider>
-	);
+  if(Object.keys(user).length === 0){return;}
+
+  return (
+      <UserContext.Provider value={{user, setUser}}>
+        <MoneyContext.Provider value={{currency, setCurrency, exchangeRates}}>
+          <TagsContext.Provider value={tags}>
+            <div className="App">
+              {location.pathname!=="/login"&&location.pathname!=="/register"&&<NavBar/>}
+              <div className='mainWindow' style={location.pathname!=="/" ? {paddingTop: "50px"} : {}}>
+                <Routes>
+                  <Route path="/" element={<MainPage />} />
+                  <Route path="/login" element={<Login/>} />
+                  <Route path="/register" element={<Register />} />
+                  <Route path="/settings" element={<UserSettings />} />
+                  {user.level===1&&
+                    <>
+                      <Route path="/product/new" element={<NewProduct />} />
+                      <Route path='/product/:productId/edit' element={<EditProduct />} />
+                      <Route path={`/supplier/${user._id}`} element={<SupplierPage id={user._id}/>} />
+                    </>
+                  }
+                  {(user.loggedOut||user.level===0)&&
+                    <>
+                      <Route path='/product/:productId' element={<ProductPage />} />
+                      <Route path="/cart" element={<Cart />} />
+                      <Route path="/supplier/:supplierId" element={<SupplierPage />} />
+                      <Route path='/purchase/confirm' element={<ConfirmPurchase />} />
+                      <Route path="/search" element={<SearchScreen />} />
+                      <Route path="/history" element={<History />} />
+                    </>
+                  }
+                  {Object.keys(user).length!==0&&<Route path="*" element={<NotFound/>} />}
+                </Routes>
+              </div>
+              <AlertComponent/>
+            </div>
+          </TagsContext.Provider>
+        </MoneyContext.Provider>
+      </UserContext.Provider>
+  );  
 }
 
 export default App;

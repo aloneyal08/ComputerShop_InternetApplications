@@ -67,6 +67,5 @@ const ConfirmPurchase = () =>{
 		<button className="button1" onClick={confirm}>Confirm</button>
 	</div>
 </div>
-
 };
 export default ConfirmPurchase;

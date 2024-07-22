@@ -58,7 +58,7 @@ const CartItem = ({cartItem, index, setPrices = () => {},  changedFunc = () => {
 
 	useEffect(()=>{
 		if(product.price && !product.empty){
-			setPrices(prev=>prev.map((p,i)=>i===index?amount*product.price:p));
+			setPrices(prev=>prev.map((p,i)=>i===index?amount*product.price*(1-(Number(product.discount)/100)):p));
 		}
 	}, [amount, product.price, setPrices, index, product.empty])
 
@@ -78,7 +78,20 @@ const CartItem = ({cartItem, index, setPrices = () => {},  changedFunc = () => {
 				<button disabled={deleted} className='button1' onClick={(e) => addQuantity(e, 1)}>+</button>
 			</>}
 		</div></td>
-		{!product.empty&&<td className='cartItemTd'><h2 className='cartItemPrice'>{currencies[currency].symbol + Math.floor(product.price*amount*exchangeRates[currency]*100)/100}</h2></td>}
+    {!product.empty&&
+      <td className='cartItemTd'>
+      <div style={{display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', columnGap: '5px'}}>
+        { product.discount > 0?
+          <>
+            <h2 className='cartItemPrice' >{currencies[currency].symbol + Math.floor(product.price*amount*exchangeRates[currency]*(1-(Number(product.discount)/100))*100)/100}</h2>
+            <p style={{textDecoration: 'line-through', fontSize: '15px', color: 'rgb(255, 64, 64)'}}>{currencies[currency].symbol + Math.round(product.price*amount*exchangeRates[currency]*100)/100}</p>
+          </>
+          :
+          <h2 className='cartItemPrice' >{currencies[currency].symbol + Math.floor(product.price*amount*exchangeRates[currency]*100)/100}</h2>
+        }
+        </div>
+        </td>
+     }
 	</tr>
 }
 
