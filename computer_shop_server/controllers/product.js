@@ -140,7 +140,7 @@ const getFlashProducts = async (req, res) => {
 		p = await Product.findById(tempList[i]);
 		current.push(p);
 	}
-	flash.push([ 'The Best Reviewed Products', current, ['The Best Reviewed Today', 'The Best Reviewed This Week', 'The Best Reviewed This Month']]);
+	flash.push([ 'The Best Rated Products', current, ['The Best Rated Today', 'The Best Rated This Week', 'The Best Rated This Month']]);
 	current = [];
 	current = await Product.find({}).sort({"discount":-1}).limit(3);
 	flash.push([ 'The Biggest Sales', current, ['The Number #1 Sale', 'The Number #2 Sale', 'The Number #3 Sale']]);
@@ -205,7 +205,7 @@ const search = async (req, res) => {
 		var match = 0;
 		keywords.forEach(word=>{
 			if(tags.find(tag=>tag.text===word&&product.tags.includes(tag._id)))
-			 	match += tagPriority;
+				match += tagPriority;
 			else if(getKeywords(product.name).includes(word))
 				match += namePriority;
 			else if(getKeywords(removeHTMLTags(product.description)).includes(word))
