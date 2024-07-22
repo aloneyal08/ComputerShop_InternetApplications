@@ -131,12 +131,13 @@ const ProductPage = () => {
 			},
 			body: JSON.stringify({id: productId})
 		}).then((res)=>res.json()).then((res)=>{
-			if(res.error){
+			if(res.error || user.level === 2 || (user.level === 1 && user._id !== res.supplier)){
 				navigate('/not-found');
 			}
 			if(res.tags && tags.length > 0){
 				res.tags = res.tags.map((tag) => tags.find(t => t._id === tag).text).filter(tag => tag);
-		}
+			}
+
 		setProduct(res)});
 	}, [productId, tags, navigate])
 
@@ -202,9 +203,7 @@ const ProductPage = () => {
 			id={product._id}
 			/>
 					<a href='#rating' onClick={() => {reviewList.current.scrollIntoView();return false;}}>{`${reviews.length} ratings`}</a>
-					<ShareButton href="http://www.facebook.com">
-						Share
-					</ShareButton>
+					<ShareButton id='facebookShare' href="http://www.facebook.com" />
 				</div>
 				<h1 id='productName'>{product.name}</h1>
 				<a id='productSupplier' href={`/supplier/${product.supplier}`}>{supplierName}</a>

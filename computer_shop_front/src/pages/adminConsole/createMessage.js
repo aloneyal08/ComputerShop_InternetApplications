@@ -47,11 +47,6 @@ const CreateMessage = ({reload}) => {
 		if(to === '')
 			return alert('Please enter a recipient');
 
-		if(to==="post to Facebook")
-			s = 'Facebook Post';
-		else
-		c = draftToHtmlPuri(convertToRaw(content.getCurrentContent()));
-
 		if(s === '')
 			return alert('Please enter a subject');
 
@@ -60,6 +55,11 @@ const CreateMessage = ({reload}) => {
 
 		if(content === '' && content2 === '')
 			return alert('Please enter a message');
+		
+		if(to==="post to Facebook")
+			s = 'Facebook Post';
+		else
+		c = draftToHtmlPuri(convertToRaw(content.getCurrentContent()));
 
 		fetch(`${process.env.REACT_APP_SERVER_URL}/message/create`, {
 			method: 'POST',
@@ -90,7 +90,7 @@ const CreateMessage = ({reload}) => {
 	}
 
 	return <div>
-		<button className='button1' onClick={()=>setIsPopupOpen(!isPopupOpen)} style={{width: "200px"}}>
+		<button className='button1' onClick={(e)=>{setIsPopupOpen(!isPopupOpen);e.currentTarget.scrollIntoView({block: 'center', inline: 'center'})}} style={{width: "200px"}}>
 			{isPopupOpen ? '- Close' : '+ Create Message'}
 		</button>
 		{isPopupOpen&&<div className='allScreen' onClick={()=>setIsPopupOpen(false)}/>}

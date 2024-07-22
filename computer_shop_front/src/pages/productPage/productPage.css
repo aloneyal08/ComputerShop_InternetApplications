@@ -202,3 +202,19 @@ font-size: 14px;
     text-align: left;
     padding-left: 20px;
 }
+#facebookShare{
+	transition: 0.2s;
+	width: 75px;
+	height: 50px;
+	border: none;
+	background: none;
+	background-image: url(https://cdn.iconscout.com/icon/free/png-256/free-facebook-share-button-3289859-2758557.png?f=webp);
+	background-size: cover;
+	background-position: center;
+	cursor: pointer;
+	filter: brightness(1);
+}
+#facebookShare:hover{
+	transition: 0.2s;
+	filter: brightness(0.9);
+}

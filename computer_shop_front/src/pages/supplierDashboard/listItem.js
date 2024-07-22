@@ -39,7 +39,7 @@ export const ProductListItem = ({product}) => {
     </td>
     <td>
       <div style={{display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
-      <button className='iconButton' style={{display: 'inline-block' ,boxSizing: 'border-box' , fontSize: '26px', textAlign: 'center', width: 'fit-content', height: 'fit-content'}} onClick={()=>{navigate(`/product/${product._id}`)}}>👁</button>
+      <button className='iconButton viewButton' onClick={()=>{navigate(`/product/${product._id}`)}} />
       <button className='iconButton editButton' onClick={()=>{navigate(`/product/${product._id}/edit`)}}/>
       <button className='iconButton deleteButton' onClick={deleteProduct}/>
 
