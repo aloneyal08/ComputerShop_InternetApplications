@@ -306,3 +306,7 @@
 .autoCompleteItem:hover {
 	background-color: #cccccc !important;
 }
+
+.logo:hover {
+	opacity: 0.7;
+}
