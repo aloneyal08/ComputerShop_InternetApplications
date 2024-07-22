@@ -119,7 +119,7 @@ const getFlashProducts = async (req, res) => {
 		p = await Product.findById(tempList[i]);
 		current.push(p);
 	}
-	flash.push(["Most Purchased", current, 'https://media.istockphoto.com/id/826661764/video/falling-dollar-banknotes-in-4k-loopable.jpg?s=640x640&k=20&c=VkMeB7CyxyI96uGVnRuJLg5mI4AHlVVlc9DsT6jMA0Q=']);
+	flash.push(['The Most Purchased Products', current, ['The Most Purchased Today', 'The Most Purchased This Week', 'The Most Purchased This Month']]);
 	current = [];
 	p = await Product.find({date: {$gte: dates[0]}}).sort({$natural:-1}).limit(1);
 	current.push(p[0]);
@@ -127,7 +127,7 @@ const getFlashProducts = async (req, res) => {
 	current.push(p[0]);
 	p = await Product.find({date: {$gte: dates[2], $lte: dates[1]}}).sort({$natural:-1}).limit(1);
 	current.push(p[0]);
-	flash.push(["Newest", current, 'https://img.freepik.com/free-vector/bokeh-lights-glitter-background_1048-8548.jpg']);
+	flash.push([ 'The Newest Products', current, ['The Newest Today', 'The Newest This Week', 'The Newest This Month']]);
 	current = [];
 	tempList = [];
 	p = await Review.aggregate([{$match: {"date": {$gte: dates[0]}}}, {$group: {_id: "$product", rate: {$avg: {$sum: "$rating"}}}}, {$sort: {rate: -1}}]).limit(1);
@@ -140,15 +140,10 @@ const getFlashProducts = async (req, res) => {
 		p = await Product.findById(tempList[i]);
 		current.push(p);
 	}
-	flash.push(["Best Reviewed", current, '']);
+	flash.push([ 'The Best Reviewed Products', current, ['The Best Reviewed Today', 'The Best Reviewed This Week', 'The Best Reviewed This Month']]);
 	current = [];
-	p = await Product.find({date: {$gte: dates[0]}}).sort({"discount":-1}).limit(1);
-	current.push(p[0]);
-	p = await Product.find({date: {$gte: dates[1], $lte: dates[0]}}).sort({"discount":-1}).limit(1);
-	current.push(p[0]);
-	p = await Product.find({date: {$gte: dates[2], $lte: dates[1]}}).sort({"discount":-1}).limit(1);
-	current.push(p[0]);
-	flash.push(["Biggest Sale", current, '']);
+	current = await Product.find({}).sort({"discount":-1}).limit(3);
+	flash.push([ 'The Biggest Sales', current, ['The Number #1 Sale', 'The Number #2 Sale', 'The Number #3 Sale']]);
 	
 	
 	res.json(flash);

@@ -42,6 +42,11 @@ export const ProductCard = ({product, renderRating = true, renderStock = true, i
   }, [product, renderRating]);
 
     return <div className='productCard' onClick={isClickable?() => {navigate(`/product/${product._id}`)}:undefined}>
+    {product.discount?
+      <div className='discountLabel'>{product.discount}%</div>
+      :
+      <></>
+    }
     <img alt='           ' className='productImg' src={product.photo} onError={(e) =>{e.currentTarget.src = require('../../images/defaultProduct.jpg');onImageError(e);}}/>
     <div className='productText'>
       <section className='productTextLeft'>
