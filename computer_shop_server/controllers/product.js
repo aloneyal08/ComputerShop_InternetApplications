@@ -236,38 +236,49 @@ const getFlashProducts = async (req, res) => {
 	}
 	flash.push(['The Most Purchased Products', current, ['The Most Purchased Today', 'The Most Purchased This Week', 'The Most Purchased This Month']]);
 	current = [];
-	p = await Product.find({date: {$gte: dates[0]}}).sort({$natural:-1}).limit(1);
-	current.push(p[0]);
-	p = await Product.find({date: {$gte: dates[1], $lte: dates[0]}}).sort({$natural:-1}).limit(1);
-	current.push(p[0]);
-	p = await Product.find({date: {$gte: dates[2], $lte: dates[1]}}).sort({$natural:-1}).limit(1);
-	current.push(p[0]);
-	flash.push([ 'The Newest Products', current, ['The Newest Today', 'The Newest This Week', 'The Newest This Month']]);
-	current = [];
-	tempList = [];
-	p = await Review.aggregate([{$match: {"date": {$gte: dates[0]}}}, {$group: {_id: "$product", rate: {$avg: {$sum: "$rating"}}}}, {$sort: {rate: -1}}]).limit(1);
-	tempList.push(p[0]);
-	p = await Review.aggregate([{$match: {"date": {$gte: dates[1]}}}, {$group: {_id: "$product", rate: {$avg: {$sum: "$rating"}}}}, {$sort: {rate: -1}}]).limit(1);
-	tempList.push(p[0]);
-	p = await Review.aggregate([{$match: {"date": {$gte: dates[2]}}}, {$group: {_id: "$product", rate: {$avg: {$sum: "$rating"}}}}, {$sort: {rate: -1}}]).limit(1);
-	tempList.push(p[0]);
-	for(let i = 0; i < tempList.length;++i){
-		p = await Product.findById(tempList[i]);
-		current.push(p);
-	}
-	flash.push([ 'The Best Rated Products', current, ['The Best Rated Today', 'The Best Rated This Week', 'The Best Rated This Month']]);
-	current = [];
-	current = await Product.find({}).sort({"discount":-1}).limit(3);
-	flash.push([ 'The Biggest Sales', current, ['The Number #1 Sale', 'The Number #2 Sale', 'The Number #3 Sale']]);
-  // TODO:
-	/*current = current.map(arr=>{
+	p = await Product.find({date: {$gte: dates[0]}}).sort({$natural:-1});
+	current.push(p);
+	p = await Product.find({date: {$gte: dates[1], $lte: dates[0]}}).sort({$natural:-1});
+	current.push(p);
+	p = await Product.find({date: {$gte: dates[2], $lte: dates[1]}}).sort({$natural:-1});
+	current.push(p);
+	current = current.map(arr=>{
 		return arr.filter(pur=>{
 			const p = products.find(p=>p._id.equals(pur._id));
 			if(!p) return false;
 			const s = suppliers.find(s=>s._id.equals(p.supplier));
 			return s && !s.suspended;
 		})[0]
-	})*/
+	})
+	flash.push([ 'The Newest Products', current, ['The Newest Today', 'The Newest This Week', 'The Newest This Month']]);
+	current = [];
+	tempList = [];
+	p = await Review.aggregate([{$match: {"date": {$gte: dates[0]}}}, {$group: {_id: "$product", rate: {$avg: {$sum: "$rating"}}}}, {$sort: {rate: -1}}]);
+	tempList.push(p);
+	p = await Review.aggregate([{$match: {"date": {$gte: dates[1]}}}, {$group: {_id: "$product", rate: {$avg: {$sum: "$rating"}}}}, {$sort: {rate: -1}}]);
+	tempList.push(p);
+	p = await Review.aggregate([{$match: {"date": {$gte: dates[2]}}}, {$group: {_id: "$product", rate: {$avg: {$sum: "$rating"}}}}, {$sort: {rate: -1}}]);
+	tempList.push(p);
+	tempList = tempList.map(arr=>{
+		return arr.filter(pur=>{
+			const p = products.find(p=>p._id.equals(pur._id));
+			if(!p) return false;
+			const s = suppliers.find(s=>s._id.equals(p.supplier));
+			return s && !s.suspended;
+		})[0]
+	})
+	for(let i = 0; i < tempList.length;++i){
+		p = await Product.findById(tempList[i]);
+		current.push(p);
+	}
+	flash.push([ 'The Best Rated Products', current, ['The Best Rated Today', 'The Best Rated This Week', 'The Best Rated This Month']]);
+	current = [];
+	current = await Product.find({}).sort({"discount":-1});
+	current = current.filter(p=>{
+		const s = suppliers.find(s=>s._id.equals(p.supplier));
+		return s && !s.suspended && p.discount > 0;
+	}).slice(0, 3)
+	flash.push([ 'The Biggest Sales', current, ['The Number #1 Sale', 'The Number #2 Sale', 'The Number #3 Sale']]);
 	res.json(flash);
 };
 

@@ -59,13 +59,11 @@ const AdminConsole = () => {
 		fetch(`${process.env.REACT_APP_SERVER_URL}/user/numbers`).then(res=>res.json()).then(data=>{
 			setUserNumberData(data);
 		});
-	}, [force])
 
-	useEffect(()=>{
 		fetch(`${process.env.REACT_APP_SERVER_URL}/user/suppliers`).then(res=>res.json()).then(s=>{
 			setSuppliers(s.map(s=>({...s, checked: true})));
 		});
-	}, [])
+	}, [force])
 
 	useEffect(()=>{
 		fetch(`${process.env.REACT_APP_SERVER_URL}/user/supplier/purchases/time`,{
@@ -158,6 +156,7 @@ const AdminConsole = () => {
 					<table>
 						<tbody>
 							<tr className='dashboardListItem adminTblHeader' style={{backgroundColor: "white"}}>
+								<th style={{backgroundColor: "white"}}>From</th>
 								<th style={{backgroundColor: "white"}}>To</th>
 								<th style={{backgroundColor: "white"}}>Subject</th>
 								<th style={{backgroundColor: "white"}}>Date</th>

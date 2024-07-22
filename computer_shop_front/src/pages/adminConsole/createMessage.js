@@ -71,7 +71,7 @@ const CreateMessage = ({reload}) => {
 				subject: s,
 				header, 
 				content: to==="post to Facebook" ? content2 : c, 
-				from: user.email, 
+				from: user.level===2 ? 'admin' : user.email, 
 				level: user.level
 			}),
 		}).then(res=>res.json()).then(res=>{
@@ -96,7 +96,7 @@ const CreateMessage = ({reload}) => {
 		{isPopupOpen&&<div className='allScreen' onClick={()=>setIsPopupOpen(false)}/>}
 		<div className={'popup messagePopup ' + (isPopupOpen ? 'scale1' : '')}>
 			<div className='arrowUp'/>
-			<h2>New Message</h2>
+			<h2>New Message{user.level===1 ? ' (to admin)' : ''}</h2>
 			<span>Email</span>
 				{emails.length>0&&<SelectSearch onChange={onToChange} search={true} value={to} getOptions={()=>emails.map(email=>({value: email, name: email}))} placeholder="To" renderValue={(valueProps) =>
 				<div className='input1'>

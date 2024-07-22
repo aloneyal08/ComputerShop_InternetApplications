@@ -36,14 +36,20 @@ const createMessage = async (req, res) => {
 
 const getMessages = async (req, res) => {
 	const messages = await Message.find({level: 2});
-	res.json(messages);
+	const messages2 = await Message.find({to: 'admins'});
+	res.json(messages.concat(messages2).sort(
+		(a,b)=>new Date(b.date)-new Date(a.date)
+	));
 }
 
 const getSupplierMessage = async (req, res) => {
 	const {email} = req.query;
 
 	const messages = await Message.find({from:email});
-	res.json(messages);
+	const messages2 = await Message.find({to:email});
+	res.json(messages.concat(messages2).sort(
+		(a,b)=>new Date(b.date)-new Date(a.date)
+	));
 }
 
 

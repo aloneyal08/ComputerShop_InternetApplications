@@ -9,13 +9,15 @@ export const ProductListItem = ({product}) => {
   const navigate = useNavigate();
 
   const deleteProduct = async () => {
-    fetch(`${process.env.REACT_APP_SERVER_URL}/product/delete`,{
-      method: 'DELETE',
-      headers: {
-      'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({_id: product._id})
-    }).then(()=>{navigate(0)})
+    window.confirm('Are you sure you want to delete this product?', '', ()=>{
+      fetch(`${process.env.REACT_APP_SERVER_URL}/product/delete`,{
+        method: 'DELETE',
+        headers: {
+        'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({_id: product._id})
+      }).then(()=>{navigate(0)})
+    })
   }
 
   return <tr className='dashboardListItem'>

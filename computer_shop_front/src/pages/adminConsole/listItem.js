@@ -114,9 +114,13 @@ export const SupplierListItem = ({supplier, reload}) => {
 }
 
 export const MessageListItem = ({message, isTo=true, selectedMessage, setSelectedMessage}) => {
+	const {user} = useContext(UserContext);
+
 
 	return <tr className='dashboardListItem' onClick={()=>setSelectedMessage(message._id)}>
-		
+		<td style={{width: "300px"}}>
+			{message.from===user.email ? "You" : message.from}
+		</td>
 		{isTo&&<td style={{width: "300px"}}>
 			{message.to}
 		</td>}
