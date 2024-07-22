@@ -246,7 +246,7 @@ const getSupplier = async (req, res) => {
 const getSupplierProducts = async (req, res) => {
   const { id, sort } = req.query;
 
-  let products = await Product.find({supplier: id}, {name: 1, price: 1, photo: 1});
+  let products = await Product.find({supplier: id}, {name: 1, price: 1, photo: 1, discount: 1});
   const purchases = await Purchase.find({product: {$in: products.map(p=>p._id)}});
 
   let result = products.map(p=>{

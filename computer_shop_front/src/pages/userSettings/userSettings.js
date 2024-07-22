@@ -206,8 +206,7 @@ const UserSettings = () => {
           <span>Photo URL</span>
         </label>
         <div>
-          <img src={viewedImage} alt='    ' className='photoPreview' />
-          <img src={require('../../images/userDefault.png')} alt='    ' className='photoPreview' style={{zIndex: -1}}/>
+          <img src={viewedImage} alt='    ' className='photoPreview' onError={(e) =>{e.currentTarget.src = require('../../images/userDefault.png')}}/>
         </div>
         
       </div>

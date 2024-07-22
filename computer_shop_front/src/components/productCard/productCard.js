@@ -42,18 +42,30 @@ export const ProductCard = ({product, renderRating = true, renderStock = true, i
   }, [product, renderRating]);
 
     return <div className='productCard' onClick={isClickable?() => {navigate(`/product/${product._id}`)}:undefined}>
+    {product.discount?
+      <div className='discountLabel'>{product.discount}%</div>
+      :
+      <></>
+    }
     <img alt='           ' className='productImg' src={product.photo} onError={(e) =>{e.currentTarget.src = require('../../images/defaultProduct.jpg');onImageError(e);}}/>
     <div className='productText'>
       <section className='productTextLeft'>
         <div className='productMainCon'>
           <h3 className='productName'>{product.name}</h3>
-          <h4 className='productPrice'>{isNaN(product.price)?product.price:currencies[currency].symbol + (roundCurr ? Math.floor(product.price*exchangeRates[currency]*100)/100 : product.price)}</h4>
+          {product.discount > 0?
+            <div style={{display: 'flex', flexDirection: 'column-reverse'}}>
+            <h4 className='productPrice'>{isNaN(product.price)?product.price:currencies[currency].symbol + (roundCurr ? Math.floor(product.price*exchangeRates[currency]*(1-(Number(product.discount)/100))*100)/100 : product.price)}</h4>
+            <p style={{textDecoration: 'line-through', textAlign: 'right', fontSize: '11px', color: 'rgb(255, 64, 64)', margin: 0}}>{currencies[currency].symbol + Math.round(product.price*exchangeRates[currency]*100)/100}</p>
+            </div>
+            :
+              <h4 className='productPrice'>{isNaN(product.price)?product.price:currencies[currency].symbol + (roundCurr ? Math.floor(product.price*exchangeRates[currency]*100)/100 : product.price)}</h4>
+          }
         </div>
         <aside><h6 className='productSupplier' >{supplier}</h6></aside>
           { renderStock?
             <h4 className={`productStock ${product.stock >= 1?'hidden':'visible'}`}>Currently None in Stock*</h4>
             :
-            <></>
+            null
           }
         { renderRating?
           <ReactStarsRating 
@@ -65,7 +77,7 @@ export const ProductCard = ({product, renderRating = true, renderStock = true, i
             id={product._id}
           /> 
           :
-          <></>
+          null
         }
       </section>
     </div>

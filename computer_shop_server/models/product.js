@@ -24,7 +24,7 @@ const Product = new Schema({
   },
   parentProduct: {
     type: mongoose.Types.ObjectId,
-    required: false
+    default: null
   },
   stock: {
     type: Number,

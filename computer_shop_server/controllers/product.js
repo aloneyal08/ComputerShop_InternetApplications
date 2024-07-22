@@ -175,6 +175,31 @@ const getPopularProducts = async (req, res) => {
 	res.json(popularProducts.slice(0,amount||50));
 };
 
+const getLinkedProduct = async (req, res) => {
+	const {supplier, product} = req.body;
+	let products = await Product.find({parentProduct: null, supplier, _id: {$nin: [product]}});
+	res.json(products);
+}
+
+const getAllLinked = async (req, res) => {
+	const {product} = req.body;
+	p = await Product.findById(product);
+	let products = [];
+	if(p.parentProduct !== null){
+		products.push(await Product.findById(p.parentProduct));
+		products = products.concat(await Product.find({parentProduct: p.parentProduct, _id: {$nin: [p._id]}}))
+	} else{
+		products = await Product.find({parentProduct: p._id});
+	}
+	res.json(products);
+}
+
+const getIsParent = async (req, res) => {
+	const {id} = req.body;
+	const isParent = await Product.find({parentProduct: id}).countDocuments() >= 1;
+	res.json(isParent);
+};
+
 const getFlashProducts = async (req, res) => {
 	const products = await Product.find({});
 	const suppliers = await User.find({level: 1});
@@ -183,6 +208,7 @@ const getFlashProducts = async (req, res) => {
 	let current = [];
 	dates = [new Date(), new Date(), new Date()];
 	dates[0].setDate(dates[0].getDate() - 1);
+	dates[0].setHours(0, 0, 0, 0);
 	dates[1].setDate(dates[1].getDate() - 7);
 	dates[2].setMonth(dates[2].getMonth()-1);
 	let tempList = [];
@@ -208,16 +234,32 @@ const getFlashProducts = async (req, res) => {
 		p = await Product.findById(tempList[i]);
 		current.push(p);
 	}
-
-	flash.push(["Most Purchased", current, 'https://media.istockphoto.com/id/826661764/video/falling-dollar-banknotes-in-4k-loopable.jpg?s=640x640&k=20&c=VkMeB7CyxyI96uGVnRuJLg5mI4AHlVVlc9DsT6jMA0Q=']);
+	flash.push(['The Most Purchased Products', current, ['The Most Purchased Today', 'The Most Purchased This Week', 'The Most Purchased This Month']]);
 	current = [];
-	p = await Product.find({date: {$gte: dates[0]}}).sort({$natural:-1})
-	current.push(p);
-	p = await Product.find({date: {$gte: dates[1], $lte: dates[0]}}).sort({$natural:-1})
-	current.push(p);
-	p = await Product.find({date: {$gte: dates[2], $lte: dates[1]}}).sort({$natural:-1})
-	current.push(p);
-
+	p = await Product.find({date: {$gte: dates[0]}}).sort({$natural:-1}).limit(1);
+	current.push(p[0]);
+	p = await Product.find({date: {$gte: dates[1], $lte: dates[0]}}).sort({$natural:-1}).limit(1);
+	current.push(p[0]);
+	p = await Product.find({date: {$gte: dates[2], $lte: dates[1]}}).sort({$natural:-1}).limit(1);
+	current.push(p[0]);
+	flash.push([ 'The Newest Products', current, ['The Newest Today', 'The Newest This Week', 'The Newest This Month']]);
+	current = [];
+	tempList = [];
+	p = await Review.aggregate([{$match: {"date": {$gte: dates[0]}}}, {$group: {_id: "$product", rate: {$avg: {$sum: "$rating"}}}}, {$sort: {rate: -1}}]).limit(1);
+	tempList.push(p[0]);
+	p = await Review.aggregate([{$match: {"date": {$gte: dates[1]}}}, {$group: {_id: "$product", rate: {$avg: {$sum: "$rating"}}}}, {$sort: {rate: -1}}]).limit(1);
+	tempList.push(p[0]);
+	p = await Review.aggregate([{$match: {"date": {$gte: dates[2]}}}, {$group: {_id: "$product", rate: {$avg: {$sum: "$rating"}}}}, {$sort: {rate: -1}}]).limit(1);
+	tempList.push(p[0]);
+	for(let i = 0; i < tempList.length;++i){
+		p = await Product.findById(tempList[i]);
+		current.push(p);
+	}
+	flash.push([ 'The Best Rated Products', current, ['The Best Rated Today', 'The Best Rated This Week', 'The Best Rated This Month']]);
+	current = [];
+	current = await Product.find({}).sort({"discount":-1}).limit(3);
+	flash.push([ 'The Biggest Sales', current, ['The Number #1 Sale', 'The Number #2 Sale', 'The Number #3 Sale']]);
+  // TODO:
 	current = current.map(arr=>{
 		return arr.filter(pur=>{
 			const p = products.find(p=>p._id.equals(pur._id));
@@ -226,18 +268,29 @@ const getFlashProducts = async (req, res) => {
 			return s && !s.suspended;
 		})[0]
 	})
-	flash.push(["Newest", current, 'https://img.freepik.com/free-vector/bokeh-lights-glitter-background_1048-8548.jpg']);
 	res.json(flash);
 };
 
 const editProduct = async (req, res) => {
-	const { _id, name, price, photo, description, stock } = req.body;
-	const product = Product.findByIdAndUpdate({_id}, {
+	const { _id, name, price, discount, photo, description, stock, tags, stats, parentProduct } = req.body;
+	let obj = {};
+	if(tags){
+		obj.tags = tags;
+	}
+	if(stats){
+		obj.stats = stats;
+	}
+	if(parentProduct){
+		obj.parentProduct = parentProduct;
+	}
+	const product = await Product.findByIdAndUpdate(_id, {
 		name,
 		price,
 		photo,
 		description,
-		stock
+		stock,
+		discount,
+		...obj
 	});
 	if (!product) {
 		return res.status(404).json({ errors: ['Product not found'] });
@@ -289,7 +342,7 @@ const search = async (req, res) => {
 		var match = 0;
 		keywords.forEach(word=>{
 			if(tags.find(tag=>tag.text===word&&product.tags.includes(tag._id)))
-			 	match += tagPriority;
+				match += tagPriority;
 			else if(getKeywords(product.name).includes(word))
 				match += namePriority;
 			else if(getKeywords(removeHTMLTags(product.description)).includes(word))
@@ -420,6 +473,9 @@ module.exports = {
 	getProductById,
 	getNewProducts,
 	getPopularProducts,
+	getLinkedProduct,
+	getAllLinked,
+	getIsParent,
 	getFlashProducts,
 	editProduct,
 	deleteProduct,

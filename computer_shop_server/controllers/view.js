@@ -9,7 +9,7 @@ const AddView = async (req, res) => {
   const p = await Product.findById(product);
   if(!p)
     return res.status(400).json({error: 'Product not found'});
-
+}
 
   const view = new View({ user, product });
   await view.save();

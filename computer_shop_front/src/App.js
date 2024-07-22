@@ -16,6 +16,7 @@ import AdminConsole from './pages/adminConsole/adminConsole';
 import ProductPage from './pages/productPage/productPage';
 import SupplierPage from './pages/supplierPage/supplierPage';
 import ConfirmPurchase from './pages/confirmPurchase/confirmPurchase';
+import EditProduct from './pages/editProduct/editProduct';
 import { NotFound } from './pages/notFound/notFound';
 import Alert from './components/Alert/Alert'
 
@@ -76,6 +77,8 @@ const App = () => {
   else if(user.level === 2) MainPage = AdminConsole;
   else MainPage = ()=>null;
 
+  if(Object.keys(user).length === 0){return;}
+
   return (
       <UserContext.Provider value={{user, setUser}}>
         <MoneyContext.Provider value={{currency, setCurrency, exchangeRates}}>
@@ -91,6 +94,7 @@ const App = () => {
                   {user.level===1&&
                     <>
                       <Route path="/product/new" element={<NewProduct />} />
+                      <Route path='/product/:productId/edit' element={<EditProduct />} />
                       <Route path={`/supplier/${user._id}`} element={<SupplierPage id={user._id}/>} />
                     </>
                   }
