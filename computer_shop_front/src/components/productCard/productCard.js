@@ -6,7 +6,7 @@ import './productCard.css'
 
 const currencies = require('../../currencies.json');
 
-export const ProductCard = ({product, renderRating = true, renderStock = true, isClickable=true, onImageError = () => {}}) =>{
+export const ProductCard = ({product, renderRating = true, renderStock = true, isClickable=true, onImageError = () => {}, roundCurr=true}) =>{
   const {currency, exchangeRates} = useContext(MoneyContext);
   const [supplier, setSupplier] = useState(product.supplierName);
   const [productRate, setProductRate] = useState(0);
@@ -50,7 +50,17 @@ export const ProductCard = ({product, renderRating = true, renderStock = true, i
     <img alt='           ' className='productImg' src={product.photo} onError={(e) =>{e.currentTarget.src = require('../../images/defaultProduct.jpg');onImageError(e);}}/>
     <div className='productText'>
       <section className='productTextLeft'>
-        <h3 className='productName'>{product.name}</h3>
+        <div className='productMainCon'>
+          <h3 className='productName'>{product.name}</h3>
+          {product.discount > 0?
+            <div style={{display: 'flex', flexDirection: 'column-reverse'}}>
+            <h4 className='productPrice'>{isNaN(product.price)?product.price:currencies[currency].symbol + (roundCurr ? Math.floor(product.price*exchangeRates[currency]*(1-(Number(product.discount)/100))*100)/100 : product.price)}</h4>
+            <p style={{textDecoration: 'line-through', textAlign: 'right', fontSize: '11px', color: 'rgb(255, 64, 64)', margin: 0}}>{currencies[currency].symbol + Math.round(product.price*exchangeRates[currency]*100)/100}</p>
+            </div>
+            :
+              <h4 className='productPrice'>{isNaN(product.price)?product.price:currencies[currency].symbol + (roundCurr ? Math.floor(product.price*exchangeRates[currency]*100)/100 : product.price)}</h4>
+          }
+        </div>
         <aside><h6 className='productSupplier' >{supplier}</h6></aside>
           { renderStock?
             <h4 className={`productStock ${product.stock >= 1?'hidden':'visible'}`}>Currently None in Stock*</h4>
@@ -69,16 +79,6 @@ export const ProductCard = ({product, renderRating = true, renderStock = true, i
           :
           null
         }
-      </section>
-      <section className='productTextRight'>
-      {product.discount > 0?
-      <div style={{display: 'flex', flexDirection: 'column-reverse'}}>
-      <h4 className='productPrice'>{isNaN(product.price)?product.price:currencies[currency].symbol + Math.round(product.price*exchangeRates[currency]*(1-(Number(product.discount)/100))*100)/100}</h4>
-      <p style={{textDecoration: 'line-through', textAlign: 'right', fontSize: '11px', color: 'rgb(255, 64, 64)', margin: 0}}>{currencies[currency].symbol + Math.round(product.price*exchangeRates[currency]*100)/100}</p>
-      </div>
-      :
-        <h4 className='productPrice'>{isNaN(product.price)?product.price:currencies[currency].symbol + Math.round(product.price*exchangeRates[currency]*100)/100}</h4>
-      }
       </section>
     </div>
   </div>

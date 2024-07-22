@@ -86,6 +86,11 @@ const Login = () => {
     fetchData();
   }, [googleUser, navigate, setUser]);
 
+  const onKeyDown = (e) => {
+    if(e.key === 'Enter')
+      onSubmit();
+  }
+
   if(Object.keys(user).length === 0)
     return null;
 
@@ -94,13 +99,13 @@ const Login = () => {
       <h1>Login</h1>
       <div className="input1">
         <label>
-          <input type='text' required onChange={onUsernameChange}/>
+          <input type='text' required onChange={onUsernameChange} onKeyDown={onKeyDown}/>
           <span>Username / Email</span>
         </label>
       </div>
       <div className="input1">
         <label>
-          <input type='password' required onChange={onPasswordChange}/>
+          <input type='password' required onChange={onPasswordChange} onKeyDown={onKeyDown}/>
           <span>Password</span>
         </label>
       </div>

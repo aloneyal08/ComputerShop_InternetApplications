@@ -5,6 +5,10 @@ import './reviewCard.css';
 export const ReviewCard = ({review}) => {
 	const [user, setUser] = useState({});
 	useEffect(() => {
+		if(review.user === null) {
+			setUser({profilePhoto: require('../../images/userDefault.png'), fullName: "Deleted user"})
+			return;
+		}
 		fetch(`${process.env.REACT_APP_SERVER_URL}/user/id-get`,{
 			method: 'POST',
 			headers: {

@@ -44,7 +44,7 @@ export const NavBar = () => {
 		fetch(`${process.env.REACT_APP_SERVER_URL}/product/autocomplete`, {
 			method: 'GET',
 			headers: {
-				key: search.toLowerCase()
+				key: search
 			}
 		}).then(res=>res.json()).then(res=>setAutoCompletes(res));
 	}
@@ -57,7 +57,7 @@ export const NavBar = () => {
 	const logOut = () => {
 		localStorage.removeItem("username");
 		localStorage.removeItem("password");
-		navigate(0);
+		window.open("/", "_self");
 	}
 	const isNoUser = Object.keys(user).length === 0 || user.loggedOut;
 
@@ -73,6 +73,7 @@ export const NavBar = () => {
 		const urlParams = new URLSearchParams(window.location.search);
 		const key = urlParams.get('key')||'';
 		setSearch(key.split("::")[0]);
+		setSearchValue(key.split("::")[0]);
 
 		var canvas = arrowRef.current;
 		if (canvas.getContext) {
@@ -132,7 +133,7 @@ export const NavBar = () => {
 	return <header className='navBar' style={location.pathname !== "/" || user.level === 1 || user.level === 2 ? {height: "50px"} : {}}>
 		<div className='mainBar'>
 			<div className='logo' onClick={()=>navigate("/")}>
-				<h1>SHOP</h1>
+				<h1>O.C.S</h1>
 			</div>
 			{(user.level===0||!user.level)&&<div className='searchArea'>
 				<input 
@@ -160,10 +161,10 @@ export const NavBar = () => {
 				</div>
 				{user.level === 1
 					? <button className='addProduct' onClick={()=>navigate("/product/new")}/>
-					: <div className='cart' onClick={()=>navigate("/cart")}>
+					: (user.level===2 ? null : <div className='cart' onClick={()=>navigate("/cart")}>
           <div className='shopCartNumber'>{user.cart?user.cart.length:0}</div>
 					<img src={require("../../images/cart.png")} className='navBarPhoto' alt='  '/>
-				</div>
+				</div>)
 				}
 				<div className='currOptionNavBar' onClick={()=>setCurrencyPopupOpen(!isCurrencyPopupOpen)}>
 					<canvas className={'arrowCanvas ' + (isCurrencyPopupOpen ? 'rotated' : '')} ref={arrowRef}/>

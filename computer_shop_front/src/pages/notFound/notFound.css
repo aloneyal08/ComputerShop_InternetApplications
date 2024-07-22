@@ -1,0 +1,43 @@
+.container {
+	text-align: center;
+	padding: 100px 20px;
+}
+ 
+#h1_for_notFound {
+	font-size: 100px;
+	margin: 0;
+	color: #e74c3c;
+}
+ 
+#first_for_notFound {
+	font-size: 24px;
+	padding: 10px;
+}
+
+#second_for_notFound {
+	font-size: 24px;
+	padding-bottom: 20px;
+}
+ 
+.home-button {
+	display: inline-block;
+	margin-top: 10px;
+	padding: 15px 25px;
+	background-color: #3f4f59;
+	color: white;
+	text-decoration: none;
+	border-radius: 5px;
+	transition: background-color 0.3s;
+	border-radius: 30px;
+}
+ 
+.home-button:hover {
+	background-color: #404545;
+}
+
+#notFoundImage {
+	width: 750px;
+	height: auto;
+	margin-bottom: 55px;
+}
+   

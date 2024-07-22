@@ -9,6 +9,7 @@ import './reviewCard.css'
 import './productPage.css';
 import { ReviewCard } from './reviewCard';
 import ReactStarsRating from 'react-awesome-stars-rating';
+import { ShareButton } from 'react-facebook';
 
 const currencies = require('../../currencies.json');
 
@@ -109,6 +110,8 @@ const ProductPage = () => {
 	}, []);
 
 	useEffect(()=>{
+		if(Object.keys(product)===0)
+			return;
 		fetch(`${process.env.REACT_APP_SERVER_URL}/view/add`,{
 			method: 'POST',
 			headers: { 'Content-type': 'application/json' },
@@ -118,7 +121,7 @@ const ProductPage = () => {
 				navigate('/not-found');
 			}
 		});
-	}, [])
+	}, [product, productId, user._id, navigate])
 
 	useEffect(() => {
 		fetch(`${process.env.REACT_APP_SERVER_URL}/product/get-id`,{
@@ -184,7 +187,9 @@ const ProductPage = () => {
 	if(Object.keys(product).length === 0){return}
 	return <div>
 		<div id='productWrapper'>
-			<img alt='           ' id='productPhoto' src={product.photo} />
+			<div>
+				<img alt='           ' id='productPhoto' src={product.photo} />
+			</div>
 			<div className='productInfo'>
 				<div id='ratingWrapper'>
 					<h2>{rating}</h2>
@@ -197,6 +202,9 @@ const ProductPage = () => {
 			id={product._id}
 		  />
 					<a href='#rating' onClick={() => {reviewList.current.scrollIntoView();return false;}}>{`${reviews.length} ratings`}</a>
+					<ShareButton href="http://www.facebook.com">
+						Share
+					</ShareButton>
 				</div>
 				<h1 id='productName'>{product.name}</h1>
 				<a id='productSupplier' href={`/supplier/${product.supplier}`}>{supplierName}</a>

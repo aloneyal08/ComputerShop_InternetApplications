@@ -4,8 +4,10 @@ const Product = require('../models/product');
 const Review = require('../models/review');
 const Purchase = require('../models/purchase');
 const View = require('../models/view');
+const Login = require('../models/login');
 
 const { encrypt, decrypt } = require('../utils');
+const { default: mongoose } = require('mongoose');
 
 
 const getUserById = async (req, res) => {
@@ -67,6 +69,13 @@ const login = async (req, res) => {
   if(user && ((req.body.encrypted && user.password === password) || (decrypt(user.password) === password))){
     if(user.suspended) {
       return res.status(400).json({ error: 'Your account is suspended. if you need more details, please contact our admins at: computer.shop.colman@gmail.com' });
+    }
+    const d = new Date();
+    d.setHours(0,0,0,0);
+    const logins = await Login.find({user: user._id}).sort({date: -1}).limit(1)
+    if(logins.length===0 || logins[0].date < d) {
+      const l = new Login({user: user._id});
+      await l.save();
     }
     return res.json(user);
   }
@@ -158,7 +167,20 @@ const deleteUser = async (req, res) => {
     return res.status(404).json({ error: 'User not found' });
   }
 
-  //TODO: delete all user's orders, reviews, etc.
+  await Login.updateMany({user: user._id}, {$set: {user: null}});
+  await Review.updateMany({user: user._id}, {$set: {user: null}});
+  await Purchase.updateMany({user: user._id},{$set: {user: null}});
+  await View.updateMany({user: user._id}, {$set: {user: null}});
+
+  if(user.level === 1) {
+    const products = await Product.find({supplier: user._id});
+    products.forEach(async product=>{
+      await Review.deleteMany({product})
+      await View.deleteMany({product})
+      await Purchase.updateMany({product},{$set: {product: null}})
+    })
+    await Product.deleteMany({supplier: user._id});
+  }
 
   res.json({});
 }
@@ -203,22 +225,22 @@ const addAdmin = async (req, res) => {
 
 const getSupplier = async (req, res) => {
   const {id} = req.query;
-  try{
-    const supplier = await User.findById(id);
-    if(!supplier || supplier.level !== 1)
-      return res.status(404).json({error: 'Supplier not found'});
-    delete supplier.password;
+  
+  if(!mongoose.Types.ObjectId.isValid(id))
+    return res.status(404).json({error: 'Supplier not found'});
 
-    const tags = await Tag.find({});
+  const supplier = await User.findById(id);
+  if(!supplier || supplier.level !== 1 || supplier.suspended)
+    return res.status(404).json({error: 'Supplier not found'});
+  delete supplier.password;
 
-    const products = await Product.find({supplier: id});
+  const tags = await Tag.find({});
 
-    const supplierTags = tags.filter(tag=>products.find(p=>p.tags.map(t=>t.toString()).includes(tag._id.toString()))).map(tag=>({text: tag.text, _id: tag._id}));
+  const products = await Product.find({supplier: id});
 
-    res.json({supplier, tags: supplierTags});
-  } catch(e) {
-    res.status(404).json({error: 'Supplier not found'});
-  }
+  const supplierTags = tags.filter(tag=>products.find(p=>p.tags.map(t=>t.toString()).includes(tag._id.toString()))).map(tag=>({text: tag.text, _id: tag._id}));
+
+  res.json({supplier, tags: supplierTags});
 }
 
 const getSupplierProducts = async (req, res) => {
@@ -260,9 +282,11 @@ const getDateJump = (timeFrame, d) => {
 const supplierRatingOverTime = async (req, res) => {
   const {id, startDate, endDate, timeFrame, product} = req.body;
   const obj = {};
+  if(id)
+    obj.supplier = id;
   if(product)
     obj._id = product;
-  const products = await Product.find({supplier: id, ...obj});
+  const products = await Product.find({...obj});
   const reviews = await Review.find({product: {$in: products.map(p=>p._id)}});
   var arr = [];
   
@@ -285,36 +309,54 @@ const supplierRatingOverTime = async (req, res) => {
 
 const supplierPurchasesOverTime = async (req, res) => {
   const {id, startDate, endDate, timeFrame, product, type} = req.body;
-  const obj = {};
-  if(product)
-    obj._id = product;
-  const products = await Product.find({supplier: id, ...obj});
-  const purchases = await Purchase.find({product: {$in: products.map(p=>p._id)}});
-  var arr = [];
-  
-  for(var date = new Date(startDate); date <= new Date(endDate);) {
-    const nextDate = getDateJump(timeFrame, date);
-    const myPurchases = purchases.filter(r=>new Date(r.date) >= date && new Date(r.date) < nextDate);
-    
-    let sum = 0;
-    if(type === 'money')
-      myPurchases.forEach((p) => {sum += p.quantity*p.price});
-    else
-      myPurchases.forEach((p) => {sum += p.quantity});
-    arr.push([new Date(date), sum])
 
-    date = nextDate;
-  }
-  res.json(arr);
+  const suppliers = await User.find({level: 1});
+  var s = [];
+  if(id)
+    s = [id]
+  else
+    s = suppliers.map(s=>s._id);
+
+
+  const data = await Promise.all(s.map(async (supplierId, i)=>{
+    const obj = {}
+    if(product)
+      obj._id = product;
+    const products = await Product.find({...obj, supplier: supplierId});
+    const purchases = await Purchase.find({product: {$in: products.map(p=>p._id)}, date: {$gte: new Date(startDate), $lt: new Date(endDate)}});
+    var arr = [];
+
+    
+    for(var date = new Date(startDate); date <= new Date(endDate);) {
+      const nextDate = getDateJump(timeFrame, date);
+      const myPurchases = purchases.filter(r=>new Date(r.date) >= date && new Date(r.date) < nextDate);
+      
+      let sum = 0;
+      if(type === 'money')
+        myPurchases.forEach((p) => {sum += p.quantity*p.price});
+      else
+        myPurchases.forEach((p) => {sum += p.quantity});
+      arr.push([new Date(date), sum, supplierId, suppliers.find(s=>s._id.equals(supplierId)).fullName])
+      date = nextDate;
+    }
+
+    return arr;
+  }))
+
+
+  res.json(data.flat(1));
+
 }
 
 const supplierViewsOverTime = async (req, res) => {
   const {id, startDate, endDate, timeFrame, product} = req.body;
   const obj = {};
+  if(id)
+    obj.supplier = id;
   if(product)
     obj._id = product;
-  const products = await Product.find({supplier: id, ...obj});
-  const views = await View.find({product: {$in: products.map(p=>p._id)}});
+  const products = await Product.find({...obj});
+  const views = await View.find({product: {$in: products.map(p=>p._id)}, date: {$gte: new Date(startDate), $lt: new Date(endDate)}});
   var arr = [];
   
   for(var date = new Date(startDate); date <= new Date(endDate);) {
@@ -330,11 +372,13 @@ const supplierViewsOverTime = async (req, res) => {
 const supplierPurchasesToViewRatioOverTime = async (req, res) => {
   const {id, startDate, endDate, timeFrame, product, type} = req.body;
   const obj = {};
+  if(id)
+    obj.supplier = id;
   if(product)
     obj._id = product;
-  const products = await Product.find({supplier: id, ...obj});
-  const purchases = await Purchase.find({product: {$in: products.map(p=>p._id)}});
-  const views = await View.find({product: {$in: products.map(p=>p._id)}});
+  const products = await Product.find({...obj});
+  const purchases = await Purchase.find({product: {$in: products.map(p=>p._id)}, date: {$gte: new Date(startDate), $lt: new Date(endDate)}});
+  const views = await View.find({product: {$in: products.map(p=>p._id)}, date: {$gte: new Date(startDate), $lt: new Date(endDate)}});
   var arr = [];
   
   for(var date = new Date(startDate); date <= new Date(endDate);) {
@@ -352,6 +396,32 @@ const supplierPurchasesToViewRatioOverTime = async (req, res) => {
 
 
     arr.push([new Date(date), myViews.length===0 ? 0 : sum/myViews.length])
+
+    date = nextDate;
+  }
+  res.json(arr);
+}
+
+const getUserNumbers = async (req, res) => {
+  const users = await User.find({});
+  
+  res.json([
+    {name: 'Admins', value: users.filter(u=>u.level===2).length},
+    {name: 'Suppliers', value: users.filter(u=>u.level===1).length},
+    {name: 'Google Users', value: users.filter(u=>u.google&&u.level===0).length},
+    {name: 'Users', value: users.filter(u=>!u.google&&u.level===0).length}
+  ])
+};
+
+const getLoginsOverTime = async (req, res) => {
+  const {startDate, endDate, timeFrame, product} = req.body;
+  const logins = await Login.find({date: {$gte: new Date(startDate), $lt: new Date(endDate)}});
+  var arr = [];
+  
+  for(var date = new Date(startDate); date <= new Date(endDate);) {
+    const nextDate = getDateJump(timeFrame, date);
+    const myLogins = logins.filter(r=>new Date(r.date) >= date && new Date(r.date) < nextDate);
+    arr.push([new Date(date), myLogins.length])
 
     date = nextDate;
   }
@@ -380,5 +450,7 @@ module.exports = {
   supplierRatingOverTime,
   supplierPurchasesOverTime,
   supplierViewsOverTime,
-  supplierPurchasesToViewRatioOverTime
+  supplierPurchasesToViewRatioOverTime,
+  getUserNumbers,
+  getLoginsOverTime
 }
