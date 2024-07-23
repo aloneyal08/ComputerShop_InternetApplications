@@ -1,6 +1,8 @@
 #showContainer{
+	position: relative;
 	display: flex;
 	flex-direction: column;
+	z-index: 10;
 }
 #title{
 	font-size: 40px;

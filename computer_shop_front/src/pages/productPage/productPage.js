@@ -27,7 +27,7 @@ const ProductPage = () => {
 	const [reviewDescription, setReviewDescription] = useState('');
 	const [reviews, setReviews] = useState([]);
 	const [ratingPercentages, setRatingPercentages] = useState([]);
-	const [quantity, setQuantity] = useState(1);
+	const [quantity, setQuantity] = useState('');
 	const [supplierName, setSupplierName] = useState('');
 	const [linkedProducts, setLinkedProduct] = useState([]);
 
@@ -65,15 +65,19 @@ const ProductPage = () => {
 		navigate(0);
 	};
 	const onChangeQuantity = (e) => {
-		setQuantity(Math.max(1, Math.min(e.value, product.stock)));
+		setQuantity(e.value===''?'':Math.max(1, Math.min(e.value, product.stock)));
 	};
 	const changeQuantity = (e, num) => {
 		let input = e.currentTarget.parentElement.children[1];
-		input.value = Math.max(1, Math.min(Number(input.value) + num, product.stock));
+		input.value = Math.max(1, Math.min(Number(input.value === ''?1:input.value) + num, product.stock));
 		onChangeQuantity(input)
 	};
 
 	const addToCart = () =>{
+		let q = quantity;
+		if(quantity === ''){
+			q = 1
+		}
 		fetch(`${process.env.REACT_APP_SERVER_URL}/user/update/cart-add`, {
 			method: 'PUT',
 			headers: {
@@ -81,14 +85,14 @@ const ProductPage = () => {
 			},
 			body: JSON.stringify({
 			email: user.email,
-			addition: {productId, quantity}
+			addition: {productId, q}
 			})
 		}).then((res) => res.json()).then((res) => {
 			if(res.error) {
 			alert(res.error);
 			} else {
 			let tempUser = user;
-			tempUser.cart.push({productId, quantity});
+			tempUser.cart.push({productId, q});
 			setUser(tempUser);
 			navigate('/cart');
 			}
@@ -96,8 +100,12 @@ const ProductPage = () => {
 	};
 
 	const buyNow = () =>{
-		sessionStorage.setItem("purchase", JSON.stringify([{productId: product._id, quantity: quantity}]));
-		sessionStorage.setItem("total", product.price*quantity);
+		let q = quantity;
+		if(quantity === ''){
+			q = 1;
+		}
+		sessionStorage.setItem("purchase", JSON.stringify([{productId: product._id, quantity: q}]));
+		sessionStorage.setItem("total", product.price*q);
 		navigate('/purchase/confirm');
 	};
 
@@ -269,7 +277,7 @@ const ProductPage = () => {
 				{product.stock > 0 && !user.loggedOut && user._id !== product.supplier?
 					<div id='quantityWrapper'>
 						<button className='quantityBtn button1' onClick={(e) => changeQuantity(e, -1)}>-</button>
-						<input value={quantity} onChange={(e) => {onChangeQuantity(e.currentTarget)}} type='number'></input>
+						<input placeholder='1' value={quantity} onChange={(e) => {onChangeQuantity(e.currentTarget)}} type='number'></input>
 						<button className='quantityBtn button1' onClick={(e) => changeQuantity(e, 1)}>+</button>
 					</div>
 					:
@@ -336,7 +344,7 @@ const ProductPage = () => {
 								onEditorStateChange={onTextChange}
 								placeholder='Write what you think about the product'
 								/>
-								<button className='button1' id='reviewBtn' onClick={sendReview}>Send Review</button>
+								<button className='button1' id='reviewBtn' onClick={sendReview}>Add Review</button>
 							</div>
 							:
 							<div>

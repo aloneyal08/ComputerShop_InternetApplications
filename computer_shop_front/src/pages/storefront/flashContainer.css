@@ -96,6 +96,7 @@ mask-composite:
 .flashProductContainer{
 	display: flex;
 	flex-direction: row;
+	column-gap: 20px;
 }
 .flashTitle{
 	margin: 0;

@@ -41,7 +41,7 @@ export const ProductCard = ({product, renderRating = true, renderStock = true, i
 	}
 	}, [product, renderRating]);
 
-    return <div className='productCard' onClick={isClickable?() => {navigate(`/product/${product._id}`)}:undefined}>
+    return <div className='productCard' onClick={isClickable? () => {navigate(`/product/${product._id}`)}:undefined}>
     {product.discount?
       <div className='discountLabel'>{product.discount}%</div>
       :
@@ -52,14 +52,10 @@ export const ProductCard = ({product, renderRating = true, renderStock = true, i
       <section className='productTextLeft'>
         <div className='productMainCon'>
           <h3 className='productName'>{product.name}</h3>
-          {product.discount > 0?
-            <div style={{display: 'flex', flexDirection: 'column-reverse'}}>
+          <div style={{display: 'flex', flexDirection: 'column-reverse'}}>
             <h4 className='productPrice'>{isNaN(product.price)?product.price:currencies[currency].symbol + Math.floor(product.price*exchangeRates[currency]*(1-(Number(product.discount)/100))*100)/100}</h4>
-            <p style={{textDecoration: 'line-through', textAlign: 'right', fontSize: '11px', color: 'rgb(255, 64, 64)', margin: 0}}>{currencies[currency].symbol + Math.round(product.price*exchangeRates[currency]*100)/100}</p>
-            </div>
-            :
-              <h4 className='productPrice'>{isNaN(product.price)?product.price:currencies[currency].symbol + Math.floor(product.price*exchangeRates[currency]*100)/100}</h4>
-          }
+            <p className='productDiscount' style={{visibility: (product.discount > 0?'visible':'hidden')}}>{currencies[currency].symbol + Math.round(product.price*exchangeRates[currency]*100)/100}</p>
+          </div>
         </div>
         <aside><h6 className='productSupplier' >{supplier}</h6></aside>
           { renderStock?

@@ -81,3 +81,10 @@
 	width: 100%;
 	gap: 20px;
 }
+.productDiscount{
+	text-decoration: line-through;
+	text-align: right;
+	font-size: 11px;
+	color: rgb(255, 64, 64);
+	margin: 0;
+}

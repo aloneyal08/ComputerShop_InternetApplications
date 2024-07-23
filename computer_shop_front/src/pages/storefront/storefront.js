@@ -58,7 +58,6 @@ const Storefront = () => {
 	}
 
   const moveSide = (e, side) =>{
-    console.log(1)
     const cardWidth = e.currentTarget.parentElement.children[1].clientWidth + 24.8;
     let scrollEnd = Math.max(0, Math.min(e.currentTarget.parentElement.scrollLeft + (cardWidth*5*side), e.currentTarget.parentElement.scrollWidth - e.currentTarget.parentElement.clientWidth));
     let roundedScrollEnd = Math.round(scrollEnd/cardWidth)*cardWidth;
