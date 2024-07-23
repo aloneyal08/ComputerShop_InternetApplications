@@ -55,13 +55,18 @@
 #flashWrapper{
 	display: flex;
 	flex-direction: column;
-	align-items: center; 
+	align-items: center;
+	position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+	width: 100%;
 }
 #dots{
 	display: flex;
 	flex-direction: row;
 	column-gap: 4px;
-	
+	position: absolute;
+	z-index: 101;
 }
 .dot{
 	transition: 0.7s;

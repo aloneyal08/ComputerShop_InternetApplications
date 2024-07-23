@@ -50,7 +50,7 @@ const Storefront = () => {
 				if(pos === flashContainers.current.children.length - 1){
 					setFlashSide(-1);
 				}
-				flashContainers.current.scroll(pos * (flashContainers.current.children[0].clientWidth + 100), 0);
+				flashContainers.current.scroll(pos * (flashContainers.current.children[0].clientWidth), 0);
 				setFlashPos(pos);
 				setResetDelay(true);
 			}
@@ -93,6 +93,7 @@ const Storefront = () => {
         {flashProducts.map((p, i) => <FlashContainer list={p} key={i}/>)}
       </div>
     </div>
+    <div style={{paddingTop: "350px"}}/>
     <div id='showContainer'>
       <h1 className='title'>Recommended</h1>
       <div className='itemContainer scrollBar1 hover' onLoad={scrollHandle} onScroll={scrollHandle}>
