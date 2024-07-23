@@ -18,6 +18,10 @@ const CreateAdmin = ({reload}) => {
 	const onEmailChange = (e) => setEmail(e);
 
 	const onSubmit = () => {
+		if(!emails.includes(email)){
+			alert('Invalid email');
+			return;
+		}
 		fetch(`${process.env.REACT_APP_SERVER_URL}/user/admin/add`, {
 			method: "post",
 			headers: {
@@ -36,7 +40,7 @@ const CreateAdmin = ({reload}) => {
 	}
 
 	return <div>
-		<button className='button1' onClick={()=>setIsPopupOpen(!isPopupOpen)} style={{width: "200px"}}>
+		<button className='button1' onClick={(e)=>{setIsPopupOpen(!isPopupOpen);e.currentTarget.scrollIntoView({block: 'center', inline: 'center'})}} style={{width: "200px"}}>
 			{isPopupOpen ? '- Close' : '+ Create Admin'}
 		</button>
 		{isPopupOpen&&<div className='allScreen' onClick={()=>setIsPopupOpen(false)}/>}

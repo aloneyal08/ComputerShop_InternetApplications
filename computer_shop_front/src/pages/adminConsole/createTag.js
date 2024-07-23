@@ -25,7 +25,7 @@ const CreateTag = ({reload}) => {
 	}
 
 	return <div>
-		<button className='button1' onClick={()=>setIsPopupOpen(!isPopupOpen)} style={{width: "200px"}}>
+		<button className='button1' onClick={(e)=>{setIsPopupOpen(!isPopupOpen);e.currentTarget.scrollIntoView({block: 'center', inline: 'center'})}} style={{width: "200px"}}>
 			{isPopupOpen ? '- Close' : '+ Create Tag'}
 		</button>
 		{isPopupOpen&&<div className='allScreen' onClick={()=>setIsPopupOpen(false)}/>}

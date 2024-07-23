@@ -50,7 +50,18 @@ export const RequestListItem = ({request, reload, selectedReq, setSelectedReq}) 
 
 	const status = getStatusObj(request.status);
 	return <tr className='dashboardListItem' style={{cursor: request.status===0 ? "pointer" : null}} 
-							onClick={request.status===0 ? ()=>setSelectedReq(request._id) : null}>
+							onClick={request.status===0 ? async (e)=>{
+								setSelectedReq(request._id)
+								let row = e.currentTarget;
+								let pos = row.parentElement.firstChild.clientHeight + 2;
+								for(let i = 0; i < e.currentTarget.parentElement.children.length; ++i){
+									if(e.currentTarget.parentElement.children[i] === e.currentTarget){
+										pos += (i-2)*(e.currentTarget.clientHeight);
+										break;
+									}
+								}
+								await sleep(50);
+								row.parentElement.parentElement.parentElement.scrollTo(0, pos)}: null}>
 		<td className='requestName'>
 			{request.user.fullName}
 		</td>
@@ -117,7 +128,18 @@ export const MessageListItem = ({message, isTo=true, selectedMessage, setSelecte
 	const {user} = useContext(UserContext);
 
 
-	return <tr className='dashboardListItem' onClick={()=>setSelectedMessage(message._id)}>
+	return <tr className='dashboardListItem' onClick={async (e)=>{
+		setSelectedMessage(message._id);
+		let row = e.currentTarget;
+		let pos = row.parentElement.firstChild.clientHeight + 2;
+		for(let i = 0; i < e.currentTarget.parentElement.children.length; ++i){
+			if(e.currentTarget.parentElement.children[i] === e.currentTarget){
+				pos += (i-2)*(e.currentTarget.clientHeight);
+				break;
+			}
+		}
+		await sleep(50);
+		row.parentElement.parentElement.parentElement.scrollTo(0, pos)}}>
 		<td style={{width: "300px"}}>
 			{message.from===user.email ? "You" : message.from}
 		</td>
@@ -228,7 +250,18 @@ export const AdminListItem = ({admin, reload}) => {
 		</td>
 		<td>
 			{user.email !== admin.email && <button className='iconButton deleteButton' onClick={deleteAdmin}/>}
-			{user.email !== admin.email && <button className='iconButton editButton' onClick={()=>setIsPopupOpen(true)}/>}
+			{user.email !== admin.email && <button className='iconButton editButton' onClick={async (e)=>{
+				setIsPopupOpen(true);
+				let row = e.currentTarget.parentElement.parentElement;
+				let pos = row.parentElement.firstChild.clientHeight + 2;
+				for(let i = 0; i < e.currentTarget.parentElement.parentElement.parentElement.children.length; ++i){
+					if(e.currentTarget.parentElement.parentElement.parentElement.children[i] === e.currentTarget.parentElement.parentElement){
+						pos += (i-2)*(e.currentTarget.parentElement.parentElement.clientHeight);
+						break;
+					}
+				}
+				await sleep(50);
+				row.parentElement.parentElement.parentElement.scrollTo(0, pos)}}/>}
 		</td>
 		{isPopupOpen&&<div className='allScreen' onClick={()=>setIsPopupOpen(false)}/>}
 		<td className={'popup requestPopup adminEditPopup ' + (isPopupOpen ? 'scale1' : '')}>

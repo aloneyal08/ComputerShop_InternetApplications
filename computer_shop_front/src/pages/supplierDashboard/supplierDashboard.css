@@ -5,3 +5,10 @@
 	width: 600px;
 	margin: auto;
 }
+.viewButton{
+	background-image: url(../../images/eye.png);
+	background-size: 22px 16px;
+	filter: opacity(0.9);
+	width: 38px;
+	height: 38px;
+}

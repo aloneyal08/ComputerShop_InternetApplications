@@ -127,7 +127,7 @@ const NewProduct = () => {
         name,
         description: value,
         stock,
-        price: Math.floor((price/exchangeRates[currency])*100)/100,
+        price: price/exchangeRates[currency],
         photo: photo === ''?null:photo,
         tags: chosenTags.length===0?null:chosenTags.map(t=>t.value),
         supplier: user._id,
@@ -197,7 +197,7 @@ const NewProduct = () => {
               <hr className='separator' />
               <div className="input1 input2 num">
                 <label>
-                  <input required type='number' onChange={priceChange} value={price}/>
+                  <input required type='number' step={0.01} min={0.01} onChange={priceChange} value={price}/>
                   <span>Product Price*</span>
                 </label>
               </div>

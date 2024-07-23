@@ -91,6 +91,7 @@ const App = () => {
                   <Route path="/login" element={<Login/>} />
                   <Route path="/register" element={<Register />} />
                   <Route path="/settings" element={<UserSettings />} />
+									<Route path='/product/:productId' element={<ProductPage />} />
                   {user.level===1&&
                     <>
                       <Route path="/product/new" element={<NewProduct />} />
@@ -100,7 +101,6 @@ const App = () => {
                   }
                   {(user.loggedOut||user.level===0)&&
                     <>
-                      <Route path='/product/:productId' element={<ProductPage />} />
                       <Route path="/cart" element={<Cart />} />
                       <Route path="/supplier/:supplierId" element={<SupplierPage />} />
                       <Route path='/purchase/confirm' element={<ConfirmPurchase />} />
