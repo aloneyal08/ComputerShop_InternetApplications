@@ -25,9 +25,14 @@ const makePurchases = async (req, res) => {
 };
 
 const getPurchases = async (req, res) => {
-	const {product, user} = req.query;
-	let filter = product? {product}: {user};
-	const purchases = await Purchase.find(filter);
+	const {userId} = req.query;
+	let filter = {user: userId}
+	let purchases = await Purchase.find(filter);
+	for(let i = 0; i<purchases.length;i++)
+	{
+		purchases[i].product = await Product.findById(purchases[i].product);
+		console.log(purchases[i].product);
+	}
 	res.json(purchases);
 };
 
