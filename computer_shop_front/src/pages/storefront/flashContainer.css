@@ -16,6 +16,7 @@
 
 .flashBackground {
 	position: absolute;
+	opacity: 0.6;
 	left: 50%;
 	top: -40px;
 	transform: translateX(-50%);
@@ -69,7 +70,7 @@ mask-size:
 	200% 200%,
 	0% 0,
 	0px 0%,
-	300% 300px,
+	200% 200px,
 	0px 0%;
 mask-repeat:
 	no-repeat,

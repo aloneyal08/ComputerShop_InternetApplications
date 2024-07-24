@@ -16,7 +16,6 @@
 	width: calc(100% + 200px);
 	height:calc(100% + 45px);
 	z-index: -1;
-	opacity: 0.56;
 	background-size: cover;
 	-webkit-mask-image:
 	linear-gradient(to top, black 0%, black 100%),

@@ -9,6 +9,7 @@ export const FlashContainer = ({list}) => {
 		<img alt='   ' 
 			className='flashBackground'
 			src={list[3]}
+			style={{opacity: `${list[4]}`}}
 		/>
 		<h2 className='flashTitle'>{list[0]}</h2>
 		<div className='flashProductContainer'>

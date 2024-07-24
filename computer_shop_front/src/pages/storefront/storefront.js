@@ -41,7 +41,7 @@ const Storefront = () => {
 	}
 
 	const moveFlash = (to = -1) =>{
-		if(flashContainers !== null){
+		if(flashContainers !== null && flashProducts.length){
 			if(flashContainers.current.children.length !== 0){
 				let pos = to === -1?flashPos + flashSide:to;
 				if(pos === 0){

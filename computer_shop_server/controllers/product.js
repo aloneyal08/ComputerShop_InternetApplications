@@ -237,7 +237,7 @@ const getFlashProducts = async (req, res) => {
 	flash.push(['The Most Purchased Products',
 							current,
 							['The Most Purchased Today','The Most Purchased This Week', 'The Most Purchased This Month'],
-						'https://static.vecteezy.com/system/resources/previews/010/067/576/non_2x/monopoly-money-background-free-vector.jpg']);
+						'https://as1.ftcdn.net/v2/jpg/02/32/16/08/1000_F_232160874_pTqR3b5m0nny8qEOYDgd1rIbLDTDepzJ.jpg', 0.7]);
 	current = [];
 	p = await Product.find({date: {$gte: dates[0]}}).sort({$natural:-1});
 	current.push(p);
@@ -256,7 +256,7 @@ const getFlashProducts = async (req, res) => {
 	flash.push([ 'The Newest Products',
 						current,
 						['The Newest Today', 'The Newest This Week', 'The Newest This Month'],
-						'']);
+						'https://img.freepik.com/free-vector/gradient-template-background-new-minimalist_483537-4981.jpg?size=626&ext=jpg&ga=GA1.1.2082370165.1716940800&semt=ais_user', 0.9]);
 	current = [];
 	tempList = [];
 	p = await Review.aggregate([{$match: {"date": {$gte: dates[0]}}}, {$group: {_id: "$product", rate: {$avg: {$sum: "$rating"}}}}, {$sort: {rate: -1}}]);
@@ -280,7 +280,7 @@ const getFlashProducts = async (req, res) => {
 	flash.push([ 'The Best Rated Products',
 						current,
 						['The Best Rated Today', 'The Best Rated This Week', 'The Best Rated This Month'],
-						'https://static.vecteezy.com/system/resources/thumbnails/002/549/409/small_2x/star-and-gradient-outline-background-free-vector.jpg']);
+						'https://www.welovesolo.com/wp-content/uploads/2016/03/rizbl1rx3de-1280x720.jpg', 0.6]);
 	current = [];
 	current = await Product.find({}).sort({"discount":-1});
 	current = current.filter(p=>{
@@ -290,7 +290,7 @@ const getFlashProducts = async (req, res) => {
 	flash.push([ 'The Biggest Sales',
 							current,
 							['The Number #1 Sale', 'The Number #2 Sale', 'The Number #3 Sale'],
-							'https://static3.depositphotos.com/1010097/260/i/450/depositphotos_2605063-stock-photo-percent-background.jpg']);
+							'https://thumb.ac-illust.com/97/973f02395b4438416829f61172c5757c_t.jpeg', 0.4]);
 	res.json(flash);
 };
 
