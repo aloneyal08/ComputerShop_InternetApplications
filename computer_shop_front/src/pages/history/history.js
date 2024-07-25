@@ -15,8 +15,8 @@ const History = () => {
     let currentDate = null;
     let currentGroup = null;
     purchases.forEach(purchase => {
-      const purchaseDate = new Date(purchase.date).toLocaleDateString();
-      if (purchaseDate != currentDate) {
+      const purchaseDate = new Date(purchase.date).toLocaleDateString('en-us', {month: "short", day: "numeric", year: "numeric"});
+      if (purchaseDate !== currentDate) {
         currentGroup = {
           date: purchaseDate,
           purchases: []
@@ -32,14 +32,14 @@ const History = () => {
     <div>
       <h1>History</h1>
       <table id='itemWrapper'>
-      <tbody>
-      {groupedPurchases.map(group => (
-        <> 
-              <tr><td><h2>{group.date}</h2></td></tr>
-              {group.purchases.map(purchase => (<HistoryItem key={purchase.product._id} product={purchase.product} price={purchase.price} quantity={purchase.quantity}/>))}
-        </>
-      ))}
-      </tbody>
+        <tbody>
+          {groupedPurchases.map(group => (
+            <> 
+              <tr style={{marginTop: "40px", display: "block"}}><td><h2>{group.date}</h2></td></tr>
+              {group.purchases.map((purchase, i) => (<HistoryItem key={i} product={purchase.product||{_id:null}} price={purchase.price} quantity={purchase.quantity}/>))}
+            </>
+          ))}
+        </tbody>
       </table>
     </div>
   );
