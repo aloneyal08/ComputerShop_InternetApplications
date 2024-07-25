@@ -32,7 +32,7 @@ const getPurchases = async (req, res) => {
 	for(let i = 0; i<purchases.length;i++)
 	{
 		let p = await Product.findById(purchases[i].product);
-		result.push({date: purchases[i].date , product: p,quantity: purchases[i].quantity, price: purchases[i].price})
+		result.push({date: purchases[i].date , product: p, quantity: purchases[i].quantity, price: purchases[i].price, name: purchases[i].name})
 	}
 	res.json(result);
 };

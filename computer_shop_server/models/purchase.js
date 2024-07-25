@@ -21,6 +21,10 @@ const Purchase = new Schema({
   price: {
     type: Number,
     required: true
+  },
+  name: {
+    type: String,
+    required: false
   }
 });
 

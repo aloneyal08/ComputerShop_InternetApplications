@@ -36,7 +36,7 @@ const History = () => {
           {groupedPurchases.map(group => (
             <> 
               <tr style={{marginTop: "40px", display: "block"}}><td><h2>{group.date}</h2></td></tr>
-              {group.purchases.map((purchase, i) => (<HistoryItem key={i} product={purchase.product||{_id:null}} price={purchase.price} quantity={purchase.quantity}/>))}
+              {group.purchases.map((purchase, i) => (<HistoryItem key={i} product={purchase.product||{_id:null, name: purchase.name}} price={purchase.price} quantity={purchase.quantity}/>))}
             </>
           ))}
         </tbody>

@@ -5,14 +5,14 @@ import { emptyProduct as ep } from '../../utils';
 import './history.css';
 
 const currencies = require('../../currencies.json');
-const emptyProduct = {...ep, name: "Product Not Available"}
+const emptyProduct = {...ep}
 
 const HistoryItem = ({product,quantity,price}) => {
 
 	const {currency, exchangeRates} = useContext(MoneyContext); 
 	const navigate = useNavigate();
   
-	if(!product._id) product = emptyProduct;
+	if(!product._id) product = {...emptyProduct, ...product};
 
 
 	if(Object.keys(product).length <= 0) return;
@@ -20,8 +20,8 @@ const HistoryItem = ({product,quantity,price}) => {
 		onClick={!product.empty ? ()=>navigate(`/product/${product._id}`) : null}>
 		<td className='historyItemTd'><img alt='         ' className='historyItemImg' src={product.photo} onError={(e) =>{e.currentTarget.src = require('../../images/defaultProduct.jpg');}}/></td>
 		<td className='historyItemTd'><h2 className='historyItemName'>{product.name}</h2></td>
-    {!product.empty&&<td className='historyItemTd'><p>{quantity}</p></td>}
-		{!product.empty&&<td className='historyItemTd'><h2 className='historyItemPrice'>{currencies[currency].symbol + Math.floor(price*exchangeRates[currency]*100)/100}</h2></td>}
+    <td className='historyItemTd'><p>{quantity}</p></td>
+		<td className='historyItemTd'><h2 className='historyItemPrice'>{currencies[currency].symbol + Math.floor(price*exchangeRates[currency]*100)/100}</h2></td>
 	</tr>
   }
   
