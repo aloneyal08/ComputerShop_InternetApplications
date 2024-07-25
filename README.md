@@ -1,7 +1,7 @@
 
 <h1 align="center">
 	<br>
-	<img src="./computer_shop_front/src/images/cart.png" alt="Markdownify" width="200">
+	<img src="./computer_shop_front/public/logo192.png" alt="Markdownify" width="200">
 	<br>
 	O.C.S - Online Computer Shop
 	<br>
