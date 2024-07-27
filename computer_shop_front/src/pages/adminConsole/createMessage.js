@@ -47,10 +47,8 @@ const CreateMessage = ({reload}) => {
 		if(to === '')
 			return alert('Please enter a recipient');
 
-		if(to==="post to Facebook")
-			s = 'Facebook Post';
-		else
-		c = draftToHtmlPuri(convertToRaw(content.getCurrentContent()));
+		if(content === '' && content2 === '')
+			return alert('Please enter a message');
 
 		if(s === '')
 			return alert('Please enter a subject');
@@ -58,8 +56,10 @@ const CreateMessage = ({reload}) => {
 		if(header === '')
 			return alert('Please enter a header');
 
-		if(content === '' && content2 === '')
-			return alert('Please enter a message');
+		if(to==="post to Facebook")
+			s = 'Facebook Post';
+		else
+			c = draftToHtmlPuri(convertToRaw(content.getCurrentContent()));
 
 		fetch(`${process.env.REACT_APP_SERVER_URL}/message/create`, {
 			method: 'POST',
@@ -71,7 +71,7 @@ const CreateMessage = ({reload}) => {
 				subject: s,
 				header, 
 				content: to==="post to Facebook" ? content2 : c, 
-				from: user.email, 
+				from: user.level===2 ? 'admin' : user.email, 
 				level: user.level
 			}),
 		}).then(res=>res.json()).then(res=>{
@@ -90,13 +90,13 @@ const CreateMessage = ({reload}) => {
 	}
 
 	return <div>
-		<button className='button1' onClick={()=>setIsPopupOpen(!isPopupOpen)} style={{width: "200px"}}>
+		<button className='button1' onClick={(e)=>{setIsPopupOpen(!isPopupOpen);e.currentTarget.scrollIntoView({block: 'center', inline: 'center'})}} style={{width: "200px"}}>
 			{isPopupOpen ? '- Close' : '+ Create Message'}
 		</button>
 		{isPopupOpen&&<div className='allScreen' onClick={()=>setIsPopupOpen(false)}/>}
 		<div className={'popup messagePopup ' + (isPopupOpen ? 'scale1' : '')}>
 			<div className='arrowUp'/>
-			<h2>New Message</h2>
+			<h2>New Message{user.level===1 ? ' (to admin)' : ''}</h2>
 			<span>Email</span>
 				{emails.length>0&&<SelectSearch onChange={onToChange} search={true} value={to} getOptions={()=>emails.map(email=>({value: email, name: email}))} placeholder="To" renderValue={(valueProps) =>
 				<div className='input1'>

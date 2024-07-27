@@ -1,27 +1,27 @@
 import React, { useState, useEffect, useContext } from 'react'
-import { UserContext, MoneyContext} from '../../Contexts';
-import { useNavigate } from 'react-router-dom';
+import { UserContext, MoneyContext, TagsContext} from '../../Contexts';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Editor } from "react-draft-wysiwyg";
-import { convertToRaw, EditorState, ContentState } from "draft-js";
-import htmlToDraft from 'html-to-draftjs';
+import { convertToRaw, EditorState, ContentState, convertFromHTML } from "draft-js";
 import draftToHtmlPuri from "draftjs-to-html";
 import SelectSearch from 'react-select-search';
 import 'react-select-search/style.css'
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
-import './newProduct.css';
 import { ProductCard } from '../../components/productCard/productCard';
 import TagSelect from '../../components/tagSelect/tagSelect';
 
-const NewProduct = () => {
-	const {user} = useContext(UserContext);
-	const {currency, exchangeRates} = useContext(MoneyContext);
-	const navigate = useNavigate();
+const EditProduct = () => {
+  const {productId} = useParams();
+  const {user} = useContext(UserContext);
+  const {currency, exchangeRates} = useContext(MoneyContext);
+  const tags = useContext(TagsContext);
+  const navigate = useNavigate();
 
-	const [name, setName] = useState('');
-	const [description, setDescription] = useState('');
-	const [stock, setStock] = useState('');
-	const [price, setPrice] = useState('');
-
+  const [product, setProduct] = useState({});
+  const [name, setName] = useState('');
+  const [description, setDescription] = useState('');
+  const [stock, setStock] = useState('');
+  const [price, setPrice] = useState('');
   const [photo, setPhoto] = useState('');
   const [chosenTags, setChosenTags] = useState([]);
   const [validPhoto, setValidPhoto] = useState(false);
@@ -30,36 +30,68 @@ const NewProduct = () => {
   const [statValue, setStatValue] = useState('');
   const [linkedProductOptions, setLinkedProductOptions] = useState([]);
   const [parent, setParent] = useState(null);
-  
-  useEffect(() => {
-    const blocksFromHtml = htmlToDraft("");
-    const { contentBlocks, entityMap } = blocksFromHtml;
-    const contentState = ContentState.createFromBlockArray(contentBlocks, entityMap);
-    const editorState = EditorState.createWithContent(contentState);
-    setDescription(editorState);
-  }, []);
+  const [isParent, setIsParent] = useState(true);
+  const [discount, setDiscount] = useState(0);
 
   useEffect(() => {
+		fetch(`${process.env.REACT_APP_SERVER_URL}/product/get-id`,{
+			method: 'POST',
+			headers: {
+			'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({id: productId})
+		}).then((res)=>res.json()).then((res)=>{
+			if(res.error || res.supplier !== user._id){
+				navigate('/not-found');
+			}
+			if(res.tags && tags.length > 0){
+				res.tags = res.tags.map((tag) => {let t = tags.find(t => t._id === tag); return {name: t.text, value: t._id}}).filter(tag => tag);
+		}
+		setProduct(res)});
     fetch(`${process.env.REACT_APP_SERVER_URL}/product/get-linked`,{
 			method: 'POST',
 			headers: {
 			'Content-Type': 'application/json'
 			},
-			body: JSON.stringify({supplier: user._id, product: null})
+			body: JSON.stringify({supplier: user._id, product: productId})
 		}).then(res=>res.json()).then(res=>{
       setLinkedProductOptions([{name: 'No Linked Product', value:null}].concat(res.map(p=>{return {name: p.name, value: p._id, photo: p.photo}})))}
     );
-  }, [])
+  }, [productId, tags, navigate, user._id])
 
-	const onTextChange = (state) => {
-		setDescription(state);
-	};
+  useEffect(()=>{
+    if(Object.keys(product).length > 0){
+      fetch(`${process.env.REACT_APP_SERVER_URL}/product/is-parent`,{
+        method: 'POST',
+        headers: {
+        'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({id: product._id})
+      }).then(res=>res.json()).then(res=>setIsParent(res));
+      setName(product.name);
+      let value = convertFromHTML(product.description);
+      value = EditorState.createWithContent(ContentState.createFromBlockArray(value.contentBlocks, value.entityMap));
+      setDescription(value)
+      setPhoto(product.photo);
+      setValidPhoto(true);
+      setStock(Number(product.stock));
+      setPrice(Number(product.price)*exchangeRates[currency]);
+      setDiscount(Number(product.discount))
+      setChosenTags(product.tags || [])
+      setStats(product.stats || {});
+      setParent(product.parentProduct);
+    }
+  }, [product, exchangeRates])
 
-	const changeImageFunc = (e) => {
-		let val = e?e.currentTarget.value:'';
-		setValidPhoto(true);
-		setPhoto(val);
-	};
+  const onTextChange = (state) => {
+    setDescription(state);
+  };
+
+  const changeImageFunc = (e) => {
+    let val = e?e.currentTarget.value:'';
+    setValidPhoto(true);
+    setPhoto(val);
+  };
 
   const priceChange = (e) =>{
     let pr = e.target.value === ''? '' : Math.max(0, Math.floor(Number(e.target.value)*100)/100);
@@ -92,9 +124,17 @@ const NewProduct = () => {
     setStats(temp);
   };
 
-  const addProduct = async (e) => {
-    console.log(stats);
-    console.log(parent);
+  const deleteProduct = async () => {
+    fetch(`${process.env.REACT_APP_SERVER_URL}/product/delete`,{
+      method: 'DELETE',
+      headers: {
+      'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({_id: product._id})
+    }).then(()=>{navigate('/')})
+  }
+
+  const saveProduct = async (e) => {
     let value = draftToHtmlPuri(
       convertToRaw(description.getCurrentContent())
     );
@@ -103,7 +143,7 @@ const NewProduct = () => {
       return;
     }
     if(stock === null){
-      alert('A starting stock must be entered!');
+      alert('A stock must be entered!');
       return;
     }
     if(price === null || price === 0){
@@ -118,12 +158,13 @@ const NewProduct = () => {
       alert('A product picture must be entered!');
       return;
     }
-    fetch(`${process.env.REACT_APP_SERVER_URL}/product/add`, {
-      method: 'POST',
+    fetch(`${process.env.REACT_APP_SERVER_URL}/product/edit`, {
+      method: 'PUT',
       headers: {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
+        _id: product._id,
         name,
         description: value,
         stock,
@@ -132,13 +173,14 @@ const NewProduct = () => {
         tags: chosenTags.length===0?null:chosenTags.map(t=>t.value),
         supplier: user._id,
         stats,
-        parentProduct: parent
+        parentProduct: parent,
+        discount
       })
     }).then((res) => res.json()).then((res) => {
       if(res.error) {
         alert(res.error);
       } else {
-        navigate('/');
+        navigate(`/product/${product._id}`);
       }
     })
   };
@@ -155,7 +197,7 @@ const NewProduct = () => {
             <section className='inputContainer' id='baseInfoContainer'>
               <div className="input1 input2">
                 <label>
-                <input type='text' required onChange={(e) => {setName(e.target.value);}}/>
+                <input value={name} type='text' required onChange={(e) => {setName(e.target.value);}}/>
                 <span>Product Name*</span>
                 </label>
                 <hr className='separator' />
@@ -180,7 +222,7 @@ const NewProduct = () => {
             <section className='inputContainer' id='pictureContainer'>
               <div className="input1 input2">
                 <label>
-                  <input required type='text' onChange={changeImageFunc}/>
+                  <input value={photo} required type='text' onChange={changeImageFunc}/>
                   <span>Product Photo*</span>
                 </label>
               </div>
@@ -190,15 +232,22 @@ const NewProduct = () => {
             <section className='inputContainer' id='detailContainer'>
               <div className="input1 input2">
                 <label>
-                  <input required type='number' step={1} min={0} onChange={(e) => {setStock(e.target.value);}}/>
-                  <span>Starting Stock*</span>
+                  <input value={stock} required type='number' step={1} min={0} onChange={(e) => {setStock(e.target.value);}}/>
+                  <span>Stock*</span>
                 </label>
               </div>
               <hr className='separator' />
               <div className="input1 input2 num">
                 <label>
-                  <input required type='number' step={0.01} min={0.01} onChange={priceChange} value={price}/>
+                  <input value={price} required type='number' step={0.01} min={0.01} onChange={priceChange}/>
                   <span>Product Price*</span>
+                </label>
+              </div>
+              <hr className='separator' />
+              <div className="input1 input2 num">
+                <label>
+                  <input value={discount} required type='number' step={1} min={0} max={100} onChange={(e)=>{setDiscount(Math.floor(Math.max(0, Math.min(Number(e.currentTarget.value), 99))))}}/>
+                  <span>Product Discount</span>
                 </label>
               </div>
             </section>
@@ -253,27 +302,34 @@ const NewProduct = () => {
                       null
                       }
             </section>
-            <hr className='separator' />
-            <h3 className='inputTitle'>Linked Product</h3>
-            <section className='inputContainer'>
-              <p style={{color: 'gray', textAlign:'left', fontSize: '14px'}}>You can't choose a product that already has a link to another product*</p>
-              <SelectSearch value={parent} onChange={(e)=>{setParent(e)}} search={true} name="link" id='linkedProductInput' options={linkedProductOptions} placeholder="Link Your Product" renderValue={(valueProps) =>
-                <div className='input1 input2'>
-                  <label>
-                  <input type='text' required {...valueProps} placeholder=''/>
-                  <span>{valueProps.placeholder}</span>
-                  </label>
-                </div>} renderOption={(optionsProps, optionsData) => {
-                    return <button className='select-search-option' {...optionsProps}>{optionsData.photo?<img alt='     ' src={optionsData.photo}  className='productLinkImg'/>:null}{optionsData.name}</button>
-                }}
-                filterOptions={[(arr, b) => {
-                  return arr.filter((e)=>e.name.toLocaleLowerCase().includes(b.toLocaleLowerCase()))
-                }]}/>
-            </section>
+            {!isParent?
+            <>
+              <hr className='separator' />
+              <h3 className='inputTitle'>Linked Product</h3>
+              <section className='inputContainer'>
+                <p style={{color: 'gray', textAlign:'left', fontSize: '14px'}}>You can't choose a product that already has a link to another product*</p>
+                <SelectSearch value={parent} onChange={(e)=>{setParent(e)}} search={true} name="link" id='linkedProductInput' options={linkedProductOptions} placeholder="Link Your Product" renderValue={(valueProps) =>
+                  <div className='input1 input2'>
+                    <label>
+                    <input type='text' required {...valueProps} placeholder=''/>
+                    <span>{valueProps.placeholder}</span>
+                    </label>
+                  </div>} renderOption={(optionsProps, optionsData) => {
+                      return <button className='select-search-option' {...optionsProps}>{optionsData.photo?<img alt='     ' src={optionsData.photo}  className='productLinkImg'/>:null}{optionsData.name}</button>
+                  }}
+                  filterOptions={[(arr, b) => {
+                    return arr.filter((e)=>e.name.toLocaleLowerCase().includes(b.toLocaleLowerCase()))
+                  }]}/>
+              </section>
+              </>
+              :
+              null
+            }
           </section>
           <section id='preview'>
-            <ProductCard roundCurr={false} isClickable={false} onImageError={()=>{setValidPhoto(false)}} product={{name: name===''?"Product's Name":name, price: price===''?"Product's Price":price/exchangeRates[currency], stock, photo, rating: 2.5, supplierName: user.fullName}} />
-            <button id='addProductBtn' onClick={addProduct} className='button1'>Add New Product</button>
+            <ProductCard isClickable={false} onImageError={()=>{setValidPhoto(false)}} product={{name: name===''?"Product's Name":name, price: price===''?"Product's Price":price/exchangeRates[currency], stock, photo, rating: 2.5, supplierName: user.fullName, discount: discount}} />
+            <button id='addProductBtn' onClick={saveProduct} className='button1'>Save Changes</button>
+            <button id='deleteProductBtn' onClick={deleteProduct} className='button1 deleteAccButton'>Delete Product</button>
           </section>
         </div>
       </div>
@@ -281,4 +337,4 @@ const NewProduct = () => {
 
 }
 
-export default NewProduct;
+export default EditProduct;

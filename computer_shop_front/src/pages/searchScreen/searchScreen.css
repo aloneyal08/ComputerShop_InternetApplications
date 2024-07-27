@@ -1,71 +1,71 @@
 .searchHeader {
-  margin: 12px;
-  font-size: 35px;
-  margin-bottom: 0px;
+	margin: 12px;
+	font-size: 35px;
+	margin-bottom: 0px;
 }
 
 .searchProducts {
-  display: flex;
-  padding: 20px;
-  flex-direction: row;
-  flex-wrap: wrap;
-  align-self: flex-start;
-  justify-content: flex-start;
-  grid-area: main;
-  gap: 35px;
+	display: flex;
+	padding: 20px;
+	flex-direction: row;
+	flex-wrap: wrap;
+	align-self: flex-start;
+	justify-content: flex-start;
+	grid-area: main;
+	gap: 35px;
 }
 
 .filters {
-  min-width: 270px;
-  max-width: 270px;
-  grid-area: menu;
-  padding: 10px;
-  padding-left: 25px;
+	min-width: 270px;
+	max-width: 270px;
+	grid-area: menu;
+	padding: 10px;
+	padding-left: 25px;
 }
 
 .filters > section {
-  margin-top: 10px;
+	margin-top: 10px;
 }
 
 .sort {
-  height: 50px;
-  grid-area: header;
-  position: relative;
+	height: 50px;
+	grid-area: header;
+	position: relative;
 }
 
 .searchContainer {
-  display: grid;
-  grid-template-areas:
-    'header header header header header header'
-    'menu main main main main main'
-    'menu main main main main main';
-  gap: 0px;
+	display: grid;
+	grid-template-areas:
+		'header header header header header header'
+		'menu main main main main main'
+		'menu main main main main main';
+	gap: 0px;
 }
 
 .searchProducts h2 {
-  margin: 5px;
+	margin: 5px;
 }
 
 .didYouMean {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
+	position: absolute;
+	left: 50%;
+	transform: translateX(-50%);
 }
 
 .single-thumb .range-slider__thumb[data-lower] {
-  width: 0;
+	width: 0;
 }
 .single-thumb .range-slider__range {
-  border-radius: 6px;
+	border-radius: 6px;
 }
 
 .searchRating {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 5px;
-  height: 90px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 5px;
+	height: 90px;
 }
 .select-search-container {
-  width: 100%;
+	width: 100%;
 }

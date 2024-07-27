@@ -1,69 +1,69 @@
 .settings {
-  padding-bottom: 30px;
+	padding-bottom: 30px;
 }
 
 .settingsHeader {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  height: 2rem;
-  margin-top: 20px;
-  margin-bottom: 30px;
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+	height: 2rem;
+	margin-top: 20px;
+	margin-bottom: 30px;
 }
 
 .settingsHeader h1 {
-  font-size: 2rem;
-  margin: 0;
+	font-size: 2rem;
+	margin: 0;
 }
 .settingsHeader img {
-  width: 2rem;
-  height: 2rem;
-  margin-right: 1rem;
+	width: 2rem;
+	height: 2rem;
+	margin-right: 1rem;
 }
 .settingsPart {
-  text-align: left;
-  padding: 30px;
-  padding-bottom: 0;
-  padding-top: 0;
+	text-align: left;
+	padding: 30px;
+	padding-bottom: 0;
+	padding-top: 0;
 }
 
 .settingsPart h2 {
-  right: 10px;
-  position: relative;
+	right: 10px;
+	position: relative;
 }
 
 .settingsPart button {
-  right: 0;
+	right: 0;
 }
 
 .photoTextbox {
-  display: flex;
-  height: 55px;
+	display: flex;
+	height: 55px;
 }
 
 .photoTextbox label {
-  width: 90%;
+	width: 90%;
 }
 
 .photoPreview {
-  width: 80px;
-  height: 80px;
-  margin-left: 1rem;
-  border-radius: 50%;
-  position: absolute;
+	width: 80px;
+	height: 80px;
+	margin-left: 1rem;
+	border-radius: 50%;
+	position: absolute;
 }
 
 .deleteAccHeader {
-  color: red;
-  text-shadow: 2px 2px 1px #CE5937;
-  font-weight: bold;
+	color: red;
+	text-shadow: 2px 2px 1px #CE5937;
+	font-weight: bold;
 }
 
 .deleteAccButton {
-  background-image: linear-gradient(#ce4a4a, #850202);
+	background-image: linear-gradient(#ce4a4a, #850202);
 }
 .deleteAccButton:disabled {
-  background-image: linear-gradient(#a39797, #6b6161);
-  cursor: not-allowed;
+	background-image: linear-gradient(#a39797, #6b6161);
+	cursor: not-allowed;
 }

@@ -1,198 +1,220 @@
 #productWrapper{
-    display: flex;
-    flex-direction: row;
-    justify-content: space-evenly;
-    column-gap: 50px;
-    margin-top: 50px;
+	display: flex;
+	flex-direction: row;
+	justify-content: space-evenly;
+	column-gap: 50px;
+	margin-top: 50px;
 }
 #tags{
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    border-radius: 15px;
-    padding: 5px;
-    cursor: pointer;
-    margin: -7px 0;
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+	border-radius: 15px;
+	padding: 5px;
+	cursor: pointer;
+	margin: -7px 0;
 }
 .productTagName{
 margin: 0;
 font-size: 14px;
 }
 #productPhoto{
-    display: block;
-    width: 500px;
-    height: auto;
-    border-radius: 10px;
+	display: block;
+	width: 500px;
+	height: auto;
+	border-radius: 10px;
 }
 .productInfo{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
 }
 #productDesc{
-    display: flex;
-    flex-direction: column;
-    text-align: start;
-    width: 20vw;
-    height: 18vh;
-    overflow: auto;
+	display: flex;
+	flex-direction: column;
+	text-align: start;
+	width: 20vw;
+	height: 18vh;
+	overflow: auto;
 }
 #productName, #productDesc > p, #productPrice, #cartBtn{
-    margin: 0;
+	margin: 0;
 }
 #productName, #productSupplier{
-    align-self: flex-start;
-    text-align: left;
+	align-self: flex-start;
+	text-align: left;
 }
 #productSupplier{
-    display: flex;
-    margin: 0;
-    font-size: 18px;
-    font-weight: 900;
-    color: rgb(30, 30, 30);
+	display: flex;
+	margin: 0;
+	font-size: 18px;
+	font-weight: 900;
+	color: rgb(30, 30, 30);
 }
 #productSupplier:hover{
-    color: black;
+	color: black;
 }
 #productStock{
-    margin: 0;
-    margin-top: 7px;
+	margin: 0;
+	margin-top: 7px;
 }
 .separator{
-    border-top: 2px solid gainsboro;
-    margin: 7px 0;
-    width: 100%;
+	border-top: 2px solid gainsboro;
+	margin: 7px 0;
+	width: 100%;
 }
 #reviewWrapper{
-    display: flex;
-    flex-direction: row-reverse;
+	display: flex;
+	flex-direction: row-reverse;
 }
 #buttonContainer{
-    display: flex;
-    flex-direction: row;
-    justify-content: space-evenly;
+	display: flex;
+	flex-direction: row;
+	justify-content: space-evenly;
 }
 .wrapperClassName{
-    width: 35vw;
-    background-color: white;
+	width: 35vw;
+	background-color: white;
 }
 .public-DraftEditor-content, .DraftEditor-editorContainer, .DraftEditor-root{
-    height:fit-content;
+	height:fit-content;
 }
 .DraftEditor-root{
-    margin-left: 10px;
+	margin-left: 10px;
 }
 .reviewDescEditable{
-    max-width: 35vw;
-    height: 10.5vh;
-    overflow: auto;
-    margin-bottom: 15px;
+	max-width: 35vw;
+	height: 10.5vh;
+	overflow: auto;
+	margin-bottom: 15px;
 }
 #reviewBtn{
-    margin-top: 10px;
-    width: fit-content;
-    align-self: center;
+	margin-top: 10px;
+	width: fit-content;
+	align-self: center;
 }
 #ratingWrapper{
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    column-gap: 10px;
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	column-gap: 10px;
 }
 #ratingWrapper > h2{
-    text-align: center;
+	text-align: center;
 }
 #reviewList{
-    display: flex;
-    flex-direction: column;
-    align-items: left;
-    justify-content: start;
-    padding: 50px;
-    padding-top: 40px;
-    row-gap: 30px;
-    margin: auto;
+	display: flex;
+	flex-direction: column;
+	align-items: left;
+	justify-content: start;
+	padding: 50px;
+	padding-top: 40px;
+	row-gap: 30px;
+	margin: auto;
 }
 #buyInfo{
-    display: flex;
-    flex-direction: column;
+	display: flex;
+	flex-direction: column;
 }
 #buyInfo > .button1{
-    margin-top: 20px;
-    width: 150px;
-    align-self: center;
+	margin-top: 20px;
+	width: 150px;
+	align-self: center;
 }
 #ratingInfo{
-    display: flex;
-    flex-direction: column-reverse;
-    margin-top: 30px;
-    margin-right: 50px;
-    position: absolute;
+	display: flex;
+	flex-direction: column-reverse;
+	margin-top: 30px;
+	margin-right: 50px;
+	position: absolute;
 }
 .ratePercentage{
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    column-gap: 20px;
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	column-gap: 20px;
 }
 .ratePercentage > .emptyBar{
-    display: flex;
-    border: 2px solid rgb(161, 161, 161);
-    border-radius: 10px;
-    background-color: gainsboro;
-    width: 150px;
-    height: 20px;
-    align-items: center;
-    justify-content: flex-start;
+	display: flex;
+	border: 2px solid rgb(161, 161, 161);
+	border-radius: 10px;
+	background-color: gainsboro;
+	width: 150px;
+	height: 20px;
+	align-items: center;
+	justify-content: flex-start;
 
 }
 .ratePercentage > .emptyBar > .fullBar{
-    animation: enlarge 1s;
-    border-radius: 10px;
-    border-bottom-left-radius: 10px;
-    background-color: rgb(255, 188, 11);
-    width: var(--max-width);
-    max-width: var(--max-width);
-    height: 20px;
+	animation: enlarge 1s;
+	border-radius: 10px;
+	border-bottom-left-radius: 10px;
+	background-color: rgb(255, 188, 11);
+	width: var(--max-width);
+	max-width: var(--max-width);
+	height: 20px;
 }
 #quantityWrapper{
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    align-self: center;
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	align-self: center;
 }
 #quantityWrapper > input{
-    box-sizing: border-box;
-    text-align: center;
-    width: 50px;
-    height: 22px;
+	box-sizing: border-box;
+	text-align: center;
+	width: 50px;
+	height: 22px;
 }
 #quantityWrapper > button{
-    padding: 0 0 6.5px 0;
-    font-size: 30px;
-    width: 22px;
-    height: 22px;
-    border-radius: 0;
-    ;
+	padding: 0 0 6.5px 0;
+	font-size: 30px;
+	width: 22px;
+	height: 22px;
+	border-radius: 0;
+	;
 }
 .revTitleWrapper{
-    max-width: 35vw;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    column-gap: 10px;
+	max-width: 35vw;
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	column-gap: 10px;
 }
 .revTitleWrapper > span{
-    display: flex;
-    flex-direction: row;
-    width: 165px;
+	display: flex;
+	flex-direction: row;
+	width: 165px;
 }
 #revTitle{
-    width: 100%;
-    position: relative;
-    top: 10px;
+	width: 100%;
+	position: relative;
+	top: 10px;
 }
 @keyframes enlarge {
     from {max-width: 0;}
     to {max-width: var(--max-width);}
+}
+#statShow{
+    columns: 150px 2;
+    column-fill: balance;
+    text-align: left;
+    padding-left: 20px;
+}
+#facebookShare{
+	transition: 0.2s;
+	width: 75px;
+	height: 50px;
+	border: none;
+	background: none;
+	background-image: url(https://cdn.iconscout.com/icon/free/png-256/free-facebook-share-button-3289859-2758557.png?f=webp);
+	background-size: cover;
+	background-position: center;
+	cursor: pointer;
+	filter: brightness(1);
+}
+#facebookShare:hover{
+	transition: 0.2s;
+	filter: brightness(0.9);
 }

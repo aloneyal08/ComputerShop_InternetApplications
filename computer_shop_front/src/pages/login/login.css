@@ -1,33 +1,33 @@
 .loginForm {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  max-width: 400px;
-  margin: auto;
-  border: 1px #ddd solid;
-  padding: 35px;
-  border-radius: 8px;
-  margin-top: 30px;
-  -webkit-box-shadow: 21px 21px 63px -10px rgba(0,0,0,0.41);
-  -moz-box-shadow: 21px 21px 63px -10px rgba(0,0,0,0.41);
-  box-shadow: 21px 21px 63px -10px rgba(0,0,0,0.41);
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	max-width: 400px;
+	margin: auto;
+	border: 1px #ddd solid;
+	padding: 35px;
+	border-radius: 8px;
+	margin-top: 30px;
+	-webkit-box-shadow: 21px 21px 63px -10px rgba(0,0,0,0.41);
+	-moz-box-shadow: 21px 21px 63px -10px rgba(0,0,0,0.41);
+	box-shadow: 21px 21px 63px -10px rgba(0,0,0,0.41);
 }
 
 .loginForm > h1 {
-  text-align: center;
-  margin: 0px;
+	text-align: center;
+	margin: 0px;
 }
 
 .loginOr {
-  margin: 10px;
+	margin: 10px;
 }
 
 .googleIcon {
-  width: 30px;
-  margin-right: 10px;
+	width: 30px;
+	margin-right: 10px;
 }
 
 .googleButton {
-  display: flex;
-  flex-direction: row;
+	display: flex;
+	flex-direction: row;
 }

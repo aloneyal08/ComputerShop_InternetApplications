@@ -5,181 +5,181 @@ import { UserContext } from '../../Contexts';
 import { useNavigate } from 'react-router-dom';
 
 const UserSettings = () => {
-  var {user} = useContext(UserContext);
-  const navigate = useNavigate()
+	var {user} = useContext(UserContext);
+	const navigate = useNavigate()
 
-  const [username, setUsername] = useState('');
-  const [oldPassword, setOldPassword] = useState('');
-  const [password, setPassword] = useState('');
-  const [repeatPassword, setRepeatPassword] = useState('');
-  const [fullName, setFullName] = useState('');
-  const [phone, setPhone] = useState('');
-  const [photo, setPhoto] = useState('');
-  const [phoneValid, setPhoneValid] = useState(true);
-  const [usernameValid, setUsernameValid] = useState(true);
-  const [background, setBackground] = useState('');
+	const [username, setUsername] = useState('');
+	const [oldPassword, setOldPassword] = useState('');
+	const [password, setPassword] = useState('');
+	const [repeatPassword, setRepeatPassword] = useState('');
+	const [fullName, setFullName] = useState('');
+	const [phone, setPhone] = useState('');
+	const [photo, setPhoto] = useState('');
+	const [phoneValid, setPhoneValid] = useState(true);
+	const [usernameValid, setUsernameValid] = useState(true);
+	const [background, setBackground] = useState('');
 
-  const [email, setEmail] = useState('');
+	const [email, setEmail] = useState('');
 
-  const [viewedImage, setViewedImage] = useState('');
-
-
-  useEffect(()=>{
-    if(user.loggedOut) {
-      navigate("/")
-    }
-
-    setUsername(user.username||'');
-    setFullName(user.fullName||'');
-    setPhone(user.phone||'');
-    setPhoto(user.profilePhoto||'');
-    setViewedImage(user.profilePhoto||'');
-    setBackground(user.background||'');
-  }, [user, navigate])
+	const [viewedImage, setViewedImage] = useState('');
 
 
-  const checkUsernameValid = () => setUsernameValid(validateUsername(username))
-  const checkPhoneValid = () => setPhoneValid(validatePhone(phone) || phone === '');
+	useEffect(()=>{
+		if(user.loggedOut) {
+			navigate("/")
+		}
 
-  const onEmailChange = (e) => setEmail(e.target.value);
-  const onFullNameChange = (e) => setFullName(e.target.value);
-  const onPhotoChange = (e) => {setPhoto(e.target.value);setViewedImage(e.target.value);}
-  const onRepeatPasswordChange = (e) => setRepeatPassword(e.target.value);
-  const onPasswordChange = (e) => setPassword(e.target.value);
-  const onOldPasswordChange = (e) => setOldPassword(e.target.value);
-  const onBackgroundChange = (e) => setBackground(e.target.value);
-  const onPhoneChange = (e) => {
-    setPhone(e.target.value);
-    if(validatePhone(e.target.value)) {
-      setPhoneValid(true);
-    }
-  }
-  const onUsernameChange = (e) => {
-    setUsername(e.target.value);
-    if(validateUsername(e.target.value)) {
-      setUsernameValid(true);
-    }
-  }
+		setUsername(user.username||'');
+		setFullName(user.fullName||'');
+		setPhone(user.phone||'');
+		setPhoto(user.profilePhoto||'');
+		setViewedImage(user.profilePhoto||'');
+		setBackground(user.background||'');
+	}, [user, navigate])
 
-  const onProfileSubmit = () => {
-    checkPhoneValid();
-    if(!phoneValid) {
-      alert('Invalid phone number');
-      return;
-    }
 
-    fetch(`${process.env.REACT_APP_SERVER_URL}/user/update/profile`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        email: user.email,
-        fullName,
-        phone,
-        profilePhoto: photo
-      })
-    }).then((res) => res.json()).then((res) => {
-      if(res.error) {
-        alert(res.error);
-      } else {
-        localStorage.setItem("password", res.password);
-        window.location.reload();
-      }
-    })
-  }
+	const checkUsernameValid = () => setUsernameValid(validateUsername(username))
+	const checkPhoneValid = () => setPhoneValid(validatePhone(phone) || phone === '');
 
-  const onPasswordSubmit = () => {
-    if(password !== repeatPassword) {
-      alert('Passwords do not match');
-      return;
-    }
+	const onEmailChange = (e) => setEmail(e.target.value);
+	const onFullNameChange = (e) => setFullName(e.target.value);
+	const onPhotoChange = (e) => {setPhoto(e.target.value);setViewedImage(e.target.value);}
+	const onRepeatPasswordChange = (e) => setRepeatPassword(e.target.value);
+	const onPasswordChange = (e) => setPassword(e.target.value);
+	const onOldPasswordChange = (e) => setOldPassword(e.target.value);
+	const onBackgroundChange = (e) => setBackground(e.target.value);
+	const onPhoneChange = (e) => {
+		setPhone(e.target.value);
+		if(validatePhone(e.target.value)) {
+			setPhoneValid(true);
+		}
+	}
+	const onUsernameChange = (e) => {
+		setUsername(e.target.value);
+		if(validateUsername(e.target.value)) {
+			setUsernameValid(true);
+		}
+	}
 
-    fetch(`${process.env.REACT_APP_SERVER_URL}/user/update/password`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        email: user.email,
-        password,
-        oldPassword,
-      })
-    }).then((res) => res.json()).then((res) => {
-      if(res.error) {
-        alert(res.error);
-      } else {
-        window.location.reload();
-      }
-    })
+	const onProfileSubmit = () => {
+		checkPhoneValid();
+		if(!phoneValid) {
+			alert('Invalid phone number');
+			return;
+		}
 
-  }
+		fetch(`${process.env.REACT_APP_SERVER_URL}/user/update/profile`, {
+			method: 'PUT',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({
+				email: user.email,
+				fullName,
+				phone,
+				profilePhoto: photo
+			})
+		}).then((res) => res.json()).then((res) => {
+			if(res.error) {
+				alert(res.error);
+			} else {
+				localStorage.setItem("password", res.password);
+				window.location.reload();
+			}
+		})
+	}
 
-  const onUsernameSubmit = () => {
-    checkUsernameValid();
-    if(!usernameValid) {
-      alert('Invalid username');
-      return;
-    }
+	const onPasswordSubmit = () => {
+		if(password !== repeatPassword) {
+			alert('Passwords do not match');
+			return;
+		}
 
-    fetch(`${process.env.REACT_APP_SERVER_URL}/user/update/username`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        email: user.email,
-        username
-      })
-    }).then((res) => res.json()).then((res) => {
-      if(res.error) {
-        alert(res.error);
-      } else {
-        localStorage.setItem("email", res.email);
-        window.location.reload();
-      }
-    })
-  }
+		fetch(`${process.env.REACT_APP_SERVER_URL}/user/update/password`, {
+			method: 'PUT',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({
+				email: user.email,
+				password,
+				oldPassword,
+			})
+		}).then((res) => res.json()).then((res) => {
+			if(res.error) {
+				alert(res.error);
+			} else {
+				window.location.reload();
+			}
+		})
 
-  const onBackgroundSubmit = () => {
-    fetch(`${process.env.REACT_APP_SERVER_URL}/user/update/background`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        email: user.email,
-        background
-      })
-    }).then((res) => res.json()).then((res) => {
-      if(res.error) {
-        alert(res.error);
-      } else {
-        window.location.reload();
-      }
-    })
-  }
+	}
 
-  const deleteUser = () => {
-    fetch(`${process.env.REACT_APP_SERVER_URL}/user/delete`, {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        email: user.email
-      })
-    }).then((res) => res.json()).then((res) => {
-      if(res.error) {
-        alert(res.error);
-      } else {
-        localStorage.clear();
-        window.open('/', '_self');
-      }
-    })
-  }
+	const onUsernameSubmit = () => {
+		checkUsernameValid();
+		if(!usernameValid) {
+			alert('Invalid username');
+			return;
+		}
 
-  if(Object.keys(user).length === 0 || user.loggedOut) return null;
+		fetch(`${process.env.REACT_APP_SERVER_URL}/user/update/username`, {
+			method: 'PUT',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({
+				email: user.email,
+				username
+			})
+		}).then((res) => res.json()).then((res) => {
+			if(res.error) {
+				alert(res.error);
+			} else {
+				localStorage.setItem("email", res.email);
+				window.location.reload();
+			}
+		})
+	}
+
+	const onBackgroundSubmit = () => {
+		fetch(`${process.env.REACT_APP_SERVER_URL}/user/update/background`, {
+			method: 'PUT',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({
+				email: user.email,
+				background
+			})
+		}).then((res) => res.json()).then((res) => {
+			if(res.error) {
+				alert(res.error);
+			} else {
+				window.location.reload();
+			}
+		})
+	}
+
+	const deleteUser = () => {
+		fetch(`${process.env.REACT_APP_SERVER_URL}/user/delete`, {
+			method: 'DELETE',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({
+				email: user.email
+			})
+		}).then((res) => res.json()).then((res) => {
+			if(res.error) {
+				alert(res.error);
+			} else {
+				localStorage.clear();
+				window.open('/', '_self');
+			}
+		})
+	}
+
+	if(Object.keys(user).length === 0 || user.loggedOut) return null;
 
   return <div className='settings'>
     <div className='settingsHeader'>
@@ -206,8 +206,7 @@ const UserSettings = () => {
           <span>Photo URL</span>
         </label>
         <div>
-          <img src={viewedImage} alt='    ' className='photoPreview' />
-          <img src={require('../../images/userDefault.png')} alt='    ' className='photoPreview' style={{zIndex: -1}}/>
+          <img src={viewedImage} alt='    ' className='photoPreview' onError={(e) =>{e.currentTarget.src = require('../../images/userDefault.png')}}/>
         </div>
         
       </div>

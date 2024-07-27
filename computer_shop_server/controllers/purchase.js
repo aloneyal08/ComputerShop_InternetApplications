@@ -3,7 +3,7 @@ const Purchase = require('../models/purchase');
 const User = require('../models/user');
 
 const makePurchases = async (req, res) => {
-	const { user, list } = req.body;
+	const { user, list} = req.body;
 	let cart = [], stocks = [];
 	for(let i = 0;i < list.length;++i){
 		const p = await Product.findOne({_id: list[i].productId});

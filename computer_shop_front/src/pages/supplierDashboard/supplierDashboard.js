@@ -70,6 +70,7 @@ const SupplierDashboard = () => {
 	const [ratioData, setRatioData] = useState(getTimeData('year'));
 	const [supplierRatio, setSupplierRatio] = useState([]);
 	const [ratioYAxis, setRatioYAxis] = useState('amount');
+	const [selectedMessage, setSelectedMessage] = useState(null);
 
 
 	const [force,update] = useState(0);
@@ -145,7 +146,7 @@ const SupplierDashboard = () => {
 			setProducts(products);
 		});
 		fetch(`${process.env.REACT_APP_SERVER_URL}/message/supplier?email=${user.email}`).then(res=>res.json()).then(messages=>{
-			setMessages(messages);
+			setMessages(messages.reverse());
 		});
 	}, [user._id, user.email, force, sort])
 
@@ -188,7 +189,7 @@ const SupplierDashboard = () => {
 					</table>
 				</div>
 			</div>
-			<div className='dashboardContainer'>
+			<div className='dashboardContainer' onMouseLeave={()=>setSelectedMessage(null)}>
 				<div className='dashboardHeaderContainer' style={{position: "relative"}}>
 					<h2 className='dashboardHeader'>Messages</h2>
 					<CreateMessage reload={reload}/>
@@ -198,11 +199,12 @@ const SupplierDashboard = () => {
 					<table>
 						<tbody>
 							<tr className='dashboardListItem adminTblHeader' style={{backgroundColor: "white"}}>
+								<th style={{backgroundColor: "white"}}>From</th>
 								<th style={{backgroundColor: "white"}}>Subject</th>
 								<th style={{backgroundColor: "white"}}>Date</th>
 							</tr>
 							{
-								messages.map((message, i)=><MessageListItem message={message} key={i} reload={reload} isTo={false}/>)
+								messages.map((message, i)=><MessageListItem message={message} key={i} reload={reload} isTo={false} selectedMessage={selectedMessage} setSelectedMessage={setSelectedMessage}/>)
 							}
 						</tbody>
 					</table>

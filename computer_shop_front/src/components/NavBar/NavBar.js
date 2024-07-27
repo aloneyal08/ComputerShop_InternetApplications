@@ -129,12 +129,10 @@ export const NavBar = () => {
 	}
 
 	const tagOptions = tags.map(t=>({text: t.text, searchKey: `::tags=${t.text}`}))
-  
+	
 	return <header className='navBar' style={location.pathname !== "/" || user.level === 1 || user.level === 2 ? {height: "50px"} : {}}>
 		<div className='mainBar'>
-			<div className='logo' onClick={()=>navigate("/")}>
-				<h1>O.C.S</h1>
-			</div>
+			<img onClick={()=>navigate("/")} className='logo' alt='   ' src={require('../../images/logo.png')}/>
 			{(user.level===0||!user.level)&&<div className='searchArea'>
 				<input 
 					type='text' className='searchBox' onChange={onSearchChange} 
@@ -157,17 +155,12 @@ export const NavBar = () => {
 			</div>}
 			<div className='navBarOthers'>
 				<div className='nbImageContainer' onMouseEnter={()=>setAccountPopupOpen(true)} onMouseLeave={leaveAccountIcon}>
-					<img src={user.profilePhoto} alt='' className='navBarPhoto navBarAccountPhoto' style={{zIndex: 2}}/>
-					<img 
-						src={require('../../images/userDefault.png')} 
-						alt='' className='navBarPhoto navBarAccountPhoto' 
-						style={{zIndex: 1}}
-					/>
+					<img src={user.profilePhoto || 'error'} alt='' className='navBarPhoto navBarAccountPhoto' onError={(e) =>{e.currentTarget.src = require('../../images/userDefault.png')}}/>
 				</div>
 				{user.level === 1
 					? <button className='addProduct' onClick={()=>navigate("/product/new")}/>
 					: (user.level===2 ? null : <div className='cart' onClick={()=>navigate("/cart")}>
-          <div className='shopCartNumber'>{user.cart?user.cart.length:0}</div>
+					<div className='shopCartNumber'>{user.cart?user.cart.length:0}</div>
 					<img src={require("../../images/cart.png")} className='navBarPhoto' alt='  '/>
 				</div>)
 				}
@@ -195,13 +188,7 @@ export const NavBar = () => {
 			<div className='arrowUp'/>
 			<h3>{user.email}</h3>
 			<div style={{marginTop: "15px", height: "80px"}}>
-				<img src={user.profilePhoto} alt='' className='photoPreview navBarAccountPhoto' style={{zIndex: 2}}/>
-				<img 
-					src={require('../../images/userDefault.png')}
-					alt='' 
-					className='photoPreview navBarAccountPhoto' 
-					style={{zIndex: 1}}
-				/>
+				<img src={user.profilePhoto || 'error'} alt='' className='photoPreview navBarAccountPhoto' onError={(e) =>{e.currentTarget.src = require('../../images/userDefault.png')}}/>
 			</div>
 			<h1>Hello, {user.fullName||"Guest"}</h1>
 			<div className='accountPopupButtons'>

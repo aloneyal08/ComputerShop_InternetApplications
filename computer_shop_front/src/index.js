@@ -8,11 +8,11 @@ import { FacebookProvider } from 'react-facebook';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <FacebookProvider appId={process.env.REACT_APP_FACEBOOK_ID}>
-    <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}>
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
-    </GoogleOAuthProvider>
-  </FacebookProvider>
+	<FacebookProvider appId={process.env.REACT_APP_FACEBOOK_ID}>
+		<GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}>
+			<BrowserRouter>
+				<App />
+			</BrowserRouter>
+		</GoogleOAuthProvider>
+	</FacebookProvider>
 );
