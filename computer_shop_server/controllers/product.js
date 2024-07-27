@@ -6,6 +6,7 @@ const View = require('../models/view');
 const { getKeywords, removeHTMLTags, dateDiff, getOverlap } = require('../utils');
 const User = require('../models/user');
 const { default: mongoose } = require('mongoose');
+const product = require('../models/product');
 
 const addProduct = async (req, res) => {
 	const { name, price, photo, description, stats, parentProduct, stock, supplier, tags } = req.body;
@@ -332,7 +333,7 @@ const deleteProduct = async (req, res) => {
 		return res.status(404).json({ errors: ['Product not found'] });
 	}
 
-	const purchases = await Purchase.deleteMany({product: _id});
+	const purchases = await Purchase.updateMany({product: _id}, {product: null, name: product.name});
 	if(!purchases){
 		return res.status(404).json({ errors: ['Product not found'] });
 	}
