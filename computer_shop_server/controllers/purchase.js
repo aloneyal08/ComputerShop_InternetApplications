@@ -25,10 +25,16 @@ const makePurchases = async (req, res) => {
 };
 
 const getPurchases = async (req, res) => {
-	const {product, user} = req.query;
-	let filter = product? {product}: {user};
+	const {userId} = req.query;
+	let filter = {user: userId}
 	const purchases = await Purchase.find(filter);
-	res.json(purchases);
+	let result = [];
+	for(let i = 0; i<purchases.length;i++)
+	{
+		let p = await Product.findById(purchases[i].product);
+		result.push({date: purchases[i].date , product: p, quantity: purchases[i].quantity, price: purchases[i].price, name: purchases[i].name})
+	}
+	res.json(result);
 };
 
 module.exports = {
