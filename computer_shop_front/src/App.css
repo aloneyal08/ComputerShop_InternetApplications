@@ -168,6 +168,7 @@
 }
 .scrollBar1{
 	padding-bottom: 7px;
+	min-height: 335px;
 }
 .scrollBar1::-webkit-scrollbar{
 	height: 10px;
