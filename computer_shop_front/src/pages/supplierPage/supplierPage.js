@@ -96,7 +96,6 @@ const SupplierPage = ({id}) => {
 
 	return <div>
 		<div className='supplierHeaderCon'>
-			{/* <div className='supplierBackground' style={{backgroundImage: `url(${supplier.background})`}}/> */}
 			<img alt='  ' src={supplier.background} className='supplierBackground'/>
 			<h1 style={{fontSize: "40px"}}>{supplier.fullName}</h1>
 			<ReactStarsRating 

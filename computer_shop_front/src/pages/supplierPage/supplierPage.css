@@ -12,10 +12,10 @@
 .supplierBackground {
 	position: absolute;
 	opacity: 0.5;
-	top: 0;
+	top: -25%;
 	left: -100px;
 	width: calc(100% + 200px);
-	height:calc(100% + 45px);
+	min-height:calc(100% + 45px);
 	z-index: -1;
 	background-size: cover;
 	-webkit-mask-image:
@@ -145,6 +145,7 @@ mask-composite:
 
 .supplierMainArea {
 	border-top: 1px solid rgb(56, 56, 56);
+	background-color: white;
 }
 .supplierProducts {
 	display: flex;
