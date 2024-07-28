@@ -112,6 +112,7 @@ mask-composite:
     font-size: 14px;
 }
 .flashProduct > div > .discountLabel{
+	top: 2.5%;
   right: -10%;
 	border-bottom: 20px solid rgb(245, 69, 69);
 	border-left: 20px solid transparent;
