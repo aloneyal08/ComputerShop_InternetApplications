@@ -118,7 +118,7 @@ const ProductPage = () => {
 	}, []);
 
 	useEffect(()=>{
-		if(Object.keys(product)===0)
+		if(Object.keys(product).length===0 || Object.keys(user).length===0 || product.supplier === user._id)
 			return;
 		fetch(`${process.env.REACT_APP_SERVER_URL}/view/add`,{
 			method: 'POST',
@@ -129,7 +129,7 @@ const ProductPage = () => {
 				navigate('/not-found');
 			}
 		});
-	}, [product, productId, user._id, navigate])
+	}, [product, productId, user, navigate])
 
 	useEffect(() => {
 		fetch(`${process.env.REACT_APP_SERVER_URL}/product/get-id`,{
@@ -147,7 +147,7 @@ const ProductPage = () => {
 			}
 
 		setProduct(res)});
-	}, [productId, tags, navigate])
+	}, [productId, tags, navigate, user.level, user._id])
 
 	useEffect(() => {
 		if(Object.keys(product).length > 0){

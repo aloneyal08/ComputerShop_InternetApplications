@@ -106,7 +106,7 @@ const SupplierPage = ({id}) => {
 				primaryColor="#ffbc0b"
 				size={20}
 			/>
-			<div  className='supplierData'>
+			<div className='supplierData'>
 				<table>
 					<tbody>
 						<tr>

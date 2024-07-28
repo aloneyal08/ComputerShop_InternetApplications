@@ -11,6 +11,7 @@
 
 .supplierBackground {
 	position: absolute;
+	opacity: 0.5;
 	top: 0;
 	left: -100px;
 	width: calc(100% + 200px);
@@ -83,6 +84,7 @@ mask-composite:
 
 .supplierData td {
 	text-align: left;
+	font-weight: 800;
 	padding-left: 10px;
 }
 

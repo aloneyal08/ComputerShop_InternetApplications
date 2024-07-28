@@ -41,7 +41,7 @@ export const ProductCard = ({product, renderRating = true, renderStock = true, i
 	}
 	}, [product, renderRating]);
 
-    return <div className='productCard' onClick={isClickable? () => {navigate(`/product/${product._id}`)}:undefined}>
+  return <div className='productCard' onClick={isClickable? () => {navigate(`/product/${product._id}`)}:undefined}>
     {product.discount?
       <div className='discountLabel'>{product.discount}%</div>
       :
