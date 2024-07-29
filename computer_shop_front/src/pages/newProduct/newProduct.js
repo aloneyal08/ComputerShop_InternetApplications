@@ -110,7 +110,7 @@ const NewProduct = () => {
       alert('A product price must be entered!');
       return;
     }
-    if(value === ''){
+    if(value === '<p></p>\n'){
       alert('A product description must be entered!');
       return;
     }
