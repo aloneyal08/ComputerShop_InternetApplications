@@ -165,7 +165,7 @@ const NewProduct = () => {
                   wrapperClassName="wrapperClassName"
                   editorClassName="editorClassName"
                   spellCheck={true}
-                  editorStyle={{minHeight: '15vh', border: '1px solid gainsboro', fontSize: '14px', lineHeight: '15px'}}
+                  editorStyle={{minHeight: '15vh', border: '1px solid gainsboro', fontSize: '14px', lineHeight: '15px', zIndex: 0, position: "relative"}}
                   toolbar={{
                     options: ['inline', 'fontSize', 'list', 'textAlign'],
                     list: {inDropdown: true}
@@ -204,8 +204,8 @@ const NewProduct = () => {
             </section>
             <hr className='separator' />
             <h3 className='inputTitle'>Tags</h3>
-            <section className='inputContainer' id='tagsContainer'>
-              <TagSelect value={chosenTags} onChange={setChosenTags}/>
+            <section className='inputContainer' id='tagsContainer' style={{paddingRight: "50px", paddingLeft: "25px"}}>
+              <TagSelect value={chosenTags} onChange={setChosenTags} noTagsText="None"/>
             </section>
             <hr className='separator' />
             <h3 className='inputTitle'>Stats</h3>

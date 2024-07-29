@@ -269,7 +269,7 @@ const SearchScreen = () => {
 				</section>
 				<section>
 					<label>Tags: </label>
-					<TagSelect value={tagsFilter} onChange={(v)=>{setTags(v);getProducts();}} isAll={true}/>
+					<TagSelect value={tagsFilter} onChange={(v)=>{setTags(v);getProducts();}} noTagsText="All"/>
 				</section>
 				<section>
 					<label>Suppliers: </label>

@@ -254,7 +254,7 @@ const EditProduct = () => {
             <hr className='separator' />
             <h3 className='inputTitle'>Tags</h3>
             <section className='inputContainer' id='tagsContainer'>
-              <TagSelect value={chosenTags} onChange={setChosenTags}/>
+              <TagSelect value={chosenTags} onChange={setChosenTags} noTagsText="None" style={{paddingRight: "50px", paddingLeft: "25px"}}/>
             </section>
             <hr className='separator' />
             <h3 className='inputTitle'>Stats</h3>
