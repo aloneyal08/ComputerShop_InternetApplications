@@ -154,6 +154,7 @@ input[type=number] {
     padding-left: 50px;
     width: 271px !important;
     line-break: anywhere;
+		text-align: left;
 }
 .statTitle{
     font-weight: bold;

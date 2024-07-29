@@ -222,28 +222,30 @@ const NewProduct = () => {
                     </tbody>
                   </table>
                     {Object.keys(stats).length<10?
-                      <div className='statsRow' id='statInput'>
-                        <div>
-                          <div className="input1 input2">
-                            <label>
-                              <input value={statTitle} style={{fontWeight: 'bold'}} required type='text' onChange={e=>setStatTitle(e.currentTarget.value)}/>
-                              <span>Stat Name</span>
-                            </label>
-                          </div>
+                      <table >
+                      <tbody><tr className='statsRow' id='statInput'>
+                      <td>
+                        <div className="input1 input2">
+                          <label>
+                            <input value={statTitle} style={{fontWeight: 'bold'}} required type='text' onChange={e=>setStatTitle(e.currentTarget.value)}/>
+                            <span>Stat Name</span>
+                          </label>
                         </div>
-                        <div style={{maxWidth: '10px'}}>-</div>
-                        <div>
-                          <div className="input1 input2">
-                            <label>
-                              <input value={statValue} required type='text' onChange={e=>setStatValue(e.currentTarget.value)}/>
-                              <span>Stat Value</span>
-                            </label>
-                          </div>
+                      </td>
+                      <td style={{maxWidth: '10px'}}>-</td>
+                      <td>
+                        <div className="input1 input2">
+                          <label>
+                            <input value={statValue} required type='text' onChange={e=>setStatValue(e.currentTarget.value)}/>
+                            <span>Stat Value</span>
+                          </label>
                         </div>
-                        <div>
-                          <button className='button1' onClick={addStat}>+</button>
-                        </div>
-                      </div>
+                      </td>
+                      <td>
+                        <button className='button1' onClick={addStat}>+</button>
+                      </td>
+                      </tr></tbody>
+                    </table>
                       :
                       null
                     }
