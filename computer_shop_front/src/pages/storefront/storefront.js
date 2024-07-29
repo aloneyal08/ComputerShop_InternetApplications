@@ -125,7 +125,7 @@ const Storefront = () => {
         </button>
       </div>
       <h1 className='title'>Recommended</h1>
-      <div className='itemContainer scrollBar1 hover' onLoad={scrollHandle} onScroll={scrollHandle} style={{marginLeft: '50px'}}>
+      <div className='itemContainer scrollBar1 hover' onLoad={scrollHandle} onScroll={scrollHandle} style={{marginLeft: '50px', minHeight: 0}}>
       <button className='moveLeft'onClick={(e) => {moveSide(e, -1)}}>
         {'<'}
       </button>

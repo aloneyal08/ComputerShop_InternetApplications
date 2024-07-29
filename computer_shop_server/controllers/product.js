@@ -208,7 +208,6 @@ const getFlashProducts = async (req, res) => {
 	let flash = [];
 	let current = [];
 	dates = [new Date(), new Date(), new Date()];
-	dates[0].setDate(dates[0].getDate() - 1);
 	dates[0].setHours(0, 0, 0, 0);
 	dates[1].setDate(dates[1].getDate() - 7);
 	dates[2].setMonth(dates[2].getMonth()-1);

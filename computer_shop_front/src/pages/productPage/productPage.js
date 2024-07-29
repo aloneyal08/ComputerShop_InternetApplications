@@ -231,7 +231,7 @@ const ProductPage = () => {
 				{linkedProducts.length > 0?
 				<>
 				<h4 style={{marginRight: 'auto'}}>Related Product:</h4>
-				<div className='scrollBar1' style={{display: 'flex', flexDirection: 'row', columnGap: '25px', maxWidth: '30vw', overflowX: 'auto'}}>
+				<div className='scrollBar1' style={{display: 'flex', minHeight: "0", flexDirection: 'row', columnGap: '25px', maxWidth: '30vw', overflowX: 'auto'}}>
 					{
 						linkedProducts.map(p=>
 						<div onClick={()=>{navigate(`/product/${p._id}`)}} style={{display: 'flex', flexDirection: 'row', cursor: 'pointer', border: '1px solid gainsboro', minWidth: '200px'}} key={p._id} className='linkedProductCard'>
