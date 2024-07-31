@@ -1,10 +1,12 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import './supplierPage.css'
 import { useNavigate, useParams } from 'react-router-dom';
 import ReactStarsRating from 'react-awesome-stars-rating';
 import { ProductCard } from '../../components/productCard/productCard';
+import { UserContext } from '../../Contexts';
 
 const SupplierPage = ({id}) => {
+	const {user} = useContext(UserContext)
 	const navigate = useNavigate();
 	var {supplierId} = useParams();
 	if(!supplierId) supplierId = id;
@@ -33,7 +35,7 @@ const SupplierPage = ({id}) => {
 			}
 			setSupplier(data.supplier);
 			setTags(data.tags);
-			fetch(`${process.env.REACT_APP_SERVER_URL}/product/get?supplier=${supplierId}`).then((res)=>res.json()).then((res) => {setRecProducts(res.map(p=>({...p, supplierName: data.supplier.fullName})))});
+			fetch(`${process.env.REACT_APP_SERVER_URL}/product/get?supplier=${supplierId}&userId=${user._id}`).then((res)=>res.json()).then((res) => {setRecProducts(res.map(p=>({...p, supplierName: data.supplier.fullName})))});
 			fetch(`${process.env.REACT_APP_SERVER_URL}/product/get-popular?supplier=${supplierId}`).then((res)=>res.json()).then((res) => {setPopProducts(res.map(p=>({...p, supplierName: data.supplier.fullName})))});
 			fetch(`${process.env.REACT_APP_SERVER_URL}/product/get-new?supplier=${supplierId}`).then((res)=>res.json()).then((res) => {setNewProducts(res.map(p=>({...p, supplierName: data.supplier.fullName})))});
 		})

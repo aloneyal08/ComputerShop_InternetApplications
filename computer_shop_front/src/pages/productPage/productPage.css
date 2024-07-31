@@ -202,6 +202,7 @@ font-size: 14px;
     column-fill: balance;
     text-align: left;
     padding-left: 20px;
+		margin: 15px;
 }
 #facebookShare{
 	transition: 0.2s;

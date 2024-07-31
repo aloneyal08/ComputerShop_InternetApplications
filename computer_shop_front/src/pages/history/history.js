@@ -33,11 +33,11 @@ const History = () => {
       <h1>History</h1>
       <table id='itemWrapper'>
         <tbody>
-          {groupedPurchases.map(group => (
-            <> 
+          {groupedPurchases.map((group, i) => (
+            <React.Fragment key={i}> 
               <tr style={{marginTop: "40px", display: "block"}}><td><h2>{group.date}</h2></td></tr>
-              {group.purchases.map((purchase, i) => (<HistoryItem key={i} product={purchase.product||{_id:null, name: purchase.name}} price={purchase.price} quantity={purchase.quantity}/>))}
-            </>
+              {group.purchases.map((purchase, j) => (<HistoryItem key={i + " " + j} product={purchase.product||{_id:null, name: purchase.name}} price={purchase.price} quantity={purchase.quantity}/>))}
+            </React.Fragment>
           ))}
         </tbody>
       </table>

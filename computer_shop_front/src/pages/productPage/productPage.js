@@ -171,7 +171,7 @@ const ProductPage = () => {
 				'Content-Type': 'application/json'
 			},
 			body: JSON.stringify({product: product._id})
-		}).then((res)=>res.json()).then((res)=>{setRating(res)});
+		}).then((res)=>res.json()).then((res)=>{setRating(Math.floor(res*10)/10)});
 		fetch(`${process.env.REACT_APP_SERVER_URL}/user/id-get`,{
 			method: 'POST',
 				headers: {
@@ -220,10 +220,10 @@ const ProductPage = () => {
 				</div>
 				<hr className='separator'/>
 				{product.stats?
-					<p id='statShow'>
+					<div id='statShow'>
 						{Object.keys(product.stats).map(key=><div key={key}><b>{key}</b>:<br/></div>)}
 						{Object.keys(product.stats).map(key=><div key={key}><i>{product.stats[key]}</i><br/></div>)}
-					</p>
+					</div>
 					:
 					null
 				}
