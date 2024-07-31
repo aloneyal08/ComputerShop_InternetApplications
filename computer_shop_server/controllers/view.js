@@ -9,7 +9,7 @@ const AddView = async (req, res) => {
 
 	const d = new Date();
 	d.setHours(0,0,0,0);
-	const views = await View.find({user: user}).sort({date: -1}).limit(1)
+	const views = await View.find({user, product}).sort({date: -1}).limit(1)
 
 	if(views.length===0 || views[0].date < d) {
 		const p = await Product.findById(product);

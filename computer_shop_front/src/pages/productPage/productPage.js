@@ -85,14 +85,14 @@ const ProductPage = () => {
 			},
 			body: JSON.stringify({
 			email: user.email,
-			addition: {productId, q}
+			addition: {productId, quantity: q}
 			})
 		}).then((res) => res.json()).then((res) => {
 			if(res.error) {
 			alert(res.error);
 			} else {
 			let tempUser = user;
-			tempUser.cart.push({productId, q});
+			tempUser.cart.push({productId, quantity: q});
 			setUser(tempUser);
 			navigate('/cart');
 			}

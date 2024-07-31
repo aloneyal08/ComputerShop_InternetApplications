@@ -50,9 +50,6 @@ const CreateMessage = ({reload}) => {
 		if(content === '' && content2 === '')
 			return alert('Please enter a message');
 
-		if(s === '')
-			return alert('Please enter a subject');
-
 		if(header === '')
 			return alert('Please enter a header');
 
@@ -60,6 +57,9 @@ const CreateMessage = ({reload}) => {
 			s = 'Facebook Post';
 		else
 			c = draftToHtmlPuri(convertToRaw(content.getCurrentContent()));
+
+		if(s === '')
+			return alert('Please enter a subject');
 
 		fetch(`${process.env.REACT_APP_SERVER_URL}/message/create`, {
 			method: 'POST',

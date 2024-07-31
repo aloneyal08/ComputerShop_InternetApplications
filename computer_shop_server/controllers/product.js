@@ -83,7 +83,7 @@ const getProducts = async (req, res) => {
 
 	const tags = allTags.map(tag=>{
 		let score = 0;
-		score += viewsWith.filter(view=>view.tags.includes(tag._id.toString())).length * 0.7;
+		score += viewsWith.filter(view=>view.tags.includes(tag._id.toString())).length;
 		score += purchasesWith.filter(pur=>pur.tags.includes(tag._id.toString())).reduce((acc, curr)=>acc+curr.quantity, 0);
 		return {...tag._doc, score};
 	})
@@ -91,7 +91,7 @@ const getProducts = async (req, res) => {
 
 	const suppliers = allSuppliers.map(supplier=>{
 		let score = 0;
-		score += viewsWith.filter(view=>view.supplier.equals(supplier._id)).length * 0.7;
+		score += viewsWith.filter(view=>view.supplier.equals(supplier._id)).length;
 		score += purchasesWith.filter(pur=>pur.supplier.equals(supplier._id)).reduce((acc, curr)=>acc+curr.quantity, 0);
 		return {...supplier._doc, score};
 	});

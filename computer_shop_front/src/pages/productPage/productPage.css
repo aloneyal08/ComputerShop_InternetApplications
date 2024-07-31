@@ -34,9 +34,10 @@ font-size: 14px;
 	display: flex;
 	flex-direction: column;
 	text-align: start;
-	width: 20vw;
+	width: 100%;
 	height: 18vh;
 	overflow: auto;
+	max-width: 30vw;
 }
 #productName, #productDesc > p, #productPrice, #cartBtn{
 	margin: 0;

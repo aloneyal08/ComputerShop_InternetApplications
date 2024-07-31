@@ -290,7 +290,7 @@ const supplierRatingOverTime = async (req, res) => {
 	const reviews = await Review.find({product: {$in: products.map(p=>p._id)}});
 	var arr = [];
 	
-	for(var date = new Date(startDate); date <= new Date(endDate);) {
+	for(var date = new Date(startDate); date <= getDateJump(timeFrame, new Date(endDate));) {
 		const myReviews = reviews.filter(r=>new Date(r.date) <= date);
 		if(myReviews.length === 0) {
 			arr.push([new Date(date), 0]);
