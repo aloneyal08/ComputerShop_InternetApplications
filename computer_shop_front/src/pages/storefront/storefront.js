@@ -77,8 +77,8 @@ const Storefront = () => {
     fetch(`${process.env.REACT_APP_SERVER_URL}/product/get?userId=${user._id}`).then((res)=>res.json()).then((recP) => {
       setRecProducts(recP)
       fetch(`${process.env.REACT_APP_SERVER_URL}/user/get-suppliers`).then((res)=>res.json()).then((res) => {
-        const recSupplier = [...new Set(recP.map(p=>p.supplier))].map((id)=>res.find(s=>s._id===id));
-        setRecSupplier(recSupplier);
+        const recSuppliers = res.map(sup=>({...sup, pos: recP.map(p=>p.supplier).indexOf(sup._id)||recP.length})).sort((a, b) => a.pos===-1?1:b.pos===-1?-1:a.pos-b.pos);
+        setRecSupplier(recSuppliers);
       });
     });
     fetch(`${process.env.REACT_APP_SERVER_URL}/product/get-popular`).then((res)=>res.json()).then((res) => {setPopProducts(res)});

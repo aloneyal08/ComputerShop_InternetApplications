@@ -159,7 +159,7 @@ const getPopularProducts = async (req, res) => {
 		myPurchases.forEach(pur=>{
 			const date = new Date(pur.date);
 			const dayDiff = dateDiff(date, new Date());
-			score += pur.quantity/(dayDiff+1);
+			score += pur.quantity/(Math.pow(dayDiff,0.3)+1);
 		});
 
 		const reviews = allReviews.filter(rev=>rev.product.equals(p._id));
