@@ -217,7 +217,8 @@ const SearchScreen = () => {
 						<div className="input1 num" style={{width: "70px"}}>
 							<label>
 								<input required type='number' value={rangeValue[0]===-1 ? "" : rangeValue[0]}
-								disabled={true} style={{textAlign: "center"}}  
+								style={{textAlign: "center"}} onChange={(e)=>setPrices([e.target.value, rangeValue[1]])}    
+
 							/>
 							</label>
 						</div>
@@ -227,7 +228,7 @@ const SearchScreen = () => {
 						<div className="input1 num" style={{width: "70px"}}>
 							<label>
 								<input required type='number' value={rangeValue[1]===-1 ? "" : rangeValue[1]}
-								disabled={true} style={{textAlign: "center"}}    
+								style={{textAlign: "center"}} onChange={(e)=>setPrices([rangeValue[0], e.target.value])}     
 							/>
 							</label>
 						</div>
