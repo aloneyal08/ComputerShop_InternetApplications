@@ -30,6 +30,7 @@ const ProductPage = () => {
 	const [quantity, setQuantity] = useState('');
 	const [supplierName, setSupplierName] = useState('');
 	const [linkedProducts, setLinkedProduct] = useState([]);
+	const [canReview, setCanReview] = useState(false);
 
 	const reviewList = useRef(null);
 
@@ -145,9 +146,13 @@ const ProductPage = () => {
 			}
 			if(res.tags && tags.length > 0){
 				res.tags = res.tags.map((tag) => tags.find(t => t._id === tag).text).filter(tag => tag);
-			}
 
-		setProduct(res)});
+				fetch(`${process.env.REACT_APP_SERVER_URL}/purchase/exists?user=${user._id}&product=${productId}`).then((res) => res.json()).then((res) => { 
+					setCanReview(res);
+				});
+			}
+			setProduct(res)
+		});
 	}, [productId, tags, navigate, user.level, user._id])
 
 	useEffect(() => {
@@ -300,7 +305,8 @@ const ProductPage = () => {
 			</div>
 			<div id='reviewList'>
 				{!user.loggedOut?
-					<>
+					(canReview
+						?<>
 						{user._id !== product.supplier?
 							<div className='reviewCard'>
 								<header className='reviewTop'>
@@ -353,6 +359,10 @@ const ProductPage = () => {
 							</div>
 						}
 					</>
+					: <div>
+						To write a review please buy the product
+					</div>
+					)
 					:
 					<div>
 						To write a review please login

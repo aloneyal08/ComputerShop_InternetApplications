@@ -59,8 +59,19 @@ const getPurchasesData = async (req, res)=>{
 	res.json(result.sort((a, b) => a.date > b.date ? -1 : 1));
 }
 
+const purchaseExists = async (req, res) => {
+	const {user, product} = req.query;
+
+	const purchase = await Purchase.findOne({user, product});
+	if(purchase)
+		return res.json(true);
+
+	res.json(false);
+}
+
 module.exports = {
 	makePurchases,
 	getPurchases,
-	getPurchasesData
+	getPurchasesData,
+	purchaseExists
 };
