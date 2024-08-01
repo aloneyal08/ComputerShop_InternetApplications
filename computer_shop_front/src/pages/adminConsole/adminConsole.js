@@ -1,6 +1,6 @@
 import React, {useState, useEffect, useContext} from 'react'
 import './adminConsole.css'
-import {AdminListItem, MessageListItem, RequestListItem, SupplierListItem, TagListItem} from './listItem';
+import {AdminListItem, HistoryListItem, MessageListItem, RequestListItem, SupplierListItem, TagListItem} from './listItem';
 import CreateMessage from './createMessage';
 import CreateAdmin from './createAdmin';
 import CreateTag from './createTag';
@@ -33,6 +33,7 @@ const AdminConsole = () => {
 	const [loginData, setLoginData] = useState(getTimeData('week'));
 	const [logins, setLogins] = useState([]);
 
+	const [history, setHistory] = useState([]);
 
 	const [userNumberData, setUserNumberData] = useState([]);
 
@@ -62,6 +63,10 @@ const AdminConsole = () => {
 
 		fetch(`${process.env.REACT_APP_SERVER_URL}/user/suppliers`).then(res=>res.json()).then(s=>{
 			setSuppliers(s.map(s=>({...s, checked: true})));
+		});
+
+		fetch(`${process.env.REACT_APP_SERVER_URL}/purchase/get/data`).then(res=>res.json()).then(data=>{
+			setHistory(data);
 		});
 	}, [force])
 
@@ -284,6 +289,28 @@ const AdminConsole = () => {
 					timeFrame={loginData.timeFrame} color={'#518194'}
 					yAxisTickFormat={d=>(Math.floor(d)===d ? nFormatter(d) : '')}
 				/>
+			</div>
+			<div className='dashboardContainer'>
+				<div className='dashboardHeaderContainer' style={{position: "relative"}}>
+					<h2 className='dashboardHeader'>Purchase History</h2>
+				</div>
+				<div className='dashboardList'>
+					<table>
+						<tbody>
+							<tr className='dashboardListItem adminTblHeader' style={{backgroundColor: "#6b7d99"}}>
+								<th style={{backgroundColor: "#6b7d99"}}>Image</th>
+								<th style={{backgroundColor: "#6b7d99"}}>Product</th>
+								<th style={{backgroundColor: "#6b7d99"}}>Name</th>
+								<th style={{backgroundColor: "#6b7d99"}}>Quantity</th>
+								<th style={{backgroundColor: "#6b7d99"}}>Price</th>
+								<th style={{backgroundColor: "#6b7d99"}}>Date</th>
+							</tr>
+							{
+								history.map((item, i)=><HistoryListItem item={item} key={i}/>)
+							}
+						</tbody>
+					</table>
+				</div>
 			</div>
 		</div>
 	</div>

@@ -1,6 +1,8 @@
 import React, {useState, useContext} from 'react'
 import { formatPhoneNumber, sleep, validateUsername } from '../../utils';
-import { UserContext } from '../../Contexts'
+import { MoneyContext, UserContext } from '../../Contexts'
+
+const currencies = require('../../currencies.json');
 
 const getStatusObj = (s) => {
 	switch (s) {
@@ -354,6 +356,31 @@ export const TagListItem = ({tag, reload}) => {
 				</label>
 			</div>
 			<button className='button1' onClick={onSubmit}>Submit</button>
+		</td>
+	</tr>
+}
+
+export const HistoryListItem = ({item}) => {
+	const {exchangeRates, currency} = useContext(MoneyContext);
+
+	return <tr className='dashboardListItem'>
+		<td>
+			<img src={item.photo} alt=' ' style={{height: "50px"}}/>
+		</td>
+		<td style={{width: "300px"}}>
+			{item.name||"Not Available"}
+		</td>
+		<td>
+			{item.fullName||"Not Available"}
+		</td>
+		<td>
+			{item.quantity}
+		</td>
+		<td>
+			{Math.floor(item.price*exchangeRates[currency]*100)/100}{currencies[currency].symbol}
+		</td>
+		<td>
+			{new Date(item.date).toLocaleDateString()}
 		</td>
 	</tr>
 }

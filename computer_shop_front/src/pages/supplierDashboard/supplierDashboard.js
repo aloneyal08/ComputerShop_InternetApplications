@@ -3,7 +3,7 @@ import './supplierDashboard.css'
 import { MoneyContext, UserContext } from '../../Contexts';
 import { ProductListItem } from './listItem';
 import CreateMessage from '../adminConsole/createMessage';
-import { MessageListItem } from '../adminConsole/listItem';
+import { HistoryListItem, MessageListItem } from '../adminConsole/listItem';
 import BarGraph from '../../components/graphs/barGraph';
 import { nFormatter } from '../../utils';
 import AvgGraph from '../../components/graphs/avgGraph';
@@ -72,6 +72,7 @@ const SupplierDashboard = () => {
 	const [ratioYAxis, setRatioYAxis] = useState('amount');
 	const [selectedMessage, setSelectedMessage] = useState(null);
 
+	const [history, setHistory] = useState([]);
 
 	const [force,update] = useState(0);
 	const reload = () => update(Math.random());
@@ -142,11 +143,13 @@ const SupplierDashboard = () => {
 
 	useEffect(() => {
 		fetch(`${process.env.REACT_APP_SERVER_URL}/user/supplier/products?id=${user._id}&sort=${sort}`).then(res=>res.json()).then(products=>{
-		 
 			setProducts(products);
 		});
 		fetch(`${process.env.REACT_APP_SERVER_URL}/message/supplier?email=${user.email}`).then(res=>res.json()).then(messages=>{
 			setMessages(messages.reverse());
+		});
+		fetch(`${process.env.REACT_APP_SERVER_URL}/purchase/get/data?supplier=${user._id}`).then(res=>res.json()).then(data=>{
+			setHistory(data);
 		});
 	}, [user._id, user.email, force, sort])
 
@@ -297,6 +300,28 @@ const SupplierDashboard = () => {
 						return ratioYAxis==='money' ?  nFormatter(d*exchangeRates[currency]) + currencies[currency].symbol : (Math.floor(d)===d ? nFormatter(d) : '')
 					}}
 				/>
+			</div>
+			<div className='dashboardContainer'>
+				<div className='dashboardHeaderContainer' style={{position: "relative"}}>
+					<h2 className='dashboardHeader'>Purchase History</h2>
+				</div>
+				<div className='dashboardList'>
+					<table>
+						<tbody>
+							<tr className='dashboardListItem adminTblHeader' style={{backgroundColor: "#6b7d99"}}>
+								<th style={{backgroundColor: "#6b7d99"}}>Image</th>
+								<th style={{backgroundColor: "#6b7d99"}}>Product</th>
+								<th style={{backgroundColor: "#6b7d99"}}>Name</th>
+								<th style={{backgroundColor: "#6b7d99"}}>Quantity</th>
+								<th style={{backgroundColor: "#6b7d99"}}>Price</th>
+								<th style={{backgroundColor: "#6b7d99"}}>Date</th>
+							</tr>
+							{
+								history.map((item, i)=><HistoryListItem item={item} key={i}/>)
+							}
+						</tbody>
+					</table>
+				</div>
 			</div>
 		</div>
 	</div>
