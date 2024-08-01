@@ -41,6 +41,7 @@ const Cart = () => {
 			} else {
 				sessionStorage.setItem("purchase", JSON.stringify(save));
 				sessionStorage.setItem("total", total.toString());
+				sessionStorage.setItem("now", 0);
 				let tempUser = user;
 				tempUser.cart = save;
 				setUser(tempUser);

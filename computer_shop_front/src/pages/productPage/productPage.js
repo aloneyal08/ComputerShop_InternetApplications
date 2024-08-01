@@ -106,6 +106,7 @@ const ProductPage = () => {
 		}
 		sessionStorage.setItem("purchase", JSON.stringify([{productId: product._id, quantity: q}]));
 		sessionStorage.setItem("total", product.price*(1-(product.discount/100))*q);
+		sessionStorage.setItem("now", 1);
 		navigate('/purchase/confirm');
 	};
 

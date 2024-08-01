@@ -3,10 +3,12 @@ const Purchase = require('../models/purchase');
 const User = require('../models/user');
 
 const makePurchases = async (req, res) => {
-	const { user, list} = req.body;
+	const { user, list, emptyCart } = req.body;
 	let cart = [], stocks = [];
 	for(let i = 0;i < list.length;++i){
 		const p = await Product.findOne({_id: list[i].productId});
+		if(!p)
+			continue;
 		const s = await User.findOne({_id: p.supplier});
 		if(s.suspended)
 			continue;
@@ -20,7 +22,9 @@ const makePurchases = async (req, res) => {
 	for(let i = 0; i < cart.length;++i){
 		await Product.findByIdAndUpdate(cart[i].product, {stock: stocks[i] - cart[i].quantity});
 	}
-	const u = await User.findByIdAndUpdate(user, {cart: []});
+	if(emptyCart) {
+		const u = await User.findByIdAndUpdate(user, {cart: []});
+	}
 	res.json(purchases);
 };
 

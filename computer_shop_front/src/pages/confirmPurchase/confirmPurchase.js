@@ -8,6 +8,7 @@ const currencies = require('../../currencies.json');
 const ConfirmPurchase = () =>{
 	const [purchase, setPurchase] = useState(-1);
 	const [total, setTotal] = useState(0);
+	const [isBuyNow, setIsBuyNow] = useState(true);
 
 	const {currency, exchangeRates} = useContext(MoneyContext);
 	const {user, setUser} = useContext(UserContext);
@@ -30,15 +31,18 @@ const ConfirmPurchase = () =>{
 			},
 			body: JSON.stringify({
 				user: user._id,
-				list: purchase
+				list: purchase,
+				emptyCart: !isBuyNow
 			})
 		}).then((res) => res.json()).then((res) => {
 			if(res.error) {
 				alert(res.error);
 			} else {
-				let tempUser = user;
-				tempUser.cart = [];
-				setUser(tempUser);
+				if(!isBuyNow) {
+					let tempUser = user;
+					tempUser.cart = [];
+					setUser(tempUser);
+				}
 				navigate('/');
 			}
 		})
@@ -52,12 +56,12 @@ const ConfirmPurchase = () =>{
 		}
 		setPurchase(JSON.parse(p))
 		setTotal(sessionStorage.getItem("total"));
+		setIsBuyNow(Number(sessionStorage.getItem("now")))
 		sessionStorage.removeItem("purchase");
 		sessionStorage.removeItem("total");
+		sessionStorage.removeItem("now");
 	}, [navigate])
-	useEffect(()=>{
 
-	}, [purchase])
 	return <div className="confirm-purchase-container">
 	<h1 className="confirm-title">Please Confirm Your Purchase</h1>
 	<h2 className="total-amount">The Total Will Be {currencies[currency].symbol + Math.floor(total * exchangeRates[currency] * 100) / 100}</h2>
