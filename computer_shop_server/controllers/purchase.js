@@ -35,7 +35,7 @@ const getPurchases = async (req, res) => {
 	let result = [];
 	for(let i = 0; i<purchases.length;i++)
 	{
-		let p = await Product.findById(purchases[i].product);
+		let p = await Product.findById(purchases[i].product) || {};
 		result.push({date: purchases[i].date , product: p, quantity: purchases[i].quantity, price: purchases[i].price, name: purchases[i].name})
 	}
 	res.json(result);
@@ -52,8 +52,8 @@ const getPurchasesData = async (req, res)=>{
 	let result = [];
 	for(let i = 0; i<purchases.length;i++)
 	{
-		let p = await Product.findById(purchases[i].product);
-		let u = await User.findById(purchases[i].user);
+		let p = await Product.findById(purchases[i].product) || {};
+		let u = await User.findById(purchases[i].user) || {};
 		result.push({...purchases[i]._doc, fullName: u.fullName, photo: p.photo, name: p.name})
 	}
 	res.json(result.sort((a, b) => a.date > b.date ? -1 : 1));
