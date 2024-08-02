@@ -75,7 +75,10 @@ const EditProduct = () => {
       setPhoto(product.photo);
       setValidPhoto(true);
       setStock(Number(product.stock));
-      setPrice(Number(product.price)*exchangeRates[currency]);
+      let pr = ((Number(product.price)*exchangeRates[currency]*100)%1)/100;
+      console.log(Number(product.price)*exchangeRates[currency])
+      console.log(pr);
+      setPrice(Math.max(0, Number(product.price)*exchangeRates[currency] - pr));
       setDiscount(Number(product.discount))
       setChosenTags(product.tags || [])
       setStats(product.stats || {});
@@ -94,7 +97,7 @@ const EditProduct = () => {
   };
 
   const priceChange = (e) =>{
-    let pr = e.target.value === ''? '' : Math.max(0, Math.floor(Number(e.target.value)*100)/100);
+    let pr = e.target.value === ''? '' : Math.max(0, Math.floor((Number(e.target.value)+Number.EPSILON)*100)/100);
     e.target.value = pr
     setPrice(pr);
   };

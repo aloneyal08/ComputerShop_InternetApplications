@@ -139,8 +139,13 @@ const addToCart = async (req, res) => {
 	const {email, addition} = req.body;
 	let cart = (await User.findOne({email})).cart;
 	for(let i = 0; i < cart.length;++i){
-		if(cart[i].productId == addition.productId){
-			return res.status(400).json({error: 'Product Already in Cart'})
+		if(cart[i].productId === addition.productId){
+			cart[i].quantity += addition.quantity;
+			console.log(cart)
+			const u = await User.findOneAndUpdate({email}, {
+				cart
+			});
+			return res.json(u);
 		}
 	}
 	cart.push(addition)

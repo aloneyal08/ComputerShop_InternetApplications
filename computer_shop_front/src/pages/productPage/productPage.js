@@ -93,7 +93,17 @@ const ProductPage = () => {
 			alert(res.error);
 			} else {
 			let tempUser = user;
-			tempUser.cart.push({productId, quantity: q});
+			let includes = tempUser.cart.some(a=>a.productId===productId);
+			if(includes){
+				for(let i = 0;i < tempUser.cart.length;++i){
+					if(tempUser.cart[i].productId === productId){
+						tempUser.cart[i].quantity += q;
+						break;
+					}
+				}
+			}else {
+				tempUser.cart.push({productId, quantity: q});
+			}
 			setUser(tempUser);
 			navigate('/cart');
 			}
@@ -150,6 +160,11 @@ const ProductPage = () => {
 				fetch(`${process.env.REACT_APP_SERVER_URL}/purchase/exists?user=${user._id}&product=${productId}`).then((res) => res.json()).then((res) => { 
 					setCanReview(res);
 				});
+			}
+			for(let i = 0;i < user.cart.length; ++i){
+				if(user.cart[i].productId === productId){
+					res.stock -= user.cart[i].quantity;
+				}
 			}
 			setProduct(res)
 		});

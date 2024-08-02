@@ -26,6 +26,20 @@ const Cart = () => {
 				save.push(item);
 			}
 		});
+		sessionStorage.setItem("purchase", JSON.stringify(save));
+		sessionStorage.setItem("total", total.toString());
+		sessionStorage.setItem("now", 0);
+		navigate('/purchase/confirm');
+	};
+
+	const save = () => {
+		console.log('hi')
+		let save = [];
+		newCart.forEach((item) => {
+			if(!item.deleted){
+				save.push(item);
+			}
+		});
 		fetch(`${process.env.REACT_APP_SERVER_URL}/user/update/cart`, {
 			method: 'PUT',
 			headers: {
@@ -39,49 +53,12 @@ const Cart = () => {
 			if(res.error) {
 				alert(res.error);
 			} else {
-				sessionStorage.setItem("purchase", JSON.stringify(save));
-				sessionStorage.setItem("total", total.toString());
-				sessionStorage.setItem("now", 0);
 				let tempUser = user;
 				tempUser.cart = save;
 				setUser(tempUser);
-				navigate('/purchase/confirm');
 			}
 		})
-	};
-
-	const saveCart = () => {
-		if(changed){
-			let save = [];
-			newCart.forEach((item) => {
-				if(!item.deleted){
-					save.push(item);
-				}
-			});
-			fetch(`${process.env.REACT_APP_SERVER_URL}/user/update/cart`, {
-				method: 'PUT',
-				headers: {
-				'Content-Type': 'application/json'
-				},
-				body: JSON.stringify({
-					email: user.email,
-					cart: save
-				})
-			}).then((res) => res.json()).then((res) => {
-				if(res.error) {
-					alert(res.error);
-				} else {
-					let tempUser = user;
-					tempUser.cart = save;
-					setUser(tempUser);
-					navigate('/');
-				}
-			})
-		} else{
-			navigate('/')
-		}
-		
-	};
+	}
 
 	const changedFunction = (num, value, amount) => {
 		let temp = newCart;
@@ -91,11 +68,12 @@ const Cart = () => {
 		temp[num] = value;
 		setItemsChanged(temp);
 		setChanged(temp.some(item=>item===true) || itemsDeleted.some(item=>item===true));
+		save();
 	}
 
 	const deleteRow = (id, num) => {
+		let temp = newCart.slice();
 		for(let i = 0;i < newCart.length;++i){
-			let temp = newCart.slice();
 			if(temp[i].productId === id){
 				temp[i].deleted = true;
 				setNewCart(temp);
@@ -106,11 +84,12 @@ const Cart = () => {
 				break;
 			}
 		}
+		save();
 	}
 
 	const retrieveRow = (id, num) => {
+		let temp = newCart.slice();
 		for(let i = 0;i < newCart.length;++i){
-			let temp = newCart.slice();
 			if(temp[i].productId === id){
 				temp[i].deleted = false;
 				setNewCart(temp);
@@ -121,6 +100,7 @@ const Cart = () => {
 				break;
 			}
 		}
+		save();
 	}
 
 	useEffect(() => {
@@ -171,7 +151,7 @@ const Cart = () => {
 				</table>
 				<h3>Your Total is: {currencies[currency].symbol + Math.floor(total*exchangeRates[currency]*100)/100} </h3>
 				<div className='cartBtnContainer'>
-					<button onClick={saveCart} className='button1'>Continue Shopping</button>
+					<button onClick={() => {navigate('/')}} className='button1'>Continue Shopping</button>
 					<button disabled={!newCart.find(e=>!e.deleted)} onClick={buyCart} className='button1'>Buy Items</button>
 				</div>
 				</>
