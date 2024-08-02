@@ -53,8 +53,8 @@ export const ProductCard = ({product, renderRating = true, renderStock = true, i
         <div className='productMainCon'>
           <h3 className='productName'>{product.name}</h3>
           <div style={{display: 'flex', flexDirection: 'column-reverse'}}>
-            <h4 className='productPrice'>{isNaN(product.price)?product.price:currencies[currency].symbol + Math.floor(product.price*exchangeRates[currency]*(1-(Number(product.discount)/100))*100)/100}</h4>
-            <p className='productDiscount' style={{visibility: (product.discount > 0?'visible':'hidden')}}>{currencies[currency].symbol + Math.round(product.price*exchangeRates[currency]*100)/100}</p>
+            <h4 className='productPrice'>{isNaN(product.price)?product.price:currencies[currency].symbol + (product.price*exchangeRates[currency]*(1-(Number(product.discount)/100))).toFixed(2)}</h4>
+            <p className='productDiscount' style={{visibility: (product.discount > 0?'visible':'hidden')}}>{currencies[currency].symbol + (product.price*exchangeRates[currency]).toFixed(2)}</p>
           </div>
         </div>
         <aside><h6 className='productSupplier' >{supplier}</h6></aside>

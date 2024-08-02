@@ -62,9 +62,13 @@ const NewProduct = () => {
 	};
 
   const priceChange = (e) =>{
-    let pr = e.target.value === ''? '' : Math.max(0, Math.floor(Number(e.target.value)*100)/100);
-    e.target.value = pr
+    let pr = e.target.value.includes('-') ? 0 :  e.target.value === ''? '' : Math.max(0, Number(parseFloat(e.target.value).toFixed(2)));
+    if(price!=="" && price.toFixed(2).length < e.target.value.toString().length && price-pr<1){
+      e.preventDefault();
+      return;
+    }
     setPrice(pr);
+    e.preventDefault();
   };
 
   const addStat = () => {
