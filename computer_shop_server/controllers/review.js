@@ -1,5 +1,6 @@
 const Review = require('../models/review');
 const Product = require('../models/product');
+const Purchase = require('../models/purchase');
 const { default: mongoose } = require('mongoose');
 
 const writeReview = async (req, res) => {
@@ -57,26 +58,13 @@ const getSupplierRating = async (req, res) => {
 	res.json(sRating);
 };
 
-const editReview = async (req, res) => {
-	const { _id, date, text, rating } = req.body;
-	const review = Review.findByIdAndUpdate(_id, {
-		date,
-		text,
-		rating
-	});
-	if (!review) {
-		return res.status(404).json({ errors: ['Review not found'] });
-	}
-	res.json(review);
-}
-
-const deleteReview = async (req, res) => {
-	const { _id, product, user, date, text } = req.body;
-	const review = await Review.findOneAndDelete({_id});
-	if (!review) {
-		return res.status(404).json({ errors: ['Review not found'] });
-	}
-	res.send();
+const canReview = async (req, res) => {
+	const {product, user} = req.query;
+	const review = await Review.find({product, user});
+	const purchases = await Purchase.find({product, user});
+	if(purchases.length - review.length > 0)
+		return res.json(true);
+	res.json(false);
 }
 
 module.exports = {
@@ -84,6 +72,5 @@ module.exports = {
 	getReviews,
 	getRating,
 	getSupplierRating,
-	editReview,
-	deleteReview
+	canReview
 };

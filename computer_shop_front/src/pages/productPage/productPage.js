@@ -157,7 +157,7 @@ const ProductPage = () => {
 			if(res.tags && tags.length > 0){
 				res.tags = res.tags.map((tag) => tags.find(t => t._id === tag).text).filter(tag => tag);
 
-				fetch(`${process.env.REACT_APP_SERVER_URL}/purchase/exists?user=${user._id}&product=${productId}`).then((res) => res.json()).then((res) => { 
+				fetch(`${process.env.REACT_APP_SERVER_URL}/review/canReview?user=${user._id}&product=${productId}`).then((res) => res.json()).then((res) => { 
 					setCanReview(res);
 				});
 			}
