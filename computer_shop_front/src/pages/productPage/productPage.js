@@ -156,14 +156,15 @@ const ProductPage = () => {
 			}
 			if(res.tags && tags.length > 0){
 				res.tags = res.tags.map((tag) => tags.find(t => t._id === tag).text).filter(tag => tag);
-
-				fetch(`${process.env.REACT_APP_SERVER_URL}/review/canReview?user=${user._id}&product=${productId}`).then((res) => res.json()).then((res) => { 
-					setCanReview(res);
-				});
 			}
-			for(let i = 0;i < user.cart.length; ++i){
-				if(user.cart[i].productId === productId){
-					res.stock -= user.cart[i].quantity;
+			if(!user.loggedOut && Object.keys(user).length > 0){
+				fetch(`${process.env.REACT_APP_SERVER_URL}/review/canReview?user=${user._id}&product=${productId}`).then((res) => res.json()).then((res) => { 
+						setCanReview(res);
+					});
+				for(let i = 0;i < user.cart.length; ++i){
+					if(user.cart[i].productId === productId){
+						res.stock -= user.cart[i].quantity;
+					}
 				}
 			}
 			setProduct(res)
