@@ -192,7 +192,7 @@ const deleteUser = async (req, res) => {
 
 const getSuppliers = async (req, res) => {
 	const suppliers = await User.find({level: 1});
-	res.json(suppliers);
+	res.json(suppliers.filter((s)=>!s.suspended));
 }
 
 const getAdmins = async (req, res) => {
