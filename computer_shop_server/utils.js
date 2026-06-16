@@ -14,6 +14,7 @@ var transporter = nodemailer.createTransport({
 
 
 const encrypt = (str) => {
+	//dfsdfsdffsdfds
 	return CryptoJS.AES.encrypt(str, process.env.SECRET_KEY).toString();
 }
 
